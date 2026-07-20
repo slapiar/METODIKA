@@ -1,6 +1,4 @@
 # METODIKA
-Univerzálne princípy metodky vývoja projektov
-# METODIKA
 
 ## Univerzálny systém riadenia projektov, AI agentov a uchovávania znalostí
 
@@ -16,7 +14,7 @@ Jeho cieľom je:
 * zabrániť strate znalostí počas migrácií projektov,
 * vytvoriť jednotnú metodiku práce použiteľnú pre ľubovoľný projekt,
 * minimalizovať vznik chýb spôsobených nesprávnym pochopením aktuálneho stavu projektu,
-* vytvoriť dlhodobo udržateľnú "operačnú pamäť" projektov.
+* vytvoriť dlhodobo udržateľnú „operačnú pamäť“ projektov.
 
 ---
 
@@ -24,7 +22,7 @@ Jeho cieľom je:
 
 Každý projekt je živý systém.
 
-Pred vykonaním akejkoľvek práce musí každý človek alebo AI agent najprv obnoviť svoju pamäť v nasledovnom poradí:
+Pred vykonaním akejkoľvek práce musí každý človek alebo AI agent najprv obnoviť svoju pamäť v tomto poradí:
 
 ```text
 1. Univerzálna metodika
@@ -47,8 +45,8 @@ METODIKA/
 ├── README.md
 │
 ├── PRINCIPY/
-│   ├── HermetickePrincípy.md
-│   ├── UniverzalnePrincípy.md
+│   ├── HermetickePrincipy.md
+│   ├── UniverzalnePrincipy.md
 │   └── RiadenieZnalosti.md
 │
 ├── PROJEKTY/
@@ -107,10 +105,10 @@ Každá nižšia úroveň dedí pravidlá úrovne nad sebou.
 6. Príčina a následok
 7. Generativita
 
-Podrobný opis ich aplikácie sa nachádza v adresári:
+Podrobný opis ich aplikácie sa nachádza v súbore:
 
 ```text
-PRINCIPY/
+PRINCIPY/HermetickePrincipy.md
 ```
 
 ---
@@ -124,6 +122,27 @@ PRINCIPY/
 5. Pred ukončením práce sa vytvára sumarizácia.
 6. Každý projekt musí mať vlastné metodické pokyny.
 7. Univerzálna metodika má vždy vyššiu prioritu ako projektové pokyny.
+8. Po každom zápise sa overí skutočný obsah súboru v repozitári.
+
+---
+
+# Prvé otázky AI agenta
+
+Pred začatím práce musí AI agent overiť:
+
+```text
+□ Poznám názov projektu?
+□ Poznám správny repozitár?
+□ Mám prístup k repozitáru?
+□ Mám práva na čítanie a zápis?
+□ Bola funkčnosť prístupov skutočne overená?
+□ Poznám autoritatívny koreň projektu?
+□ Mám prístup k produkčnému prostrediu, ak je potrebný?
+□ Mám prístup k vývojovému alebo stage prostrediu, ak je potrebný?
+□ Poznám aktuálny stav projektu a posledný checkpoint?
+```
+
+Samotná existencia repozitára alebo prostredia neznamená, že je prístup funkčný. Prístupy sa musia overiť praktickým čítaním alebo zápisom ešte pred začatím práce.
 
 ---
 
