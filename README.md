@@ -145,7 +145,7 @@ Každú logickú otázku treba preskúmať vo všetkých siedmich hermetických 
 Vzniká sedem polí:
 
 ```text
-P1 × P2 × P3 × P4 × P5 × P6 × P7
+P1 × P2 × P3 × P4 × P5 × P6 × P7, čo možno komprimovať zápisom, v prípade všetkých hodnôt Pn=1, ako "P^7"
 ```
 
 Každé pole predstavuje jednu kontrolnú otázku odvodenú z príslušného princípu a jednu odpoveď `1/0`.
@@ -191,7 +191,7 @@ N = príčina a následok
 G = generativita
 ```
 
-Matica obsahuje presne 49 logických otázok a 49 odpovedí.
+Matica obsahuje presne 49 logických otázok a na ktoré musí byť aj 49 jednoznačných odpovedí.
 
 Polia na diagonále predstavujú skúmanie princípu ním samým. Mentalizmus sa preto neskúma iba ako spôsob myslenia, ale aj ako pôvod myšlienky. Rovnakým spôsobom musí každý princíp uniesť kontrolnú otázku vychádzajúcu zo seba samého aj zo všetkých ostatných princípov.
 

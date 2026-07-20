@@ -15,6 +15,7 @@ Jeho cieľom je zabrániť strate času, nesprávnym zásahom, práci v nespráv
 - [ ] Projekt je zapísaný v `PROJEKTY/ZoznamProjektov.md`.
 - [ ] Poznám jeho účel, cieľ a aktuálnu prioritu.
 - [ ] Viem, či ide o nový projekt, pokračovanie, obnovu, migráciu alebo opravu.
+- [ ] Viem, či ide o nový projekt, pokračovanie, obnovu, migráciu alebo opravu.
 
 ---
 
