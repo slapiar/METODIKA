@@ -45,6 +45,7 @@ METODIKA/
 ├── README.md
 ├── uQestions.md
 ├── DISDCIPLINA.nd
+├── AUTORITA.md
 │
 ├── PRINCIPY/
 │   ├── HermetickePrincipy.md
@@ -201,7 +202,7 @@ Ak sa na určitý jav, princíp alebo proces nedajú položiť tieto otázky, pr
 
 Matica 7 × 7 nie je pracovným postupom. Je bázou, z ktorej možno neskôr odvodiť presné kontrolné otázky pre konkrétny proces alebo checklist.
 
-## Univerzálna matica a príklad použitia
+## Univerzálna matica a príklady použitia
 
 Úplné znenie univerzálnych 49 otázok použiteľných na skúmanie ľubovoľného predmetu sa nachádza v súbore:
 
@@ -210,6 +211,10 @@ Matica 7 × 7 nie je pracovným postupom. Je bázou, z ktorej možno neskôr odv
 Prvý úplný rozbor konkrétneho pojmu sa nachádza v súbore:
 
 - [DISDCIPLINA.nd](DISDCIPLINA.nd) — disciplína ako príklad použitia všetkých 49 otázok.
+
+Metodická definícia Autority, jej rozsahu a priority sa nachádza v súbore:
+
+- [AUTORITA.md](AUTORITA.md) — objektivita Autority v X/Y a subjektívna miera a časová priorita v Z/T.
 
 ---
 
@@ -360,6 +365,21 @@ Objektivita aj subjektivita žijú samy osebe, ale prejavujú sa odlišne:
 Objektívne určený jav môže mať rozdielny zmysel pri rozdielnej miere alebo v rozdielnom čase. Subjektívny zmysel môže existovať aj pred fyzickým uskutočnením prejavu alebo po skončení jeho časového prejavenia.
 
 Ich rozdielnosť sa preto nesmie zrušiť mechanickým súčinom. Treba skúmať ich vzťah a spôsob, akým sa stretávajú v konkrétnom živom prejave.
+
+## Autorita ako prechod k praktickej realizácii
+
+Autorita určuje, kto alebo čo je oprávnené niesť zodpovednosť za konkrétny prejav. Jej priorita určuje mieru a časový zmysel tohto oprávnenia pri konkrétnom rozhodnutí.
+
+```text
+X — čo je Autorita?
+Y — ako sa prejavuje a dokazuje?
+Z — akú má mieru, rozsah a váhu?
+T — kedy má jej prejav prioritu?
+```
+
+Autorita môže objektívne existovať, aj keď v konkrétnej veci alebo čase nemá prioritu. Zánik aktuálnej priority preto automaticky neznamená zánik samotnej Autority.
+
+Podrobný metodický rozbor sa nachádza v súbore [AUTORITA.md](AUTORITA.md).
 
 ---
 
