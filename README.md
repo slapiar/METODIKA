@@ -43,6 +43,8 @@ Pred vykonaním akejkoľvek práce musí každý človek alebo AI agent najprv o
 METODIKA/
 │
 ├── README.md
+├── uQestions.md
+├── DISDCIPLINA.nd
 │
 ├── PRINCIPY/
 │   ├── HermetickePrincipy.md
@@ -198,6 +200,16 @@ Polia na diagonále predstavujú skúmanie princípu ním samým. Mentalizmus sa
 Ak sa na určitý jav, princíp alebo proces nedajú položiť tieto otázky, predmet ešte nie je dostatočne určený ako logicky skúmateľný prejav života.
 
 Matica 7 × 7 nie je pracovným postupom. Je bázou, z ktorej možno neskôr odvodiť presné kontrolné otázky pre konkrétny proces alebo checklist.
+
+## Univerzálna matica a príklad použitia
+
+Úplné znenie univerzálnych 49 otázok použiteľných na skúmanie ľubovoľného predmetu sa nachádza v súbore:
+
+- [uQestions.md](uQestions.md) — univerzálna objektívna matica otázok X/Y.
+
+Prvý úplný rozbor konkrétneho pojmu sa nachádza v súbore:
+
+- [DISDCIPLINA.nd](DISDCIPLINA.nd) — disciplína ako príklad použitia všetkých 49 otázok.
 
 ---
 
