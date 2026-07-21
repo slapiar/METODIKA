@@ -18,12 +18,17 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - vytvorený samostatný priestor `HODNOTENIA/` pre opis hodnotiacich záznamov,
 - univerzálna objektívna matica presunutá do `OTAZKY/UNIVERZALNE/Objektivita-XY.md`,
 - otázky Disciplíny presunuté pod `OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md`,
-- vytvorený pracovný logický model databázy v `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md`.
+- vytvorený pracovný logický model databázy v `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md`,
+- zavedená siedma plocha zmyslu života ako metaplocha, ktorá skúma logické vzťahy medzi samostatnými rozmermi `Z` a `T`,
+- zavedený pracovný zápis `S = logický vzťah(Z, T)` a rozlíšenie operátorov AND, OR, IF a XOR.
 
 ### Zmenené
 
 - koreňové súbory `uQestions.md` a `DISCIPLINA.md` zostávajú ako rozcestníky pre staršie odkazy,
-- definície otázok sú významovo oddelené od konkrétnych hodnotiacich záznamov.
+- definície otázok sú významovo oddelené od konkrétnych hodnotiacich záznamov,
+- nepresný zápis `Subjektivita = Z × T` bol nahradený zápisom `Subjektivita = (Z, T)`,
+- znak `×` v zápisoch rozmerov výslovne označuje spoločné skúmanie samostatných rozmerov, nie predvolený logický operátor AND,
+- implikácia `T → Z` alebo `Z → T` sa nesmie zamieňať so súčasnou platnosťou `Z ∧ T`.
 
 ### Určené
 
@@ -31,7 +36,11 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - obslužné PHP skripty sa ukladajú do koreňa `/app`,
 - podstatné zmeny sa od tohto bodu zapisujú priebežne do `CHANGELOG.md`,
 - objektivita predstavuje prejav v existencii v rovine X/Y,
-- subjektivita predstavuje hodnotu a časový zmysel prejavu v rovine Z/T,
+- subjektivita predstavuje zmysel prejavu skúmaný dvojicou samostatných rozmerov `(Z, T)`,
+- `Z` určuje hodnotu a zmysel prejavu,
+- `T` určuje čas, v ktorom zmysel platí a nadobúda prioritu,
+- logický vzťah medzi `Z` a `T` musí určiť význam konkrétnej otázky; nesmie sa domyslieť automaticky,
+- siedma plocha nie je ďalším základným rozmerom popri X, Y, Z a T, ale metaplochou ich logického vzťahu,
 - zápis `X × Y = [1/0]^2` vyjadruje dve samostatne hodnotené binárne dimenzie,
 - zápisy `[1²]`, `[1³]` a `[1⁴]` v `README.md` boli zjednotené na `[1/0]^2`, `[1/0]^3` a `[1/0]^4`,
 - otázka a hodnotiaci záznam nie sú ten istý druh údajov a nesmú sa ukladať v jednom nerozlíšenom priestore,
