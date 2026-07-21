@@ -219,7 +219,7 @@ Bez otázky „čo?“ nie je určený predmet. Bez otázky „ako?“ nie je ur
 X × Y = [1/0]^2
 ```
 
-## Subjektivita — Z/T
+## Subjektivita — Z,T
 
 Subjektivita hovorí o **zmysle prejavu**.
 
