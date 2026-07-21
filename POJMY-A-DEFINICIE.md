@@ -143,6 +143,51 @@ Exponent označuje počet samostatne hodnotených rozmerov. Neznamená, že sa i
 
 ---
 
+# Hodnotiaci záznam
+
+Hodnotiaci záznam nie je ďalším druhom otázky. Je záznamom výsledku použitia konkrétnej otázky na konkrétny predmet hodnotenia v určenom čase.
+
+Hodnotiaci záznam obsahuje:
+
+```text
+otázku
+× predmet hodnotenia
+× odpoveď [1/0]
+× dôkaz
+× Validáciu
+× Autoritu Validácie
+× časovú platnosť
+```
+
+## Odpoveď
+
+Odpoveď je výsledok `[1/0]` na konkrétnu otázku pri konkrétnom predmete a čase.
+
+## Dôkaz
+
+Dôkaz je údaj, dokument, meranie, skutok, pozorovanie alebo iný overiteľný záznam, o ktorý sa odpoveď opiera.
+
+## Validácia
+
+Validácia overuje, či boli odpoveď, dôkaz, rozsah a časová platnosť správne posúdené.
+
+## Autorita Validácie
+
+Autorita Validácie určuje, kto alebo čo je oprávnené Validáciu potvrdiť a v akom rozsahu.
+
+Jedna otázka môže mať veľa hodnotiacich záznamov pre rozdielne predmety, projekty, individuálne formy a časy. Preto sa otázky a hodnotiace záznamy nesmú ukladať v jednom nerozlíšenom priestore.
+
+Oddelenie umožňuje spätne zistiť:
+
+- na akú otázku sa odpovedalo,
+- čo bolo hodnotené,
+- prečo vznikla hodnota `1` alebo `0`,
+- o aký dôkaz sa odpoveď opierala,
+- kto alebo čo ju validovalo,
+- v akom rozsahu a čase výsledok platil.
+
+---
+
 # Základné rozlíšenie
 
 ```text
