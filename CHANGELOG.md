@@ -26,7 +26,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - v `OTAZKY/README.md` doplnené rozlišovacie pravidlá a príklady pre otázky rozmerov X, Y, Z a T,
 - vytvorený `OTAZKY/SIEDMA-PLOCHA-S.md` ako samostatný metodický koreň pre vznik, definíciu, vyhodnotenie a Validáciu vzťahu S medzi odpoveďami Z a T,
 - vytvorený `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`, ktorý oddeľuje opakovateľné identity, vzťahové udalosti a výsledkové vlastnosti bez predčasného návrhu SQL,
-- vytvorený `postupy/2026-07-21_IDENTITA-A-IDENTIFIKATORY.md` pre pravidlá totožnosti objektov, nemennosti udalostí a minimálne požiadavky na ich stabilné citovanie.
+- vytvorený `postupy/2026-07-21_IDENTITA-A-IDENTIFIKATORY.md` pre pravidlá totožnosti objektov, nemennosti udalostí a minimálne požiadavky na ich stabilné citovanie,
+- vytvorený `postupy/2026-07-21_POSTULAT-SUBJEKTU.md`, ktorý určuje otvorený postulát subjektu a jeho logické hranice.
 
 ### Zmenené
 
@@ -82,6 +83,11 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - vnútorné identifikátory sa nesmú zamieňať s názvami, kódmi ani vonkajšími identifikátormi iných registrov,
 - čas významového vzniku udalosti a čas jej zápisu do METODIKY sa musia dať rozlíšiť,
 - pôvodca zápisu nie je automaticky Autoritou Validácie,
+- subjektom môže byť čokoľvek logicky zdôvodnené ako samostatný predmet skúmania,
+- fyzická existencia nie je podmienkou subjektu; subjekt môže byť minulý, budúci, hypotetický, abstraktný, simulovaný alebo vzťahový,
+- otvorenosť pojmu `SUBJECT` obmedzuje požiadavka určeného rozsahu, rozlíšiteľnej totožnosti a zdôvodnenia jeho samostatnosti,
+- typológia subjektov je pomôckou pre pravidlá totožnosti a Validáciu, nie uzavretým zoznamom povolených predmetov,
+- výsledok udalosti sa môže stať novým subjektom iba na základe nového logického zdôvodnenia samostatného skúmania,
 - odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
 - stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
 - `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
