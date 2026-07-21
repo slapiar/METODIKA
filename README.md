@@ -216,7 +216,7 @@ Y — ako sa to prejavuje?
 Bez otázky „čo?“ nie je určený predmet. Bez otázky „ako?“ nie je určený spôsob jeho prejavu.
 
 ```text
-X × Y = [1²]
+X × Y = [1/0]^2
 ```
 
 ## Subjektivita — Z/T
@@ -229,8 +229,8 @@ T — kedy má prejav zmysel, platnosť, životaschopnosť alebo prioritu?
 ```
 
 ```text
-X × Y × Z = [1³]
-X × Y × Z × T = [1⁴]
+X × Y × Z = [1/0]^3
+X × Y × Z × T = [1/0]^4
 ```
 
 Tieto zápisy sa nesmú interpretovať ako mechanická brána, v ktorej každá nula ruší existenciu všetkého pred ňou.
