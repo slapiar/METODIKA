@@ -1,28 +1,29 @@
 # METODIKA
 
-## Univerzálny systém riadenia projektov, AI agentov a uchovávania znalostí
+## Univerzálny systém skúmania, riadenia projektov, AI agentov a uchovávania znalostí
 
 ---
 
 # Poslanie projektu
 
-Projekt **METODIKA** vznikol ako centrálny systém uchovávania univerzálnych princípov riadenia živých projektov.
+Projekt **METODIKA** vznikol ako centrálny systém uchovávania univerzálnych princípov skúmania a riadenia živých projektov.
 
 Jeho cieľom je:
 
-* zachovať kontinuitu práce medzi jednotlivými AI asistentmi,
-* zabrániť strate znalostí počas migrácií projektov,
-* vytvoriť jednotnú metodiku práce použiteľnú pre ľubovoľný projekt,
-* minimalizovať vznik chýb spôsobených nesprávnym pochopením aktuálneho stavu projektu,
-* vytvoriť dlhodobo udržateľnú „operačnú pamäť“ projektov.
+- zachovať kontinuitu práce medzi ľuďmi a AI agentmi,
+- zabrániť strate znalostí počas migrácií projektov,
+- vytvoriť jednotnú metodiku použiteľnú pre ľubovoľný predmet skúmania,
+- minimalizovať chyby spôsobené nesprávne položenými otázkami,
+- vytvoriť dlhodobo udržateľnú operačnú pamäť projektov,
+- umožniť algoritmické rozhodovanie založené na veľkom množstve jednoznačne overených podmienok.
 
 ---
 
 # Základný princíp
 
-Každý projekt je živý systém.
+Každý projekt, proces a prejav je živý systém.
 
-Pred vykonaním akejkoľvek práce musí každý človek alebo AI agent najprv obnoviť svoju pamäť v tomto poradí:
+Pred vykonaním práce musí človek alebo AI agent obnoviť pamäť v tomto poradí:
 
 ```text
 1. Univerzálna metodika
@@ -44,7 +45,7 @@ METODIKA/
 │
 ├── README.md
 ├── uQestions.md
-├── DISDCIPLINA.nd
+├── DISCIPLINA.md
 ├── AUTORITA.md
 │
 ├── PRINCIPY/
@@ -94,7 +95,7 @@ Súbor
 Funkcia
 ```
 
-Každá nižšia úroveň dedí pravidlá úrovne nad sebou.
+Každá nižšia úroveň dedí pravidlá úrovne nad sebou. Projekt môže univerzálnu metodiku podrobnejšie rozpracovať, ale nesmie meniť jej podstatu.
 
 ---
 
@@ -108,17 +109,11 @@ Každá nižšia úroveň dedí pravidlá úrovne nad sebou.
 6. Príčina a následok
 7. Generativita
 
-Podrobný opis ich aplikácie sa nachádza v súbore:
-
-```text
-PRINCIPY/HermetickePrincipy.md
-```
-
-Hermetické princípy nie sú siedmimi oddelenými vrstvami ani poradím pracovných krokov. Tvoria jeden spoločný sedemrozmerný priestor skúmania života každého projektu, procesu, otázky a prejavu.
+Hermetické princípy nie sú oddelenými vrstvami, poradím pracovných krokov ani hierarchiou. Tvoria jeden spoločný sedemrozmerný priestor skúmania života každého projektu, procesu, otázky a prejavu.
 
 Život je jeden. Každý jeho prejav je životom samým a musí byť možné skúmať ho prostredníctvom všetkých siedmich princípov súčasne.
 
-METODIKA prijíma tento rámec ako vlastné základné pravidlo. Neskúma ho podľa cudzích filozofických výkladov, ale rozvíja ho výlučne z poznania a pravidiel vytvorených v našej spoločnej práci.
+Podrobnejší opis sa nachádza v súbore `PRINCIPY/HermetickePrincipy.md`.
 
 ---
 
@@ -126,49 +121,39 @@ METODIKA prijíma tento rámec ako vlastné základné pravidlo. Neskúma ho pod
 
 ## Logickosť a overiteľnosť
 
-V METODIKE platí:
-
 > Čo je logické, musí byť overiteľné.
 
-Každý hermetický princíp umožňuje položiť jednoduchú kontrolnú otázku, na ktorú možno spoľahlivo a logicky odpovedať:
+Každá kontrolná otázka musí umožniť jednoznačnú odpoveď:
 
 ```text
 1 = áno
 0 = nie
 ```
 
-Binárna odpoveď neslúži na zjednodušenie života na mechanický výpočet. Slúži na overenie, či je otázka položená dostatočne presne a či skúmaný jav možno logicky uchopiť.
+Binárna odpoveď nezjednodušuje život na mechanický výpočet. Overuje, či je otázka položená dostatočne presne a či je skúmaný jav logicky uchopiteľný.
 
-Existencia nie je podmieneným dojmom. Preto sa pri hľadaní riešenia nesmie nepresná otázka prekryť domnienkou, vysvetlením alebo pravdepodobnou odpoveďou.
+Nula sama osebe automaticky neznamená neexistenciu. Môže upozorniť, že:
+
+- otázka nie je položená správne,
+- predmet nie je dostatočne presne určený,
+- všeobecný pojem označuje viac samostatných procesov,
+- otázku treba rozložiť na menšie, jednoznačne overiteľné otázky.
 
 ## Sedemnásobná kontrola otázky
 
-Každú logickú otázku treba preskúmať vo všetkých siedmich hermetických princípoch.
-
-Vzniká sedem polí:
+Každú logickú otázku treba preskúmať všetkými siedmimi princípmi:
 
 ```text
-P1 × P2 × P3 × P4 × P5 × P6 × P7, čo možno komprimovať zápisom, v prípade všetkých hodnôt Pn=1, ako "P^7"
+P1 × P2 × P3 × P4 × P5 × P6 × P7
 ```
+
+Ak sú všetky hodnoty `Pn = 1`, stav možno komprimovane zapísať ako `P^7`.
 
 Každé pole predstavuje jednu kontrolnú otázku odvodenú z príslušného princípu a jednu odpoveď `1/0`.
 
-Ak možno na všetkých sedem kontrolných otázok odpovedať **áno**, východisková otázka je logicky postavená tak, aby bolo možné ďalej skúmať jej predmet.
-
-Ak v ktoromkoľvek poli vyjde `0`, nemožno z toho automaticky vyhlásiť, že skúmaný predmet neexistuje. Nula predovšetkým upozorňuje, že:
-
-* otázka nemusí byť položená správne,
-* predmet nemusí byť dostatočne presne určený,
-* všeobecný pojem môže v skutočnosti označovať komplex viacerých procesov,
-* otázku treba rozložiť na menšie, jednoznačne overiteľné otázky.
-
-Hľadanie správnych otázok preto pokračuje dovtedy, kým každú z nich možno spoľahlivo preskúmať všetkými siedmimi princípmi.
-
 ## Matica 7 × 7
 
-Každý zo siedmich princípov možno skúmať prostredníctvom všetkých siedmich princípov vrátane neho samého.
-
-Vzniká plochá kontrolná matica:
+Každý zo siedmich princípov možno skúmať prostredníctvom všetkých siedmich princípov vrátane seba samého:
 
 ```text
                     KONTROLNÝ PRINCÍP
@@ -182,8 +167,6 @@ PRINCÍP     K   □   □   □   □   □   □   □
             G   □   □   □   □   □   □   □
 ```
 
-Legenda:
-
 ```text
 M = mentalizmus
 K = korešpondencia
@@ -194,120 +177,65 @@ N = príčina a následok
 G = generativita
 ```
 
-Matica obsahuje presne 49 logických otázok a na ktoré musí byť aj 49 jednoznačných odpovedí.
+Matica obsahuje presne 49 otázok a 49 jednoznačných odpovedí. Nie je pracovným postupom. Je bázou, z ktorej možno odvodzovať konkrétne otázky, algoritmy a checklisty.
 
-Polia na diagonále predstavujú skúmanie princípu ním samým. Mentalizmus sa preto neskúma iba ako spôsob myslenia, ale aj ako pôvod myšlienky. Rovnakým spôsobom musí každý princíp uniesť kontrolnú otázku vychádzajúcu zo seba samého aj zo všetkých ostatných princípov.
-
-Ak sa na určitý jav, princíp alebo proces nedajú položiť tieto otázky, predmet ešte nie je dostatočne určený ako logicky skúmateľný prejav života.
-
-Matica 7 × 7 nie je pracovným postupom. Je bázou, z ktorej možno neskôr odvodiť presné kontrolné otázky pre konkrétny proces alebo checklist.
-
-## Univerzálna matica a príklady použitia
-
-Úplné znenie univerzálnych 49 otázok použiteľných na skúmanie ľubovoľného predmetu sa nachádza v súbore:
+Úplné univerzálne znenie otázok sa nachádza v súbore:
 
 - [uQestions.md](uQestions.md) — univerzálna objektívna matica otázok X/Y.
 
-Prvý úplný rozbor konkrétneho pojmu sa nachádza v súbore:
+Prvý úplný príklad sa nachádza v súbore:
 
-- [DISDCIPLINA.nd](DISDCIPLINA.nd) — disciplína ako príklad použitia všetkých 49 otázok.
+- [DISCIPLINA.md](DISCIPLINA.md) — disciplína ako vlastnosť Zodpovednosti a príklad použitia 49 otázok.
 
-Metodická definícia Autority, jej rozsahu a priority sa nachádza v súbore:
+Metodický základ Autority sa nachádza v súbore:
 
-- [AUTORITA.md](AUTORITA.md) — objektivita Autority v X/Y a subjektívna miera a časová priorita v Z/T.
+- [AUTORITA.md](AUTORITA.md) — základný vzorec Autority a plán jeho principiálneho rozkladu.
 
 ---
 
 # Rozmery prejavu a zmyslu
 
-Sedem princípov overuje úplnosť a správnosť položenej otázky. Rozmery **X, Y, Z a T** opisujú, čo touto otázkou skúmame a ako sa skúmaný jav prejavuje v existencii.
+Sedem princípov overuje úplnosť a správnosť položenej otázky. Rozmery **X, Y, Z a T** určujú, čo touto otázkou skúmame.
 
-Tieto dve veci sa nesmú zamieňať:
+```text
+X = čo?
+Y = ako?
+Z = koľko?
+T = kedy?
+```
 
-* sedemnásobná kontrola skúma správnosť otázky,
-* rozmery X, Y, Z a T skúmajú stav prejavu a zmysel jeho prejavenia.
+## Objektivita — X/Y
 
-## Os X — „Čo?“
+Objektivita hovorí o **prejave v existencii**.
 
-Os X určuje predmet skúmania.
+```text
+X — čo sa prejavuje?
+Y — ako sa to prejavuje?
+```
 
-Pýta sa:
-
-> Čo sa prejavuje?
-
-Určuje identitu, obsah a pôvod skúmaného javu. Mentalizmus tu preto neznamená iba spôsob vzniku myšlienky, ale aj jej pôvod: odkiaľ prišla, čo ju vyvolalo a čo je jej skutočným predmetom.
-
-## Os Y — „Ako?“
-
-Os Y určuje spôsob prejavu.
-
-Pýta sa:
-
-> Ako sa to prejavuje?
-
-Skúma formu, mechanizmus, vzťahy a spôsob, ktorým skúmaný jav vstupuje do existencie.
-
-## Rovina X/Y — objektivita prejavu
-
-Prienik osí X a Y vytvára plochú bázu:
+Bez otázky „čo?“ nie je určený predmet. Bez otázky „ako?“ nie je určený spôsob jeho prejavu.
 
 ```text
 X × Y = [1²]
-čo × ako
 ```
 
-Táto rovina skúma **objektivitu**, teda prejav v existencii.
+## Subjektivita — Z/T
 
-Objektivita tu neznamená iba existenciu predmetu oddeleného od života. Hovorí o tom:
+Subjektivita hovorí o **zmysle prejavu**.
 
-* čo sa v existencii prejavuje,
-* ako sa to prejavuje,
-* kde možno tento prejav v ploche vzťahov X/Y určiť.
-
-Bez otázky „čo?“ nie je určený predmet. Bez otázky „ako?“ nie je určený jeho prejav. Až ich spojenie vytvára objektívne skúmateľnú plochu prejavu.
-
-## Os Z — „Koľko?“
-
-Os Z pridáva mieru, rozsah a zmysel:
+```text
+Z — akú má prejav mieru, rozsah, primeranosť a význam?
+T — kedy má prejav zmysel, platnosť, životaschopnosť alebo prioritu?
+```
 
 ```text
 X × Y × Z = [1³]
-čo × ako × koľko
-```
-
-Otázka „koľko?“ neznamená iba počet. Skúma:
-
-* mieru,
-* rozsah,
-* intenzitu,
-* dostatočnosť,
-* primeranosť,
-* význam a zmysel prejavu.
-
-Rovnaký objektívny prejav môže mať pri rozdielnej miere rozdielny zmysel. Niečoho môže byť málo, primerane alebo priveľa. Miera preto vstupuje do subjektívneho významu prejavu.
-
-## Os T — „Kedy?“
-
-Os T pridáva časový rozmer:
-
-```text
 X × Y × Z × T = [1⁴]
-čo × ako × koľko × kedy
 ```
 
-Otázka „kedy?“ skúma zmysel prejavu v čase, najmä:
+Tieto zápisy sa nesmú interpretovať ako mechanická brána, v ktorej každá nula ruší existenciu všetkého pred ňou.
 
-* či ešte nebol uskutočnený,
-* či je uskutočniteľný teraz,
-* či bol uskutočnený v minulosti,
-* či už v skúmanom čase nie je prejavený,
-* či je životaschopný,
-* či je uskutočniteľný,
-* či je udržateľný.
-
-Čas nie je poslednou bránou, ktorá spätne ruší predchádzajúce rozmery. Je samostatným rozmerom, ktorý určuje časový stav prejavu.
-
-Preto môže platiť:
+Môže platiť:
 
 ```text
 X = 1
@@ -316,70 +244,82 @@ Z = 1
 T = 0
 ```
 
-Takýto stav neznamená, že skúmaná vec nie je alebo nemôže existovať. Znamená, že:
+Takýto stav znamená, že predmet, spôsob a zmysel sú určené, ale prejav nie je prítomný v skúmanom čase. Môže ešte len vzniknúť alebo už zanikol v danom časovom bode. Časová nula nepopiera jeho pôvod, možnosť ani zmysel.
 
-* je určené, čo to je,
-* je určené, ako sa to môže prejaviť,
-* je určená jeho miera a zmysel,
-* ale v skúmanom čase sa to neprejavuje.
+Objektivita a subjektivita žijú samy osebe, ale prejavujú sa inak:
 
-Môže ísť o jav, ktorý ešte nebol realizovaný, alebo o jav, ktorý už v danom čase nie je prejavený. Hodnota `T = 0` preto vyjadruje neprítomnosť prejavu v konkrétnom čase, nie popretie jeho možnosti, pôvodu alebo zmyslu.
+- objektivita určuje prejav v existencii,
+- subjektivita určuje zmysel jeho prejavu.
 
 ---
 
-# Objektivita a subjektivita
+# Disciplína a Zodpovednosť
 
-Objektivita a subjektivita nie sú mechanicky násobené podmienky, pri ktorých musí mať každá hodnota výsledok `1`. Sú to dva samostatne živé spôsoby skúmania toho istého prejavu.
+Disciplína nie je samostatnou Autoritou ani priamym súčiniteľom základného vzorca Autority.
 
-## Objektivita
+> Disciplína je vlastnosťou Zodpovednosti, ktorá spoluurčuje schopnosť Zodpovednosť niesť a tým determinuje Autoritu.
 
-Objektivita hovorí o **prejave v existencii**.
+Disciplína predstavuje harmonický alebo disharmonický stav principiálnych podmienok opísaných konkrétnou otázkou. Nehodnotí sa teda všeobecnou vetou „je niekto disciplinovaný“, ale otázkou viazanou na konkrétnu vec, záväzok, skutok alebo rozhodnutie.
 
-Jej základ tvoria otázky:
+Doteraz sme disciplínu skúmali predovšetkým v objektívnej báze X/Y, pretože jej subjektívna miera a časový zmysel Z/T sa musia posudzovať až vo vzťahu ku konkrétnej Zodpovednosti.
 
-```text
-X = čo?
-Y = ako?
-```
+Bez disciplíny niet Zodpovednosti v plnom zmysle. Presný vnútorný vzorec Zodpovednosti však ešte nie je uzavretý a nesmie sa domyslieť bez ďalšieho skúmania.
 
-Objektivita skúma predmet a spôsob jeho prejavenia. Umožňuje určiť, čo sa deje a ako to vstupuje do sveta prejavov.
+---
 
-## Subjektivita
+# Základný vzorec Autority
 
-Subjektivita hovorí o **zmysle prejavu**.
-
-Jej základ tvoria otázky:
+METODIKA preberá autoritatívny pracovný základ z projektu `slapiar/Nov-svet`, odsek 16:
 
 ```text
-Z = koľko?
-T = kedy?
+Auth = (Oprávnenia × Povinnosti × Zodpovednosť) / Validácia
 ```
 
-Subjektivita skúma mieru, význam a časový zmysel prejavenia. Neznamená ľubovoľný názor pozorovateľa. Je živou vlastnosťou vzťahu medzi prejavom, jeho mierou, zmyslom a časom.
+Vzorec je pracovný a môže sa ďalej spresňovať. Jeho podstata však musí zostať rovnaká vo všetkých projektoch, kým nebude metodicky a autoritatívne zmenená.
 
-Objektivita aj subjektivita žijú samy osebe, ale prejavujú sa odlišne:
+Z neho vyplýva:
 
-* objektivita určuje prejav v existencii,
-* subjektivita určuje zmysel jeho prejavu.
+- Autorita sa nerovná Zodpovednosť,
+- Zodpovednosť je rovnocenným súčiniteľom Oprávnení a Povinností,
+- Validácia je samostatný menovateľ vzorca,
+- nijaký projekt nesmie Autoritu definovať iným konkurenčným vzorcom,
+- projekt môže jednotlivé súčinitele iba podrobnejšie skúmať.
 
-Objektívne určený jav môže mať rozdielny zmysel pri rozdielnej miere alebo v rozdielnom čase. Subjektívny zmysel môže existovať aj pred fyzickým uskutočnením prejavu alebo po skončení jeho časového prejavenia.
+## Minimálny principiálny rozklad Autority
 
-Ich rozdielnosť sa preto nesmie zrušiť mechanickým súčinom. Treba skúmať ich vzťah a spôsob, akým sa stretávajú v konkrétnom živom prejave.
-
-## Autorita ako prechod k praktickej realizácii
-
-Autorita určuje, kto alebo čo je oprávnené niesť zodpovednosť za konkrétny prejav. Jej priorita určuje mieru a časový zmysel tohto oprávnenia pri konkrétnom rozhodnutí.
+Každý člen vzorca musí dostať vlastnú maticu 7 × 7:
 
 ```text
-X — čo je Autorita?
-Y — ako sa prejavuje a dokazuje?
-Z — akú má mieru, rozsah a váhu?
-T — kedy má jej prejav prioritu?
+Oprávnenia    → 49 otázok a odpovedí 1/0
+Povinnosti    → 49 otázok a odpovedí 1/0
+Zodpovednosť  → 49 otázok a odpovedí 1/0
+Validácia     → 49 otázok a odpovedí 1/0
 ```
 
-Autorita môže objektívne existovať, aj keď v konkrétnej veci alebo čase nemá prioritu. Zánik aktuálnej priority preto automaticky neznamená zánik samotnej Autority.
+Minimálny priamy rozbor Autority preto obsahuje:
 
-Podrobný metodický rozbor sa nachádza v súbore [AUTORITA.md](AUTORITA.md).
+```text
+4 × 49 = 196 principiálnych otázok
+```
+
+Toto je iba prvý stupeň. Každý súčiniteľ sa môže rozkladať na ďalšie atribúty a procesy. Pri Zodpovednosti je jedným z takýchto atribútov disciplína, ktorá sa sama môže skúmať ďalšou maticou otázok.
+
+Každá elementárna otázka vytvára jeden bit `1/0`. Veľké množstvo týchto bitov môže tvoriť binárne hodnotiace slovo. Spôsob ich algoritmického zloženia a redukcie na výsledný bit Autority ešte nie je definitívne určený a nesmie sa nahradiť dojmom ani jednoduchým mechanickým súčinom.
+
+Projekt Nový svet predpokladá aj 1024-bitovú aritmetiku na prácu s rozsiahlym binárnym hodnotením. Správnosť rozhodnutia však nezabezpečuje samotná veľkosť slova. Zabezpečiť ju môže iba správna metodika otázok, dôkladná algoritmizácia, dôkaznosť odpovedí a správne určená Autorita výsledku.
+
+## Autorita a priorita
+
+Autorita objektívne existuje prostredníctvom svojich Oprávnení, Povinností, Zodpovednosti a Validácie. Jej priorita je subjektívnym určením miery a časového zmyslu tejto Autority v konkrétnej veci.
+
+```text
+X — čoho sa Autorita týka a ktoré členy vzorca ju tvoria?
+Y — ako sa každý člen prejavuje a dokazuje?
+Z — akú mieru, rozsah a váhu má každý člen vo veci?
+T — kedy je Autorita platná a kedy má prioritu?
+```
+
+Autorita môže existovať, aj keď v konkrétnej veci alebo čase nemá prioritu. Zánik aktuálnej priority automaticky neznamená zánik samotnej Autority.
 
 ---
 
@@ -387,21 +327,13 @@ Podrobný metodický rozbor sa nachádza v súbore [AUTORITA.md](AUTORITA.md).
 
 Tento rámec rozlišuje medzi:
 
-* logickou možnosťou a správnosťou otázky,
-* objektívnym prejavom v existencii,
-* subjektívnym zmyslom prejavu,
-* časovým stavom jeho uskutočnenia.
+- logickou možnosťou a správnosťou otázky,
+- objektívnym prejavom v existencii,
+- subjektívnym zmyslom prejavu,
+- časovým stavom uskutočnenia,
+- Autoritou, ktorá je oprávnená výsledok potvrdiť.
 
-Preto spája skúmanie toho, čo môže existovať, s tým, čo je fyzicky prejavené a merateľné v určitom čase.
-
-V rámci METODIKY tým vzniká spoločný logický priestor pre:
-
-* metafyziku a fyziku,
-* možnosť a prejav,
-* vedu a náboženstvo,
-* pôvod, zmysel, uskutočnenie a dôkaz.
-
-Toto spojenie neznamená, že sa rozdiely medzi týmito oblasťami rušia. Znamená, že ich možno skúmať prostredníctvom správne položených, overiteľných otázok bez toho, aby sa neprejavené automaticky vyhlásilo za neexistujúce alebo aby sa subjektívny zmysel zamieňal za objektívny prejav.
+Tým vzniká spoločný logický priestor pre metafyziku a fyziku, možnosť a prejav, vedu a náboženstvo, pôvod, zmysel, uskutočnenie a dôkaz.
 
 ---
 
@@ -409,18 +341,17 @@ Toto spojenie neznamená, že sa rozdiely medzi týmito oblasťami rušia. Zname
 
 Správna otázka musí byť:
 
-* presne vymedzená,
-* logicky overiteľná,
-* skúmateľná všetkými siedmimi princípmi,
-* rozložiteľná na jednoznačné odpovede `1/0`,
-* schopná rozlíšiť objektívny prejav od subjektívneho zmyslu prejavu,
-* schopná určiť časový stav bez zamieňania neprítomnosti prejavu za neexistenciu.
+- presne vymedzená,
+- logicky overiteľná,
+- skúmateľná všetkými siedmimi princípmi,
+- rozložiteľná na jednoznačné odpovede `1/0`,
+- schopná rozlíšiť objektívny prejav od subjektívneho zmyslu,
+- schopná určiť mieru a čas bez zamieňania neprítomnosti prejavu za neexistenciu,
+- viazaná na určenú Autoritu, ktorá môže odpoveď potvrdiť.
 
-Ak nie je možné spoľahlivo odpovedať na všetky kontrolné otázky, nesmie sa odpoveď domyslieť. Musí sa spresniť predmet alebo rozložiť pôvodná otázka.
+Ak nie je možné spoľahlivo odpovedať, odpoveď sa nesmie domyslieť. Musí sa spresniť predmet alebo rozložiť otázka.
 
-Preto môže všeobecný pojem, napríklad disciplína, pri prvom skúmaní viesť k nule. To ešte neznamená, že disciplína neexistuje. Znamená to, že môže byť komplexom viacerých procesov, ktoré treba najprv rozpoznať a pomenovať samostatnými logickými otázkami.
-
-Checklist nevytvára princípy ani procesy. Vzniká až z otázok, ktoré boli metodicky vyvodené zo siedmich princípov a ktoré možno spoľahlivo validovať odpoveďou `1/0`.
+Checklist nevytvára princípy ani procesy. Vzniká až z otázok, ktoré boli metodicky vyvodené a možno ich spoľahlivo validovať.
 
 ---
 
@@ -432,41 +363,38 @@ Checklist nevytvára princípy ani procesy. Vzniká až z otázok, ktoré boli m
 4. Každá významná zmena musí mať checkpoint.
 5. Pred ukončením práce sa vytvára sumarizácia.
 6. Každý projekt musí mať vlastné metodické pokyny.
-7. Univerzálna metodika má vždy vyššiu prioritu ako projektové pokyny.
+7. Univerzálna metodika má vyššiu prioritu než projektové pokyny.
 8. Po každom zápise sa overí skutočný obsah súboru v repozitári.
-9. Agent nesmie predpokladať, že si z projektu alebo metodiky niečo pamätá.
-10. Pred začatím práce si musí vždy prečítať celú platnú univerzálnu metodiku a až potom špecifickú metodiku konkrétneho projektu.
-11. Kým nie je obnovená pamäť metodiky, agent nesmie nič vymýšľať, domýšľať ani implementovať.
-12. Pracovný postup nesmie byť vydávaný za univerzálny princíp.
-13. Pri každej nejasnosti sa najprv hľadá správna otázka; nevyrába sa pravdepodobná odpoveď.
+9. Agent nesmie predpokladať, že si metodiku pamätá.
+10. Pred začatím práce musí prečítať platnú univerzálnu aj projektovú metodiku.
+11. Kým nie je obnovená pamäť, agent nesmie domýšľať ani implementovať.
+12. Pracovný postup sa nesmie vydávať za univerzálny princíp.
+13. Pri nejasnosti sa najprv hľadá správna otázka.
+14. Podstata Autority sa medzi projektmi nesmie meniť.
+15. Konkurenčný vzorec Autority sa nesmie zaviesť bez autoritatívnej zmeny univerzálnej metodiky.
 
 ---
 
 # Prvé otázky AI agenta
 
-Pred začatím práce musí AI agent overiť:
-
 ```text
 □ Prečítal som si celú platnú univerzálnu metodiku?
-□ Prečítal som si špecifickú metodiku konkrétneho projektu?
-□ Poznám názov projektu?
-□ Poznám správny repozitár?
-□ Mám prístup k repozitáru?
-□ Mám práva na čítanie a zápis?
-□ Bola funkčnosť prístupov skutočne overená?
+□ Prečítal som si špecifickú metodiku projektu?
+□ Poznám názov projektu a správny repozitár?
+□ Mám funkčný prístup na čítanie a zápis?
 □ Poznám autoritatívny koreň projektu?
-□ Mám prístup k produkčnému prostrediu, ak je potrebný?
-□ Mám prístup k vývojovému alebo stage prostrediu, ak je potrebný?
-□ Poznám aktuálny stav projektu a posledný checkpoint?
-□ Rozumiem tomu, čo sa tvorí tu a teraz, bez vlastného domýšľania?
+□ Poznám aktuálny stav a posledný checkpoint?
+□ Rozumiem tomu, čo sa tvorí tu a teraz, bez domýšľania?
+□ Poznám Autoritu svojej úlohy, jej Oprávnenia, Povinnosti a Zodpovednosť?
+□ Viem, aká Validácia je potrebná pre výsledok?
 ```
 
-Samotná existencia repozitára alebo prostredia neznamená, že je prístup funkčný. Prístupy sa musia overiť praktickým čítaním alebo zápisom ešte pred začatím práce.
-
-Kladná odpoveď v checkliste nesmie byť deklaráciou ani odhadom. Musí byť logicky overiteľná a podľa potreby podložená dôkazom.
+Kladná odpoveď nesmie byť deklaráciou ani odhadom. Musí byť logicky overiteľná a podľa potreby doložená dôkazom.
 
 ---
 
 # Dlhodobý cieľ
 
-Vybudovať univerzálnu metodiku spolupráce človeka a AI agentov, ktorá umožní dlhodobý vývoj rozsiahlych projektov bez straty znalostí, kontinuity a kontextu.
+Vybudovať univerzálnu metodiku, v ktorej možno každú elementárnu vec preskúmať dostatočným množstvom jednoznačných otázok, uložiť výsledky do binárneho hodnotenia a na konci získať rozhodovací bit, ktorého pôvod, logika, dôkaz a Autorita sú spätne overiteľné.
+
+> Keď dokážeme potvrdiť správnosť metodiky otázok, algoritmizácie a Autority výsledku, môžeme zodpovedne tvoriť čokoľvek.
