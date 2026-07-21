@@ -1,202 +1,184 @@
-# AUTORITA — definícia, rozsah a priorita
+# AUTORITA — základný vzorec, rozklad a priorita
 
 ## Účel dokumentu
 
-Tento dokument vytvára metodický základ pre skúmanie Autority a jej priority.
+Tento dokument zjednocuje podstatu Autority v projekte METODIKA s autoritatívnym pracovným základom projektu `slapiar/Nov-svet`.
 
-Autorita je potrebná všade tam, kde sa má z logicky overeného poznania prejsť k rozhodnutiu, záväzku, skutku a praktickej realizácii. Bez určenej Autority nie je jasné, kto alebo čo je oprávnené potvrdiť zmysel prejavu, niesť zodpovednosť za rozhodnutie a určiť jeho prioritu.
+Autorita sa v jednotlivých projektoch môže skúmať podrobnejšie, ale nesmie sa definovať zakaždým inak. Kým nebude univerzálnou metodikou zmenený jej základný vzorec, všetky projektové definície ho musia rešpektovať.
 
-Dokument nadväzuje na rozlíšenie:
+---
+
+# 1. Základný pracovný vzorec
+
+Autoritatívny pracovný vzorec z projektu Nový svet, README.md, odsek 16, znie:
 
 ```text
-X = čo?
-Y = ako?
-Z = koľko?
-T = kedy?
+Auth = (Oprávnenia × Povinnosti × Zodpovednosť) / Validácia
 ```
 
-Rovina X/Y skúma objektivitu, teda prejav v existencii. Osi Z/T skúmajú subjektivitu, teda zmysel prejavu, jeho mieru a časovú prioritu.
+Vzorec ešte nie je konečný a môže sa ďalej metodicky vyvíjať. Dovtedy je však spoločným koreňom všetkých opisov Autority.
+
+Základné dôsledky:
+
+- Autorita sa nerovná Zodpovednosť.
+- Zodpovednosť je rovnocenným súčiniteľom Oprávnení a Povinností.
+- Validácia je samostatným menovateľom vzorca.
+- Nijaký jednotlivý súčiniteľ sám osebe netvorí Autoritu.
+- Projekt môže súčinitele rozložiť podrobnejšie, ale nesmie meniť podstatu vzorca.
+
+Tento vzorec je zatiaľ logickým a vzťahovým zápisom. Nesmie sa bez ďalšieho skúmania zamieňať za obyčajnú aritmetickú operáciu s číslami.
 
 ---
 
-# 1. Základná definícia Autority
+# 2. Oprávnenia
 
-> Autorita je preukázaná a overiteľná schopnosť niesť zodpovednosť za určitý prejav, oblasť, rozhodnutie alebo skutok.
+Oprávnenia určujú, **čo smie nositeľ Autority konať, rozhodovať, používať, meniť alebo potvrdzovať**.
 
-Autorita nie je:
+Pri Oprávneniach treba určiť najmä:
 
-- moc nad inými,
-- nadradenosť,
-- neomylnosť,
-- titul bez skutku,
-- funkcia bez zodpovednosti,
-- nárok,
-- sebavyhlásenie,
-- emócia, želanie alebo tvrdenie,
-- oprávnenie preskočiť pravidlá.
+- ich pôvod,
+- predmet,
+- rozsah,
+- hranice,
+- nositeľa,
+- vzťah, v ktorom platia,
+- podmienky vzniku,
+- podmienky zmeny alebo zániku,
+- dôkaz ich existencie.
 
-Autorita vzniká z reálneho dôvodu. Môže ním byť najmä:
+Oprávnenie bez určeného predmetu a rozsahu je neurčitý nárok, nie potvrdený súčiniteľ Autority.
 
-- pôvodná myšlienka,
-- autorstvo zámeru,
-- tvorivý alebo odborný prínos,
-- splnený záväzok,
-- uskutočnený skutok,
-- dôkaz výsledku,
-- prevzatá a nesená zodpovednosť,
-- preukázaný osoh,
-- opakovateľná spoľahlivosť.
+---
 
-Na úrovni konkrétneho skutku možno logické potvrdenie Autority zapísať:
+# 3. Povinnosti
+
+Povinnosti určujú, **čo musí nositeľ Autority vykonať, zabezpečiť, chrániť, oznámiť, znášať alebo odovzdať**.
+
+Pri Povinnostiach treba určiť najmä:
+
+- z čoho vznikli,
+- komu alebo čomu sa plnia,
+- ich predmet,
+- rozsah,
+- čas,
+- požadovaný spôsob plnenia,
+- dôkaz splnenia,
+- dôsledky nesplnenia.
+
+Oprávnenie bez zodpovedajúcej Povinnosti môže byť mocou alebo nárokom, ale nie úplnou Autoritou podľa pracovného vzorca.
+
+---
+
+# 4. Zodpovednosť
+
+Zodpovednosť určuje, **kto nesie následky rozhodnutia, skutku, zanedbania, výsledku alebo zlyhania**.
+
+Nie je totožná s Autoritou. Je jedným z jej troch rovnocenných súčiniteľov v čitateli.
+
+Zodpovednosť treba skúmať najmä vo vzťahu k:
+
+- prijatému záväzku,
+- vykonanému alebo nevykonanému skutku,
+- predvídateľným a skutočným následkom,
+- schopnosti následky niesť,
+- schopnosti chybu priznať a napraviť,
+- súladu medzi slovom a činom,
+- dôkazom plnenia,
+- disciplíne.
+
+## Disciplína ako vlastnosť Zodpovednosti
+
+> Bez disciplíny niet Zodpovednosti v plnom zmysle.
+
+Disciplína nie je samostatnou Autoritou ani priamym súčiniteľom základného vzorca `Auth`. Je vlastnosťou Zodpovednosti, ktorá determinuje schopnosť túto Zodpovednosť skutočne niesť.
+
+Disciplína predstavuje harmonický alebo disharmonický stav principiálnych podmienok opísaných konkrétnou otázkou vedúcou k zisteniu stavu disciplíny vo veci.
+
+Nehodnotí sa preto všeobecným tvrdením „človek je disciplinovaný“, ale vo vzťahu ku konkrétnej Povinnosti, Oprávneniu, záväzku, skutku alebo času.
+
+Podrobný pracovný príklad sa nachádza v súbore [DISCIPLINA.md](DISCIPLINA.md).
+
+Vnútorný vzorec Zodpovednosti ešte nie je konečný. Disciplína je zatiaľ potvrdeným atribútom, nie jediným atribútom.
+
+---
+
+# 5. Validácia
+
+Validácia overuje, **či Oprávnenia, Povinnosti a Zodpovednosť skutočne existujú, platia v určenom rozsahu a sú potvrdené oprávneným spôsobom**.
+
+Môže overovať najmä:
+
+- existenciu,
+- pôvod,
+- prijatie alebo odmietnutie,
+- oprávnenie,
+- rozsah,
+- vzťah,
+- splnenie Povinnosti,
+- prevzatie Zodpovednosti,
+- dôkaz,
+- časovú platnosť,
+- dôveryhodnosť zdroja,
+- oprávnenie validujúcej Autority.
+
+Validácia nie je iba ďalší súčiniteľ v čitateli. V pracovnom vzorci stojí v menovateli a jej presný logický význam, škálovanie a spôsob použitia treba ešte principiálne preskúmať.
+
+Ak Validácia chýba alebo nie je platná, nesmie sa výsledok Autority domyslieť. Musí sa preskúmať, čo presne hodnota `0` v danom validačnom poli znamená.
+
+---
+
+# 6. Objektivita a subjektivita Autority
+
+## Objektivita — X/Y
 
 ```text
-skutok × dôkaz × zodpovednosť × osoh
+X — ktoré Oprávnenia, Povinnosti, Zodpovednosť a Validácia tvoria skúmanú Autoritu?
+Y — ako každý člen vzorca existuje, prejavuje sa a dokazuje?
 ```
 
-Tento zápis nie je univerzálnym číselným hodnotením osoby. Je kontrolou konkrétneho skutku. Ak niektorý člen nie je preukázaný, nemožno z daného skutku odvodiť úplné potvrdenie Autority.
+Objektivita hovorí o prejave Autority v existencii. Každý člen vzorca musí byť identifikovateľný a overiteľný.
+
+## Subjektivita — Z/T
+
+```text
+Z — akú mieru, rozsah, váhu a zmysel má každý člen vo vzťahu ku konkrétnej veci?
+T — kedy každý člen platí a kedy má výsledná Autorita prioritu?
+```
+
+Subjektivita neznamená ľubovoľný názor. Určuje zmysel prejavu Autority v konkrétnom vzťahu, rozsahu a čase.
+
+Autorita môže existovať, aj keď v konkrétnej veci alebo čase nemá prioritu. Zánik aktuálnej priority automaticky neznamená zánik samotnej Autority.
 
 ---
 
-# 2. Objektivita Autority — osi X a Y
-
-## X — Čo je Autorita?
-
-Os X určuje predmet Autority.
-
-Pri každej Autorite musí byť možné jednoznačne určiť:
-
-- jej pôvod,
-- nositeľa alebo zdroj,
-- oblasť, ku ktorej sa viaže,
-- konkrétny prínos alebo skutok,
-- zodpovednosť, ktorú nesie,
-- dôkaz, ktorým sa potvrdzuje,
-- hranice jej rozsahu.
-
-Autorita bez určeného predmetu nie je Autoritou, ale neurčitým nárokom.
-
-## Y — Ako Autorita existuje a prejavuje sa?
-
-Os Y určuje spôsob prejavu Autority.
-
-Autorita sa prejavuje:
-
-- objasnením pôvodu a zámeru,
-- odborným alebo tvorivým prínosom,
-- rozhodnutím v určenej oblasti,
-- prijatím záväzku,
-- uskutočneným skutkom,
-- dôkazom výsledku,
-- nesením následkov,
-- ochranou zmyslu a osohu spoločného cieľa,
-- schopnosťou opraviť vlastné zlyhanie.
-
-Autorita sa neprejavuje samotným vyhlásením. Musí byť rozpoznateľná v existencii a overiteľná podľa skutkov, dôkazov a zodpovednosti.
-
-## Objektívna veta Autority
-
-> Autorita objektívne existuje vtedy, keď možno určiť, čoho sa týka, z čoho vznikla, ako sa prejavuje a čím je jej prejav overiteľný.
-
----
-
-# 3. Subjektivita Autority — osi Z a T
-
-Subjektivita neznamená ľubovoľný názor na Autoritu. Hovorí o zmysle jej prejavu v konkrétnom vzťahu, miere a čase.
-
-Autorita môže objektívne existovať, ale v určitom rozhodnutí nemusí mať najvyššiu prioritu. Rovnako môže mať Autorita vysokú prioritu iba v presne určenej oblasti alebo fáze projektu.
-
----
-
-# 4. Os Z — Koľko Autority?
-
-Os Z určuje mieru, rozsah a váhu Autority vo vzťahu ku konkrétnemu predmetu.
-
-Otázka „koľko?“ pri Autorite neznamená množstvo moci. Skúma:
-
-- koľko z predmetu Autorita skutočne zahŕňa,
-- aký je jej vecný rozsah,
-- akú mieru zodpovednosti nositeľ prevzal,
-- aký veľký je jeho preukázaný prínos,
-- aká je sila a úplnosť dôkazov,
-- aký osoh vznikol,
-- aká je miera dôvery vyplývajúca zo spoľahlivosti,
-- kde sa rozsah Autority končí.
-
-Autorita nie je univerzálna vlastnosť osoby. Je vždy viazaná na určitý predmet, vzťah alebo oblasť.
-
-Človek môže mať vysokú Autoritu pri pôvode myšlienky a súčasne nízku alebo žiadnu technickú Autoritu pri konkrétnom spôsobe implementácie. Vývojár môže mať vysokú technickú Autoritu pri kóde, ale nemôže tým zrušiť Autoritu pôvodu základného zámeru.
-
-## Základná otázka osi Z
-
-> Akú mieru a rozsah má táto konkrétna Autorita vo vzťahu k práve skúmanému prejavu?
-
-## Podmienka osi Z
-
-Miera Autority musí byť odvodená z preukázaného vzťahu k predmetu, nie z celkového dojmu o osobe.
-
----
-
-# 5. Priorita Autority
-
-> Priorita Autority je aktuálna váha konkrétnej Autority pri konkrétnom rozhodnutí, prejave alebo skutku.
+# 7. Autorita a priorita
 
 Autorita a priorita nie sú totožné.
 
 ```text
-Autorita = preukázané oprávnenie a zodpovednosť v určenej oblasti.
-Priorita = poradie a váha tejto Autority v konkrétnej situácii a čase.
+Autorita = výsledok vzťahu Oprávnení, Povinností, Zodpovednosti a Validácie.
+Priorita Autority = váha a poradie tejto Autority v konkrétnej veci a čase.
 ```
 
-Autorita môže existovať aj vtedy, keď práve nemá prioritu.
+Priorita sa nesmie určovať iba podľa osoby, funkcie, titulu, popularity alebo dojmu.
 
-Príklady:
+Musí vychádzať z:
 
-- Autor myšlienky nestráca Autoritu pôvodu, keď technické rozhodnutie dočasne vedie vývojár.
-- Vývojár nestráca technickú Autoritu, keď o zmysle a cieli projektu rozhoduje autor zámeru.
-- Realizátor môže mať prioritu pri okamžitom bezpečnostnom rozhodnutí, hoci nie je autorom projektu.
-- Odborný garant môže mať prioritu pri posúdení odbornej správnosti, ale nie pri zmene pôvodného cieľa bez Autority autora.
+- predmetu rozhodnutia,
+- rozsahu Oprávnení,
+- nesených Povinností,
+- preukázanej Zodpovednosti,
+- platnej Validácie,
+- stupňa uskutočnenia,
+- aktuálneho času a stavu.
 
-Priorita preto nie je všeobecný rebríček ľudí. Je výsledkom vzťahu medzi:
-
-- predmetom rozhodnutia,
-- rozsahom jednotlivých Autorít,
-- mierou dôkazov a zodpovednosti,
-- stupňom uskutočnenia,
-- časom a aktuálnym stavom.
+Autorita pôvodu môže trvať, hoci technické rozhodnutie má v danom čase inú prioritnú Autoritu. Odborná alebo realizačná Autorita však nesmie zmeniť pôvodný zámer mimo rozsahu vlastných Oprávnení.
 
 ---
 
-# 6. Os T — Kedy má Autorita prioritu?
+# 8. Stupeň uskutočnenia
 
-Os T určuje časový stav Autority a okamih, v ktorom má jej prejav zmysel a prioritu.
-
-Otázka „kedy?“ skúma:
-
-- kedy Autorita vznikla,
-- odkedy je overiteľná,
-- v ktorej fáze procesu sa uplatňuje,
-- kedy má rozhodovaciu prioritu,
-- ako dlho jej priorita trvá,
-- kedy sa priorita presúva na inú Autoritu,
-- kedy sa Autorita pozastavuje,
-- kedy zaniká jej aktuálne oprávnenie,
-- ktoré dôsledky jej minulého prejavu zostávajú platné.
-
-Hodnota časového prejavu Autority sa nesmie zamieňať s jej absolútnou existenciou.
-
-Autorita pôvodu môže trvať, hoci v konkrétnom čase nemá realizačnú prioritu. Naopak, realizačná Autorita môže mať veľmi vysokú aktuálnu prioritu, hoci nevlastní pôvod myšlienky.
-
-## Základná otázka osi T
-
-> Kedy a v ktorej fáze má táto konkrétna Autorita prednosť pri práve skúmanom prejave alebo rozhodnutí?
-
----
-
-# 7. Stupeň uskutočnenia a dynamika priority
-
-Priorita Autority sa netvorí izolovane podľa osoby, funkcie ani dojmu. Súvisí so stupňom uskutočnenia myšlienky, cieľa alebo projektu, ku ktorému je Autorita viazaná.
-
-Základná postupnosť uskutočnenia:
+Priorita Autority sa vyvíja so stupňom uskutočnenia predmetu:
 
 ```text
 myšlienka
@@ -207,111 +189,82 @@ myšlienka
 → udržateľný projekt
 ```
 
-## Pracovné stupne
-
-| Stupeň | Stav | Význam pre Autoritu a prioritu |
-|---:|---|---|
-| 0 | Voľná myšlienka | Autorstvo môže byť známe, ale Autorita ešte nie je ukotvená v systémovom cieli. |
-| 1 | Cieľ | Myšlienka má prvú reflexiu v systéme; vzniká neodvolateľná Autorita pôvodu. |
-| 2 | Štúdia uskutočniteľnosti | Rastie priorita odborných, analytických a overovacích Autorít. |
-| 3 | Otvorený projekt | Vzniká priestor pre spolutvorcov, prísľuby, záväzky a vymedzenie rozsahov Autorít. |
-| 4 | Projekt v realizácii | Rastie priorita realizačných, technických, bezpečnostných a zodpovednostných Autorít. |
-| 5 | Udržateľný projekt | Priorita sa viaže na schopnosť udržať funkčnosť, opakovateľný osoh, obnovu a ďalší rozvoj. |
-
-Autorita pôvodu sa nedá odvolať, pokiaľ myšlienka žije aspoň v cieli. To však neznamená, že Autorita pôvodu má automaticky najvyššiu prioritu pri každom odbornom, technickom alebo realizačnom rozhodnutí.
-
-Priorita sa vyvíja podľa toho, kto v danom stupni uskutočnenia preukázateľne nesie príslušnú zodpovednosť.
+V každom stupni môžu mať rôzne Autority rozdielny rozsah a prioritu. To nemení ich podstatu; mení sa zmysel ich prejavu v konkrétnom čase.
 
 ---
 
-# 8. Vzťah objektivity a subjektivity Autority
+# 9. Principiálny rozklad základného vzorca
 
-## Objektivita
-
-```text
-X = čo je Autorita?
-Y = ako sa prejavuje a dokazuje?
-```
-
-Objektivita určuje, či Autorita existuje ako preukázateľný prejav v existencii.
-
-## Subjektivita
+Každý súčiniteľ a menovateľ musí byť samostatne skúmaný univerzálnou maticou 7 × 7.
 
 ```text
-Z = akú má mieru, rozsah a zmysel?
-T = kedy má jej prejav prioritu?
+Oprávnenia    → 49 otázok a 49 odpovedí 1/0
+Povinnosti    → 49 otázok a 49 odpovedí 1/0
+Zodpovednosť  → 49 otázok a 49 odpovedí 1/0
+Validácia     → 49 otázok a 49 odpovedí 1/0
 ```
 
-Subjektivita určuje zmysel prejavu Autority v konkrétnom vzťahu a čase.
+Minimálny priamy rozklad preto predstavuje:
 
-Preto môžu súčasne platiť tieto vety:
+```text
+4 × 49 = 196 elementárnych hodnotení
+```
 
-- Autorita existuje.
-- Jej rozsah je obmedzený.
-- V tejto veci nemá prioritu.
-- V inej veci alebo inom čase prioritu má.
+Tento počet nie je konečný. Každý člen vzorca sa môže ukázať ako komplex viacerých procesov.
 
-Nijaká z týchto viet sama osebe neruší ostatné.
+Napríklad Zodpovednosť obsahuje hodnotenie disciplíny. Ak sa disciplína skúma vlastnou maticou 7 × 7, vzniká ďalších 49 elementárnych hodnotení iba pre jeden atribút Zodpovednosti.
+
+Každá otázka musí skončiť jednoznačným bitom:
+
+```text
+1 = podmienka je potvrdená
+0 = podmienka nie je potvrdená alebo otázka vyžaduje ďalší rozklad
+```
+
+Spôsob skladania týchto bitov do výsledku Autority ešte nie je konečne definovaný. Nesmie sa preto nahradiť jednoduchým násobením všetkých hodnôt ani intuitívnym priemerom.
 
 ---
 
-# 9. Základné pravidlá priority Autority
+# 10. Binárne hodnotiace slovo
 
-1. Priorita sa nikdy neurčuje iba podľa osoby.
-2. Priorita sa nikdy neurčuje iba podľa funkcie alebo titulu.
-3. Priorita musí byť viazaná na konkrétny predmet rozhodnutia.
-4. Rozsah Autority musí byť objektívne overiteľný v X/Y.
-5. Miera Autority musí byť určená v osi Z.
-6. Čas a fáza jej priority musia byť určené v osi T.
-7. Autorita pôvodu chráni pôvodný zámer, ale nenahrádza odbornú Autoritu v každej oblasti.
-8. Odborná ani realizačná Autorita nemôže svojím rozsahom zrušiť pôvodný zámer bez oprávnenia na jeho zmenu.
-9. Aktuálna priorita môže prechádzať medzi viacerými Autoritami podľa predmetu a fázy procesu.
-10. Každá Autorita musí niesť následky svojho rozhodnutia v rozsahu, v ktorom mala prioritu.
-11. Autorita môže byť znížená, pozastavená alebo zrušená, ak zanikne dôvod, dôkaz, zodpovednosť alebo osoh, z ktorých vznikla.
-12. Zánik priority v danom čase automaticky neznamená zánik samotnej Autority.
+Rozsiahly rozklad môže vytvárať stovky až tisíce elementárnych bitov. Projekt Nový svet uvažuje so 1024-bitovou aritmetikou pre prácu s takýmto hodnotením.
 
----
+Veľkosť binárneho slova sama osebe nezaručuje správnosť. Dôvod na dôveru vzniká až vtedy, keď:
 
-# 10. Predbežný rozhodovací rámec
+- každá otázka je správne položená,
+- každý bit má jednoznačný význam,
+- každá jednotka je overiteľná,
+- každá nula je správne interpretovaná,
+- väzby medzi bitmi sú algoritmicky zdokumentované,
+- výsledný bit má určenú Validáciu a Autoritu.
 
-Pred prijatím rozhodnutia treba položiť najmenej tieto otázky:
-
-```text
-X — Čoho sa rozhodnutie týka?
-Y — Ako sa majú jednotlivé Autority v tejto veci preukázať?
-Z — Aký je rozsah a váha každej z nich vo vzťahu k predmetu?
-T — Ktorá z nich má prioritu práve v tejto fáze a prečo?
-```
-
-Až potom možno určiť:
-
-- kto objasňuje pôvodný zámer,
-- kto odborne posudzuje uskutočniteľnosť,
-- kto rozhoduje o technickom spôsobe,
-- kto vykonáva skutok,
-- kto nesie zodpovednosť,
-- kto overuje dôkaz,
-- kto potvrdzuje osoh,
-- komu patrí priorita pri konkrétnom rozhodnutí.
+Cieľom je dostať na konci hodnotenia jeden rozhodovací bit bez straty možnosti spätne overiť, z ktorých otázok, odpovedí, dôkazov a Autorít vznikol.
 
 ---
 
-# 11. Pracovný záver
+# 11. Ďalšia práca
 
-> Autorita je objektívne preukázaný vzťah zodpovednosti ku konkrétnemu prejavu. Jej priorita je subjektívnym určením miery a časového zmyslu tejto Autority v konkrétnom rozhodnutí.
+Nasledujúci krok nie je vytvorenie rýchleho checklistu Autority.
 
-Autorita teda odpovedá najmä na otázky:
+Treba vytvoriť štyri samostatné univerzálne súbory otázok:
+
+1. 49 otázok Oprávnení,
+2. 49 otázok Povinností,
+3. 49 otázok Zodpovednosti,
+4. 49 otázok Validácie.
+
+Následne treba rozložiť vnútorné atribúty každého člena. Pri Zodpovednosti sa musí zaradiť a overiť disciplína.
+
+Až po tomto rozklade možno skúmať algoritmus, ktorý vytvorí výsledný bit Autority a jej priority.
+
+---
+
+# Pracovný záver
+
+> Autorita nie je Zodpovednosť. Autorita vzniká zo vzťahu Oprávnení, Povinností a Zodpovednosti, posudzovaného prostredníctvom Validácie.
 
 ```text
-Čo je oprávnené a zodpovedné?
-Ako sa toto oprávnenie prejavilo a dokázalo?
+Auth = (Oprávnenia × Povinnosti × Zodpovednosť) / Validácia
 ```
 
-Priorita odpovedá najmä na otázky:
-
-```text
-Akú váhu má táto Autorita v tejto veci?
-Kedy má jej prejav prednosť?
-```
-
-Takto možno prejsť od logického skúmania k praktickej realizácii bez toho, aby sa Autorita zamieňala s mocou, popularitou, funkciou alebo dojmom.
+Tento vzorec je spoločným pracovným koreňom. Našou ďalšou úlohou je vytvoriť správne principiálne otázky pre každý jeho člen a až potom definovať algoritmus, ktorý z veľkého množstva jednoznačných hodnotení vytvorí spoľahlivý výsledok.
