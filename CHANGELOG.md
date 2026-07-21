@@ -10,10 +10,15 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - pridaný `app/setup.php` na vytvorenie lokálneho súboru `local-config.php`,
 - setup podporuje konfiguráciu databáz `u550121827_metodic` a `u550121827_mapmet`,
 - setup umožňuje uložiť ďalšie lokálne API kľúče a hodnoty vo formáte `NAZOV=hodnota`,
-- pridaný `.gitignore` pre `local-config`, `local-config.php`, lokálne `.env` súbory a prevádzkové logy.
+- pridaný `.gitignore` pre `local-config`, `local-config.php`, lokálne `.env` súbory a prevádzkové logy,
+- vytvorený súbor `POJMY-A-DEFINICIE.md` pre základné pojmy a pracovné definície METODIKY,
+- zavedená vlastná merná jednotka elementárneho hodnotenia `[1/0]`.
 
 ### Určené
 
 - `local-config.php` sa vytvára v koreni projektu a nie je súčasťou release,
 - obslužné PHP skripty sa ukladajú do koreňa `/app`,
-- podstatné zmeny sa od tohto bodu zapisujú priebežne do `CHANGELOG.md`.
+- podstatné zmeny sa od tohto bodu zapisujú priebežne do `CHANGELOG.md`,
+- objektivita predstavuje prejav v existencii v rovine X/Y,
+- subjektivita predstavuje hodnotu a časový zmysel prejavu v rovine Z/T,
+- zápis `X × Y = [1/0]^2` vyjadruje dve samostatne hodnotené binárne dimenzie.
