@@ -28,7 +28,9 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - definície otázok sú významovo oddelené od konkrétnych hodnotiacich záznamov,
 - nepresný zápis `Subjektivita = Z × T` bol nahradený zápisom `Subjektivita = (Z, T)`,
 - znak `×` v zápisoch rozmerov výslovne označuje spoločné skúmanie samostatných rozmerov, nie predvolený logický operátor AND,
-- implikácia `T → Z` alebo `Z → T` sa nesmie zamieňať so súčasnou platnosťou `Z ∧ T`.
+- implikácia `T → Z` alebo `Z → T` sa nesmie zamieňať so súčasnou platnosťou `Z ∧ T`,
+- dokument `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md` bol preradený z pracovného modelu pred SQL na neplatný pracovný návrh určený na revíziu,
+- z logického modelu boli odstránené predčasné architektonické tvrdenia; zachované zostalo iba potvrdené jadro hodnotiaceho záznamu, rozmerov a siedmej plochy.
 
 ### Určené
 
@@ -44,4 +46,5 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - zápis `X × Y = [1/0]^2` vyjadruje dve samostatne hodnotené binárne dimenzie,
 - zápisy `[1²]`, `[1³]` a `[1⁴]` v `README.md` boli zjednotené na `[1/0]^2`, `[1/0]^3` a `[1/0]^4`,
 - otázka a hodnotiaci záznam nie sú ten istý druh údajov a nesmú sa ukladať v jednom nerozlíšenom priestore,
-- SQL schéma sa nesmie vytvoriť pred potvrdením otvorených rozhodnutí elementárnej logiky uvedených v logickom modeli.
+- pôvodná verzia logického modelu zostáva dostupná v histórii Git ako záznam vývoja, ale nesmie byť použitá ako podklad SQL schémy,
+- SQL schéma sa nesmie vytvoriť pred potvrdením elementárnej logiky a otvorených rozhodnutí uvedených v revidovanom logickom modeli.
