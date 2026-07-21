@@ -29,7 +29,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - vytvorený `postupy/2026-07-21_IDENTITA-A-IDENTIFIKATORY.md` pre pravidlá totožnosti objektov, nemennosti udalostí a minimálne požiadavky na ich stabilné citovanie,
 - vytvorený `postupy/2026-07-21_POSTULAT-SUBJEKTU.md`, ktorý určuje otvorený postulát subjektu a jeho logické hranice,
 - vytvorený `postupy/2026-07-21_LOGICKE-ZDOVODNENIE-SUBJEKTU.md`, ktorý určuje operatívny test prijatia predmetu skúmania bez potvrdenia jeho pravdivosti alebo existencie,
-- vytvorený `postupy/2026-07-21_KONTINUITA-SUBJEKTU.md`, ktorý odlišuje zmenu SUBJECT-u od vzniku nového SUBJECT-u a zavádza test zachovania jadra totožnosti.
+- vytvorený `postupy/2026-07-21_KONTINUITA-SUBJEKTU.md`, ktorý odlišuje zmenu SUBJECT-u od vzniku nového SUBJECT-u a zavádza test zachovania jadra totožnosti,
+- vytvorený `postupy/2026-07-21_KRITERIA-IDENTITY-SUBJEKTU.md`, ktorý zavádza explicitné, spätne citovateľné a historicky sledovateľné kritériá kontinuity identity SUBJECT-u.
 
 ### Zmenené
 
@@ -97,6 +98,10 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - zmena názvu, stavu, vlastníka, umiestnenia, hodnotenia alebo nepodstatnej časti rozsahu sama osebe nevytvára nový SUBJECT,
 - nový SUBJECT vzniká vtedy, keď pôvodný predmet už nemožno bez logického rozporu považovať za pokračovanie toho istého predmetu skúmania,
 - rozdelenie, zlúčenie, odvodenie a nahradenie sa musia evidovať ako vzťahy medzi SUBJECT-mi; samy osebe nesmú automaticky určovať totožnosť,
+- kritériá kontinuity identity SUBJECT-u musia byť určené pred hodnotením alebo najneskôr pri prvom prijatí SUBJECT-u,
+- kritériá identity sa nesmú dodatočne prispôsobiť želanému výsledku konkrétneho prípadu,
+- rozhodnutie, že ide alebo nejde o ten istý SUBJECT, musí byť spätne zdôvodniteľné podľa explicitných a v danom čase platných kritérií,
+- zmena kritérií identity vytvára historicky zachytiteľnú revíziu a nesmie prepísať pôvodné kritériá ani minulé rozhodovanie,
 - odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
 - stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
 - `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
