@@ -17,7 +17,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - vytvorená oddelená štruktúra `OTAZKY/UNIVERZALNE`, `OTAZKY/ATRIBUTOVE` a `OTAZKY/PROJEKTOVE`,
 - vytvorený samostatný priestor `HODNOTENIA/` pre opis hodnotiacich záznamov,
 - univerzálna objektívna matica presunutá do `OTAZKY/UNIVERZALNE/Objektivita-XY.md`,
-- otázky Disciplíny presunuté pod `OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md`.
+- otázky Disciplíny presunuté pod `OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md`,
+- vytvorený pracovný logický model databázy v `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md`.
 
 ### Zmenené
 
@@ -33,4 +34,5 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - subjektivita predstavuje hodnotu a časový zmysel prejavu v rovine Z/T,
 - zápis `X × Y = [1/0]^2` vyjadruje dve samostatne hodnotené binárne dimenzie,
 - zápisy `[1²]`, `[1³]` a `[1⁴]` v `README.md` boli zjednotené na `[1/0]^2`, `[1/0]^3` a `[1/0]^4`,
-- otázka a hodnotiaci záznam nie sú ten istý druh údajov a nesmú sa ukladať v jednom nerozlíšenom priestore.
+- otázka a hodnotiaci záznam nie sú ten istý druh údajov a nesmú sa ukladať v jednom nerozlíšenom priestore,
+- SQL schéma sa nesmie vytvoriť pred potvrdením otvorených rozhodnutí elementárnej logiky uvedených v logickom modeli.
