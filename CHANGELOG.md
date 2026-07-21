@@ -21,4 +21,5 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - podstatné zmeny sa od tohto bodu zapisujú priebežne do `CHANGELOG.md`,
 - objektivita predstavuje prejav v existencii v rovine X/Y,
 - subjektivita predstavuje hodnotu a časový zmysel prejavu v rovine Z/T,
-- zápis `X × Y = [1/0]^2` vyjadruje dve samostatne hodnotené binárne dimenzie.
+- zápis `X × Y = [1/0]^2` vyjadruje dve samostatne hodnotené binárne dimenzie,
+- zápisy `[1²]`, `[1³]` a `[1⁴]` v `README.md` boli zjednotené na `[1/0]^2`, `[1/0]^3` a `[1/0]^4`.
