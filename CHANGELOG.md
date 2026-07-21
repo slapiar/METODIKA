@@ -25,7 +25,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - v `HODNOTENIA/README.md` definovaná elementárna odpoveď, význam hodnoty `0`, stav `nezistené` a minimálne významové zloženie hodnotiaceho záznamu,
 - v `OTAZKY/README.md` doplnené rozlišovacie pravidlá a príklady pre otázky rozmerov X, Y, Z a T,
 - vytvorený `OTAZKY/SIEDMA-PLOCHA-S.md` ako samostatný metodický koreň pre vznik, definíciu, vyhodnotenie a Validáciu vzťahu S medzi odpoveďami Z a T,
-- vytvorený `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`, ktorý oddeľuje opakovateľné identity, vzťahové udalosti a výsledkové vlastnosti bez predčasného návrhu SQL.
+- vytvorený `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`, ktorý oddeľuje opakovateľné identity, vzťahové udalosti a výsledkové vlastnosti bez predčasného návrhu SQL,
+- vytvorený `postupy/2026-07-21_IDENTITA-A-IDENTIFIKATORY.md` pre pravidlá totožnosti objektov, nemennosti udalostí a minimálne požiadavky na ich stabilné citovanie.
 
 ### Zmenené
 
@@ -74,6 +75,13 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - dôkaz a hodnotenie majú významový vzťah M:N; význam použitia dôkazu patrí ich väzbe,
 - Validácia je udalosť s vlastnou históriou a nesmie byť nahradená jediným prepísateľným stavom hodnotenia,
 - zložené hodnotenie S musí odkazovať na konkrétne vstupné hodnotenia Z a T, nie iba na všeobecné otázky alebo ich aktuálne odpovede,
+- identita objektu a jeho technický identifikátor sú rozdielne veci; ID iba stabilne odkazuje na totožnosť určenú metodikou,
+- otázku významovo identifikuje skúmaná elementárna podmienka, predmet kontinuita existencie, dôkaz konkrétny nemenný obsah s pôvodom a Autoritu totožnosť agenta oddelená od jeho oprávnenia,
+- hodnotenie, Validácia a zložené hodnotenie S sú nemenné historické výskyty; nové poznanie vytvára nový záznam namiesto prepísania minulosti,
+- každá spätne citovateľná identita, revízia a udalosť potrebuje stabilný vnútorný identifikátor, ktorého technický formát ešte nie je určený,
+- vnútorné identifikátory sa nesmú zamieňať s názvami, kódmi ani vonkajšími identifikátormi iných registrov,
+- čas významového vzniku udalosti a čas jej zápisu do METODIKY sa musia dať rozlíšiť,
+- pôvodca zápisu nie je automaticky Autoritou Validácie,
 - odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
 - stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
 - `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
