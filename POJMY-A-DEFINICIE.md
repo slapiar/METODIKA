@@ -46,6 +46,12 @@ Y = ako sa to prejavuje?
 
 Objektivita neurčuje hodnotu prejavu pre konkrétnu individuálnu formu. Určuje predmet a spôsob jeho prejavenia.
 
+```text
+Objektivita = X × Y
+```
+
+Znak `×` tu vyjadruje spoločné skúmanie samostatných rozmerov. Nie je automaticky logickým operátorom AND ani obyčajným aritmetickým násobením.
+
 ---
 
 # Zmysel
@@ -60,12 +66,26 @@ Tá istá objektívne prejavená vec môže mať súčasne viac pravdivých zmys
 
 # Subjektivita
 
-Subjektivita predstavuje **zmysel prejavu**.
+Subjektivita predstavuje **zmysel prejavu**, ktorý skúmame prostredníctvom dvoch samostatných rozmerov:
 
 ```text
 Z = akú hodnotu, mieru, rozsah, primeranosť a význam má prejav?
 T = kedy tento zmysel platí, trvá alebo nadobúda prioritu?
 ```
+
+Subjektivita sa preto zapisuje ako usporiadaná dvojica samostatných rozmerov:
+
+```text
+Subjektivita = (Z, T)
+```
+
+Nesmie sa zapisovať ako nepresná rovnosť:
+
+```text
+Subjektivita = Z × T
+```
+
+pretože znak `×` v rozmerovom zápise neurčuje konkrétny logický vzťah medzi Z a T.
 
 Hodnotenie zmyslu nie je objektívnym určením platným rovnako pre všetkých. Priznáva sa subjektivita každej individuálnej formy života. Táto subjektivita je jedinečná a nezávislá.
 
@@ -92,10 +112,52 @@ V pracovnom modeli METODIKY:
 ```text
 X × Y = objektívna rovina prejavenej existencie
 Z     = hodnota a zmysel prejavu
-T     = časový rozmer života
+T     = čas, v ktorom zmysel platí a určuje prioritu
 ```
 
 Rozmery X, Y a Z opisujú trojrozmerný svet existencie a jej zmyslu. Spolu s časom T tvoria štyri rozmery života, s ktorými METODIKA pracuje.
+
+---
+
+# Siedma plocha zmyslu života
+
+Z a T sú samostatné rozmery. Samotná dvojica `(Z, T)` ešte neurčuje, **aký logický vzťah medzi nimi v konkrétnom hodnotení platí**.
+
+Siedma plocha zmyslu života preto skúma a definuje logické vzťahy medzi Z a T:
+
+```text
+S = logický vzťah(Z, T)
+```
+
+Podľa predmetu hodnotenia môže byť týmto vzťahom napríklad:
+
+```text
+Z ∧ T       — AND: zmysel a príslušný čas sú potvrdené súčasne
+Z ∨ T       — OR: je potvrdený zmysel alebo čas, prípadne oboje
+T → Z       — IF T THEN Z: ak nastane T, musí byť potvrdené Z
+Z → T       — IF Z THEN T: ak je potvrdené Z, musí byť určené alebo potvrdené T
+Z ⊕ T       — XOR: potvrdený je práve jeden z rozmerov
+```
+
+Logický operátor sa nesmie vybrať automaticky ani podľa dojmu. Musí ho určiť význam konkrétnej otázky a predmetu hodnotenia.
+
+## Rozlíšenie AND a IF
+
+```text
+Z ∧ T
+```
+
+overuje súčasnú platnosť oboch podmienok. Výsledok je `1` iba vtedy, ak `Z = 1` a zároveň `T = 1`.
+
+```text
+T → Z
+```
+
+overuje podmienku „ak nastane T, potom musí platiť Z“. Nie je totožná so súčinom AND. Nepravdivá je iba v stave, keď `T = 1` a `Z = 0`.
+
+Preto možno podmienku existencie alebo platnosti jedného rozmeru pre druhý skúmať implikáciou IF a jej splnenie overovať príslušnou pravdivostnou tabuľkou. Nemožno ju nahradiť operátorom AND bez zmeny významu otázky.
+
+Siedma plocha nie je ďalším základným rozmerom popri X, Y, Z a T. Je **metaplochou vzťahov**, ktorá určuje, ako sa samostatné hodnoty Z a T majú v konkrétnom prípade logicky spojiť.
 
 ---
 
@@ -125,7 +187,7 @@ Z[1/0]
 T[1/0]
 ```
 
-Spojenie rozmerov zapisujeme:
+Spájanie rozmerov zapisujeme:
 
 ```text
 X × Y                 = [1/0]^2
@@ -133,13 +195,13 @@ X × Y × Z             = [1/0]^3
 X × Y × Z × T         = [1/0]^4
 ```
 
-Príklad:
+Exponent označuje počet samostatne hodnotených rozmerov. Znak `×` označuje ich spoločné skúmanie, nie predvolený logický operátor AND. Neznamená ani, že jediná nula automaticky ruší platnosť všetkých ostatných rozmerov.
+
+Konkrétne logické spojenie výsledkov musí byť definované osobitne:
 
 ```text
-ak X[1/0] a Y[1/0], potom X × Y = [1/0]^2
+AND, OR, IF, XOR alebo iným presne určeným operátorom
 ```
-
-Exponent označuje počet samostatne hodnotených rozmerov. Neznamená, že sa ich význam mechanicky zlieva alebo že jediná nula automaticky ruší platnosť všetkých ostatných rozmerov.
 
 ---
 
@@ -192,8 +254,9 @@ Oddelenie umožňuje spätne zistiť:
 
 ```text
 Objektivita = existencia prejavu = X × Y
-Subjektivita = zmysel prejavu = Z × T
-Život = existencia a jej zmysel v čase
+Subjektivita = zmysel prejavu = (Z, T)
+Život = X × Y × Z × T
+S = logický vzťah(Z, T)
 ```
 
 Toto rozlíšenie je základom ďalšej tvorby otázok, hodnotenia priorít a budúcej algoritmizácie METODIKY.
