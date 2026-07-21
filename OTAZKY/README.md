@@ -72,6 +72,173 @@ X × Y × Z × T
 
 neznamená jednu otázku so štyrmi nerozlíšenými podmienkami. Znamená spoločné skúmanie štyroch samostatných rozmerov.
 
+## Čo určuje rozmer otázky
+
+Rozmer otázky neurčuje predmet, o ktorom sa hovorí, ani samotné použité podstatné meno. Určuje ho tá skutočnosť, ktorú má odpoveď `[1/0]` potvrdiť alebo nepotvrdiť.
+
+```text
+rozmer otázky = druh skutočnosti overovanej odpoveďou
+```
+
+Preto sa pri určovaní rozmeru nepýtame iba:
+
+```text
+O čom veta hovorí?
+```
+
+ale predovšetkým:
+
+```text
+Čo sa zmení medzi odpoveďou 1 a odpoveďou 0?
+```
+
+Ak sa medzi `1` a `0` mení potvrdenie predmetu, jeho identity, prítomnosti alebo hranice, otázka patrí do X.
+
+Ak sa mení potvrdenie spôsobu, stavu, usporiadania, priebehu alebo mechanizmu prejavu, otázka patrí do Y.
+
+Ak sa mení potvrdenie hodnoty, miery, rozsahu, primeranosti, významu alebo zmyslu prejavu, otázka patrí do Z.
+
+Ak sa mení potvrdenie času, trvania, poradia, okamihu, platnosti alebo priority, otázka patrí do T.
+
+## Rozlišovacie pravidlá
+
+### X — predmet a prejavená existencia
+
+Otázka patrí do X, ak odpoveď určuje najmä:
+
+```text
+čo je predmetom,
+či sa predmet alebo jav prejavuje,
+či je rozlíšený od iného predmetu,
+kde sú jeho významové hranice,
+čo do skúmaného celku patrí alebo nepatrí.
+```
+
+Príklady:
+
+```text
+Existuje pre túto povinnosť určená lehota?
+Je tento dokument predmetom Validácie?
+Patrí táto úloha do rozsahu projektu?
+```
+
+### Y — spôsob prejavu
+
+Otázka patrí do Y, ak odpoveď určuje najmä:
+
+```text
+ako sa predmet prejavuje,
+akým spôsobom vzniká alebo pôsobí,
+v akom stave alebo usporiadaní sa nachádza,
+aký proces alebo mechanizmus používa,
+akým spôsobom možno jeho prejav pozorovať alebo dokázať.
+```
+
+Príklady:
+
+```text
+Počíta sa lehota od doručenia rozhodnutia?
+Plní sa povinnosť automatizovaným procesom?
+Je dokument Validovaný porovnaním so zdrojom?
+```
+
+### Z — hodnota a zmysel prejavu
+
+Otázka patrí do Z, ak odpoveď určuje najmä:
+
+```text
+akú hodnotu alebo význam má prejav,
+aká je jeho miera alebo rozsah,
+či je primeraný konkrétnemu vzťahu,
+či napĺňa svoj účel,
+akú váhu má pre konkrétnu individuálnu formu alebo rozhodnutie.
+```
+
+Príklady:
+
+```text
+Je tridsaťdňová lehota primeraná rozsahu povinnosti?
+Je dôkaz dostatočný na potvrdenie odpovede?
+Má tento dokument význam pre prijatie rozhodnutia?
+```
+
+### T — časová platnosť a priorita
+
+Otázka patrí do T, ak odpoveď určuje najmä:
+
+```text
+kedy prejav alebo zmysel platí,
+kedy vzniká, trvá alebo zaniká,
+ako dlho trvá,
+v akom poradí má nastať,
+kedy nadobúda alebo stráca prioritu.
+```
+
+Príklady:
+
+```text
+Trvá lehota tridsať dní?
+Je povinnosť platná v deň hodnotenia?
+Má táto úloha prioritu pred nasledujúcim krokom?
+```
+
+## Rovnaký predmet v štyroch rozmeroch
+
+Ten istý predmet možno skúmať v každom rozmere. Napríklad lehota:
+
+```text
+X: Existuje pre povinnosť lehota?
+Y: Počíta sa lehota od doručenia rozhodnutia?
+Z: Je lehota primeraná rozsahu povinnosti?
+T: Trvá lehota tridsať dní?
+```
+
+Predmetom všetkých štyroch otázok je lehota. Rozmer sa však mení podľa toho, čo má odpoveď potvrdiť.
+
+Preto platí:
+
+```text
+predmet otázky ≠ rozmer otázky
+```
+
+## Gramatická forma nie je rozhodujúca
+
+Slová `čo`, `ako`, `koľko` a `kedy` môžu pomôcť pri orientácii, ale samy osebe rozmer neurčujú.
+
+Napríklad:
+
+```text
+Ako dlho trvá lehota?
+```
+
+obsahuje slovo „ako“, ale zisťuje trvanie, preto patrí do T.
+
+Otázka:
+
+```text
+Kedy je rozhodnutie primerané?
+```
+
+obsahuje slovo „kedy“, ale ak odpoveď overuje primeranosť v určenom vzťahu, jadro hodnotenia patrí do Z; čas môže byť súčasťou kontextu alebo samostatnej otázky T.
+
+Rozmer musí byť preto určený z celého významu podmienky, nie mechanicky podľa jedného slova.
+
+## Rozmer otázky a kontext použitia
+
+Otázka môže mať všeobecné znenie, ale jej rozmer musí zostať jednoznačný. Ak rovnaká veta v inom kontexte overuje iný druh skutočnosti, nejde iba o inú odpoveď na tú istú otázku. Ide o významovo odlišnú otázku alebo o otázku, ktorú treba spresniť.
+
+Konkrétny predmet hodnotenia nemení rozmer otázky iba preto, že obsahuje časový, hodnotový alebo procesný prvok. Môže však odhaliť, že všeobecné znenie bolo nejednoznačné.
+
+Pracovné pravidlo:
+
+```text
+Rozmer patrí významu elementárnej otázky.
+Predmet a čas použitia patria hodnotiacemu záznamu.
+Ak kontext zmení to, čo odpoveď potvrdzuje, zmenil sa význam otázky.
+```
+
+Toto pravidlo zatiaľ neurčuje technickú databázovú identitu otázky. Určuje iba jej metodickú príslušnosť k rozmeru.
+
 ---
 
 # Otázka a siedma plocha
@@ -103,7 +270,7 @@ Otázka je nástroj skúmania. Sama neobsahuje konkrétnu odpoveď na konkrétny
 Treba rozlišovať:
 
 ```text
-otázka            = čo a akým logickým spôsobom sa zisťuje
+otázka             = čo a akým logickým spôsobom sa zisťuje
 predmet hodnotenia = na čo sa otázka práve používa
 odpoveď            = výsledok [1/0]
 dôkaz               = o čo sa výsledok opiera
@@ -149,7 +316,7 @@ Pred prijatím otázky treba overiť:
 □ Skúma presne jednu podmienku?
 □ Je predmet skúmania jednoznačne určený?
 □ Je význam použitých slov jednoznačný?
-□ Je určený rozmer X, Y, Z alebo T?
+□ Je určený rozmer X, Y, Z alebo T podľa toho, čo odpoveď potvrdzuje?
 □ Umožňuje odpoveď [1/0] bez dohadu?
 □ Je známe, čo môže hodnotu 1 potvrdiť?
 □ Je známe, čo môže hodnota 0 znamenať?
@@ -169,6 +336,7 @@ Otázka ≠ odpoveď
 Otázka ≠ dôkaz
 Otázka ≠ hodnotiaci záznam
 Otázka ≠ automaticky databázová entita s už určenou architektúrou
+Predmet otázky ≠ rozmer otázky
 ```
 
-Elementárna otázka je základný logický nástroj METODIKY. Jej technické uloženie možno navrhnúť až po potvrdení jej metodickej podstaty a vzťahov k rozmerom, odpovedi, dôkazu, Validácii a Autorite.
+Elementárna otázka je základný logický nástroj METODIKY. Jej rozmer určuje druh skutočnosti overovanej odpoveďou. Jej technické uloženie možno navrhnúť až po potvrdení jej metodickej podstaty a vzťahov k rozmerom, odpovedi, dôkazu, Validácii a Autorite.
