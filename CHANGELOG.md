@@ -28,7 +28,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - vytvorený `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`, ktorý oddeľuje opakovateľné identity, vzťahové udalosti a výsledkové vlastnosti bez predčasného návrhu SQL,
 - vytvorený `postupy/2026-07-21_IDENTITA-A-IDENTIFIKATORY.md` pre pravidlá totožnosti objektov, nemennosti udalostí a minimálne požiadavky na ich stabilné citovanie,
 - vytvorený `postupy/2026-07-21_POSTULAT-SUBJEKTU.md`, ktorý určuje otvorený postulát subjektu a jeho logické hranice,
-- vytvorený `postupy/2026-07-21_LOGICKE-ZDOVODNENIE-SUBJEKTU.md`, ktorý určuje operatívny test prijatia predmetu skúmania bez potvrdenia jeho pravdivosti alebo existencie.
+- vytvorený `postupy/2026-07-21_LOGICKE-ZDOVODNENIE-SUBJEKTU.md`, ktorý určuje operatívny test prijatia predmetu skúmania bez potvrdenia jeho pravdivosti alebo existencie,
+- vytvorený `postupy/2026-07-21_KONTINUITA-SUBJEKTU.md`, ktorý odlišuje zmenu SUBJECT-u od vzniku nového SUBJECT-u a zavádza test zachovania jadra totožnosti.
 
 ### Zmenené
 
@@ -92,6 +93,10 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - prijatie SUBJECT-u znamená prijatie predmetu skúmania, nie potvrdenie jeho pravdivosti, reálnosti ani existencie,
 - logické zdôvodnenie SUBJECT-u vyžaduje jeho určiteľnosť, rozlíšiteľnosť, dôvod samostatného skúmania, možnosť položiť elementárnu otázku, určený rozsah a neutralitu voči želanému výsledku,
 - zmena dôvodu skúmania sama osebe nevytvára nový SUBJECT; nový SUBJECT vzniká až pri zmene identity alebo hraníc predmetu,
+- SUBJECT zostáva tým istým SUBJECT-om, pokiaľ je zachovaná kontinuita jeho jadra totožnosti,
+- zmena názvu, stavu, vlastníka, umiestnenia, hodnotenia alebo nepodstatnej časti rozsahu sama osebe nevytvára nový SUBJECT,
+- nový SUBJECT vzniká vtedy, keď pôvodný predmet už nemožno bez logického rozporu považovať za pokračovanie toho istého predmetu skúmania,
+- rozdelenie, zlúčenie, odvodenie a nahradenie sa musia evidovať ako vzťahy medzi SUBJECT-mi; samy osebe nesmú automaticky určovať totožnosť,
 - odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
 - stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
 - `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
