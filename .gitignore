@@ -1,0 +1,10 @@
+# Lokálne konfiguračné súbory a prístupové údaje
+/local-config
+/local-config.php
+
+# Lokálne prostredie
+/.env
+/.env.*
+
+# Prevádzkové logy
+*.log
