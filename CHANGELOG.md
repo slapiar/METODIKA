@@ -24,7 +24,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - v `OTAZKY/README.md` definovaná elementárna otázka ako skúmanie jednej podmienky na jednom určenom predmete v jednom určenom význame,
 - v `HODNOTENIA/README.md` definovaná elementárna odpoveď, význam hodnoty `0`, stav `nezistené` a minimálne významové zloženie hodnotiaceho záznamu,
 - v `OTAZKY/README.md` doplnené rozlišovacie pravidlá a príklady pre otázky rozmerov X, Y, Z a T,
-- vytvorený `OTAZKY/SIEDMA-PLOCHA-S.md` ako samostatný metodický koreň pre vznik, definíciu, vyhodnotenie a Validáciu vzťahu S medzi odpoveďami Z a T.
+- vytvorený `OTAZKY/SIEDMA-PLOCHA-S.md` ako samostatný metodický koreň pre vznik, definíciu, vyhodnotenie a Validáciu vzťahu S medzi odpoveďami Z a T,
+- vytvorený `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`, ktorý oddeľuje opakovateľné identity, vzťahové udalosti a výsledkové vlastnosti bez predčasného návrhu SQL.
 
 ### Zmenené
 
@@ -65,6 +66,14 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - `S` patrí zloženému hodnoteniu, nie jednej elementárnej otázke,
 - pravdivostná tabuľka Validuje logický výpočet `s`, ale sama nevaliduje vstupné odpovede ani oprávnenosť výberu operátora S,
 - výsledok `s` sa nesmie zamieňať s výsledkami otázok Z a T ani s konečným rozhodnutím o konaní,
+- otázka, predmet, dôkaz a Autorita sú opakovateľné samostatné identity,
+- hodnotenie, použitie dôkazu, Validácia a zložené hodnotenie S sú historicky zachytiteľné vzťahové udalosti,
+- odpoveď `[1/0]`, stav `nezistené` a výsledok `s[1/0]` nie sú samostatné metodické identity, ale výsledky alebo stavy konkrétnych udalostí,
+- hodnotenie je konkrétne použitie otázky na predmet a nie iba technická M:N spojka,
+- dvojica `(QUESTION, SUBJECT)` sama osebe nemusí jednoznačne určovať hodnotenie, pretože rovnaká otázka môže byť na rovnaký predmet použitá opakovane v inom čase, rozsahu alebo stave,
+- dôkaz a hodnotenie majú významový vzťah M:N; význam použitia dôkazu patrí ich väzbe,
+- Validácia je udalosť s vlastnou históriou a nesmie byť nahradená jediným prepísateľným stavom hodnotenia,
+- zložené hodnotenie S musí odkazovať na konkrétne vstupné hodnotenia Z a T, nie iba na všeobecné otázky alebo ich aktuálne odpovede,
 - odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
 - stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
 - `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
