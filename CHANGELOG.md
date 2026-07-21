@@ -23,7 +23,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - zavedený pracovný zápis `S = logický vzťah(Z, T)` a rozlíšenie operátorov AND, OR, IF a XOR,
 - v `OTAZKY/README.md` definovaná elementárna otázka ako skúmanie jednej podmienky na jednom určenom predmete v jednom určenom význame,
 - v `HODNOTENIA/README.md` definovaná elementárna odpoveď, význam hodnoty `0`, stav `nezistené` a minimálne významové zloženie hodnotiaceho záznamu,
-- v `OTAZKY/README.md` doplnené rozlišovacie pravidlá a príklady pre otázky rozmerov X, Y, Z a T.
+- v `OTAZKY/README.md` doplnené rozlišovacie pravidlá a príklady pre otázky rozmerov X, Y, Z a T,
+- vytvorený `OTAZKY/SIEDMA-PLOCHA-S.md` ako samostatný metodický koreň pre vznik, definíciu, vyhodnotenie a Validáciu vzťahu S medzi odpoveďami Z a T.
 
 ### Zmenené
 
@@ -58,6 +59,12 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - gramatická forma otázky ani slová `čo`, `ako`, `koľko` a `kedy` samy osebe neurčujú rozmer,
 - rozmer patrí významu elementárnej otázky; konkrétny predmet a čas použitia patria hodnotiacemu záznamu,
 - ak kontext zmení druh skutočnosti overovanej odpoveďou, zmenil sa význam otázky alebo je potrebné otázku spresniť,
+- samostatná otázka Z ani samostatná otázka T samy osebe nevytvárajú vzťah S; S vzniká až v zloženom hodnotení nad dvoma samostatnými odpoveďami,
+- `S` je vopred určené pravidlo zloženia odpovedí `z` a `t`, kým `s` je výsledok `[1/0]` použitia tohto pravidla,
+- operátor S aj poradie jeho argumentov sa musia určiť pred získaním výsledkov, nie dodatočne podľa želaného výsledku,
+- `S` patrí zloženému hodnoteniu, nie jednej elementárnej otázke,
+- pravdivostná tabuľka Validuje logický výpočet `s`, ale sama nevaliduje vstupné odpovede ani oprávnenosť výberu operátora S,
+- výsledok `s` sa nesmie zamieňať s výsledkami otázok Z a T ani s konečným rozhodnutím o konaní,
 - odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
 - stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
 - `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
