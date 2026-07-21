@@ -22,7 +22,8 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - zavedená siedma plocha zmyslu života ako metaplocha, ktorá skúma logické vzťahy medzi samostatnými rozmermi `Z` a `T`,
 - zavedený pracovný zápis `S = logický vzťah(Z, T)` a rozlíšenie operátorov AND, OR, IF a XOR,
 - v `OTAZKY/README.md` definovaná elementárna otázka ako skúmanie jednej podmienky na jednom určenom predmete v jednom určenom význame,
-- v `HODNOTENIA/README.md` definovaná elementárna odpoveď, význam hodnoty `0`, stav `nezistené` a minimálne významové zloženie hodnotiaceho záznamu.
+- v `HODNOTENIA/README.md` definovaná elementárna odpoveď, význam hodnoty `0`, stav `nezistené` a minimálne významové zloženie hodnotiaceho záznamu,
+- v `OTAZKY/README.md` doplnené rozlišovacie pravidlá a príklady pre otázky rozmerov X, Y, Z a T.
 
 ### Zmenené
 
@@ -51,6 +52,12 @@ Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do 
 - otázka a hodnotiaci záznam nie sú ten istý druh údajov a nesmú sa ukladať v jednom nerozlíšenom priestore,
 - elementárna otázka skúma jednu podmienku; ak veta spája viac samostatne pravdivých podmienok, musí sa rozložiť,
 - jedna elementárna otázka primárne skúma jeden rozmer X, Y, Z alebo T,
+- rozmer otázky neurčuje predmet ani použité podstatné meno, ale druh skutočnosti, ktorú má odpoveď `[1/0]` potvrdiť,
+- pri rozlišovaní rozmeru sa skúma, čo sa mení medzi odpoveďou `1` a odpoveďou `0`,
+- predmet otázky a rozmer otázky sú odlišné významové údaje,
+- gramatická forma otázky ani slová `čo`, `ako`, `koľko` a `kedy` samy osebe neurčujú rozmer,
+- rozmer patrí významu elementárnej otázky; konkrétny predmet a čas použitia patria hodnotiacemu záznamu,
+- ak kontext zmení druh skutočnosti overovanej odpoveďou, zmenil sa význam otázky alebo je potrebné otázku spresniť,
 - odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
 - stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
 - `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
