@@ -1,68 +1,126 @@
-# DISCIPLÍNA — príklad použitia univerzálnej matice 49 otázok
+# DISCIPLÍNA — vlastnosť Zodpovednosti a príklad matice 7 × 7
 
 ## Účel dokumentu
 
-Tento dokument zaznamenáva prvý úplný príklad použitia univerzálnej matice 7 × 7 pri skúmaní konkrétneho pojmu — disciplíny.
+Tento dokument zaznamenáva prvý úplný príklad použitia univerzálnej matice 7 × 7 pri skúmaní disciplíny.
 
-Nejde o vytvorenie nového princípu ani o pracovný checklist. Cieľom je overiť objektívne vlastnosti disciplíny v rovine:
+Disciplína sa nesmie zamieňať s Autoritou ani so Zodpovednosťou ako celkom.
+
+> Disciplína je vlastnosťou Zodpovednosti, ktorá determinuje schopnosť Zodpovednosť skutočne niesť.
+
+Základný vzorec Autority zostáva:
 
 ```text
-X = čo musí v disciplíne existovať?
+Auth = (Oprávnenia × Povinnosti × Zodpovednosť) / Validácia
+```
+
+Disciplína nie je samostatným súčiniteľom tohto vzorca. Je jedným z vnútorných atribútov Zodpovednosti.
+
+---
+
+# Prečo sme disciplínu doteraz neskúmali ako úplnú objektivitu a subjektivitu
+
+Disciplínu nemožno úplne vyhodnotiť oddelene od konkrétnej Zodpovednosti.
+
+Všeobecná otázka:
+
+> Je človek alebo agent disciplinovaný?
+
+je príliš široká a nemá jednoznačnú odpoveď `1/0`.
+
+Disciplína sa prejavuje iba **vo veci**:
+
+- pri konkrétnej Povinnosti,
+- v rozsahu konkrétneho Oprávnenia,
+- pri prijatom záväzku,
+- pri konkrétnom skutku alebo nekonaní,
+- vo vzťahu k určitému výsledku,
+- v určitom čase.
+
+Preto treba položiť otázku, ktorá vedie k zisteniu stavu disciplíny v konkrétnej veci, napríklad:
+
+> Prečítal agent pred začatím práce celú platnú univerzálnu metodiku?
+
+Až takto určená otázka môže byť skúmaná všetkými siedmimi princípmi a odpovede môžu byť doložené dôkazmi.
+
+---
+
+# Disciplína ako stav
+
+Disciplína predstavuje **harmonický alebo disharmonický stav principiálnych podmienok**, ktoré opisuje konkrétna otázka.
+
+```text
+harmonický stav      = podmienky sa vzájomne podporujú a smerujú k neseniu Zodpovednosti
+disharmonický stav   = jedna alebo viac podmienok je v rozpore, chýba alebo narúša nesenie Zodpovednosti
+```
+
+Tento stav sa nesmie určiť dojmom. Musí vzniknúť z principiálnych otázok a jednoznačných odpovedí `1/0`.
+
+Nula nemusí znamenať, že disciplína absolútne neexistuje. Môže znamenať:
+
+- konkrétne zlyhanie disciplíny vo veci,
+- nesprávne položenú otázku,
+- chýbajúci dôkaz,
+- potrebu rozložiť otázku na menšie procesy,
+- neprítomnosť prejavu v danom čase.
+
+---
+
+# Objektivita disciplíny — X/Y
+
+Doterajší rozbor skúmal predovšetkým objektívnu bázu:
+
+```text
+X = čo musí v disciplinovanom prejave existovať?
 Y = ako sa to musí prejavovať?
 ```
 
-Rozmery subjektivity:
+## Os X — čo musí existovať
 
-```text
-Z = koľko?
-T = kedy?
-```
-
-sa v tomto prvom rozbore ešte neuplatňujú. Dokument skúma iba objektívnu bázu X/Y.
-
-## Pracovná hypotéza
-
-Disciplína môže byť objektívne opísaná ako:
-
-> Živá schopnosť vedome zachovávať určený zámer v súlade celku a jednotlivého konania, reagovať na zmeny bez straty identity, dodržiavať primerané hranice a rytmus, niesť dôsledky a vytvárať zamýšľaný výsledok.
-
-Táto veta nie je nový princíp ani konečná definícia. Je pracovným predmetom skúmania prostredníctvom všetkých siedmich hermetických princípov.
-
-## Legenda
-
-```text
-M = mentalizmus
-K = korešpondencia
-V = vibrácia
-P = polarita
-R = rytmus
-N = príčina a následok
-G = generativita
-```
-
-# Os X — čo musí v disciplíne existovať?
-
-| Princíp | Objektívna vlastnosť disciplíny |
+| Princíp | Objektívna vlastnosť disciplinovaného prejavu |
 |---|---|
 | M — mentalizmus | pôvod, zámer a vedomé rozhodnutie |
 | K — korešpondencia | súlad celku, pravidla a konkrétneho činu |
-| V — vibrácia | živý pohyb a schopnosť primeranej zmeny |
-| P — polarita | rozlíšenie, hranice a prípustné rozpätie |
+| V — vibrácia | schopnosť primeranej zmeny bez straty identity |
+| P — polarita | rozlíšenie hraníc a prípustného rozpätia |
 | R — rytmus | opakovanie, pravidelnosť a kontinuita |
-| N — príčina a následok | zodpovednosť a preukázateľná väzba medzi činom a dôsledkom |
-| G — generativita | schopnosť vytvárať výsledok a ďalšiu životaschopnosť |
+| N — príčina a následok | väzba medzi činom, následkom a nesením Zodpovednosti |
+| G — generativita | schopnosť vytvárať zamýšľaný výsledok a pokračovanie |
 
-# Os Y — ako musí každá vlastnosť existovať?
+## Os Y — ako to musí existovať
 
 | Princíp | Spôsob prejavu |
 |---|---|
 | M — mentalizmus | vedome a s určiteľným pôvodom |
-| K — korešpondencia | súladne v celku aj v každej časti |
-| V — vibrácia | živo, aktívne a prispôsobivo |
+| K — korešpondencia | súladne v celku aj v jednotlivých častiach |
+| V — vibrácia | živo a prispôsobivo bez opustenia zámeru |
 | P — polarita | v rozlíšiteľných hraniciach a rozpätí |
 | R — rytmus | opakovane a v primeranom cykle |
-| N — príčina a následok | kauzálne, preukázateľne a so zodpovednosťou |
+| N — príčina a následok | kauzálne, preukázateľne a s následkami |
 | G — generativita | tak, aby vznikal funkčný výsledok a schopnosť pokračovať |
+
+---
+
+# Subjektivita disciplíny — Z/T
+
+Subjektivita disciplíny sa nedá určiť všeobecne. Musí sa viazať na konkrétnu Zodpovednosť.
+
+```text
+Z = aká miera disciplíny je primeraná rozsahu danej Zodpovednosti?
+T = kedy sa disciplína musí prejaviť, ako dlho a v ktorom cykle?
+```
+
+Rovnaký objektívny prejav môže mať rozdielny zmysel pri rozdielnej miere alebo v rozdielnom čase.
+
+Príklad:
+
+- okamžité bezpečnostné rozhodnutie môže vyžadovať inú mieru a rytmus disciplíny než dlhodobá autorská práca,
+- pravidlo platné v jednej fáze projektu nemusí mať rovnakú prioritu v inej fáze,
+- neprítomnosť prejavu disciplíny v danom čase môže znamenať zlyhanie, ale aj to, že ešte nenastal čas príslušnej Povinnosti.
+
+Preto sa Z/T musia vyhodnocovať až po určení predmetu Zodpovednosti, jej rozsahu, času a Validácie.
+
+---
 
 # Matica disciplíny 7 × 7
 
@@ -78,239 +136,143 @@ X — ČO?       M   MM  MK  MV  MP  MR  MN  MG
               G   GM  GK  GV  GP  GR  GN  GG
 ```
 
-Hodnoty `1/0` sa nevypĺňajú všeobecne za pojem disciplína. Odpovedajú sa až pri konkrétnom skúmanom prejave disciplíny, pretože všeobecná otázka „Je agent disciplinovaný?“ je príliš široká na spoľahlivú binárnu odpoveď.
+Hodnoty `1/0` sa nevypĺňajú všeobecne za pojem disciplína. Vypĺňajú sa až pre konkrétnu otázku opisujúcu stav disciplíny vo veci.
 
 ---
 
-# M — Pôvod, zámer a vedomé rozhodnutie
+# M — pôvod, zámer a vedomé rozhodnutie
 
-## MM — mentalizmus × mentalizmus
+**MM:** Je pôvod zámeru a dôvod požadovaného disciplinovaného konania vedome určený?
 
-> Je pôvod zámeru a dôvod disciplinovaného konania vedome určený?
+**MK:** Je pôvodný zámer zhodný s celkovým cieľom aj s konkrétnym činom?
 
-## MK — mentalizmus × korešpondencia
+**MV:** Zostáva zámer rozpoznateľný aj pri zmene podmienok?
 
-> Je pôvodný zámer zhodný s celkovým cieľom aj s každým konkrétnym činom?
+**MP:** Vymedzuje zámer, čo do disciplinovaného konania patrí a čo už nie?
 
-## MV — mentalizmus × vibrácia
+**MR:** Obnovuje alebo potvrdzuje sa zámer v každom relevantnom cykle?
 
-> Zostáva pôvodný zámer rozpoznateľný aj pri zmene podmienok?
+**MN:** Možno konkrétny čin preukázateľne odvodiť od pôvodného zámeru?
 
-## MP — mentalizmus × polarita
-
-> Vymedzuje zámer, čo do disciplinovaného konania patrí a čo doň nepatrí?
-
-## MR — mentalizmus × rytmus
-
-> Obnovuje alebo potvrdzuje sa zámer pred každým relevantným cyklom konania?
-
-## MN — mentalizmus × príčina a následok
-
-> Možno konkrétny čin preukázateľne odvodiť od pôvodného zámeru?
-
-## MG — mentalizmus × generativita
-
-> Vedie zámer k vzniku konkrétneho výsledku alebo schopnosti pokračovať v práci?
+**MG:** Vedie zámer k vzniku konkrétneho výsledku alebo schopnosti pokračovať?
 
 ---
 
-# K — Súlad celku, pravidla a činu
+# K — súlad celku, pravidla a činu
 
-## KM — korešpondencia × mentalizmus
+**KM:** Je požadovaný súlad vedome definovaný a pochopený?
 
-> Je požadovaný súlad vedome definovaný a pochopený?
+**KK:** Platí rovnaký určujúci vzťah v celkovom zámere, pravidle aj čine?
 
-## KK — korešpondencia × korešpondencia
+**KV:** Zachováva alebo obnovuje sa súlad pri zmene podmienok?
 
-> Platí rovnaký princíp v celkovom zámere, pravidle aj jednotlivom čine?
+**KP:** Možno jednoznačne rozlíšiť súlad od rozporu?
 
-## KV — korešpondencia × vibrácia
+**KR:** Overuje sa súlad opakovane v každom relevantnom cykle?
 
-> Zachováva alebo obnovuje sa súlad pri zmene podmienok?
+**KN:** Možno rozpoznať príčinu a následok súladu alebo rozporu?
 
-## KP — korešpondencia × polarita
-
-> Možno jednoznačne rozlíšiť súlad od rozporu?
-
-## KR — korešpondencia × rytmus
-
-> Overuje sa súlad opakovane v každom relevantnom cykle?
-
-## KN — korešpondencia × príčina a následok
-
-> Možno príčinu súladu alebo rozporu rozpoznať a priradiť jej následky?
-
-## KG — korešpondencia × generativita
-
-> Umožňuje súlad jednotlivých častí vznik spoločného funkčného výsledku?
+**KG:** Umožňuje súlad jednotlivých častí vznik spoločného funkčného výsledku?
 
 ---
 
-# V — Živý pohyb a schopnosť zmeny
+# V — živý pohyb a schopnosť zmeny
 
-## VM — vibrácia × mentalizmus
+**VM:** Je dôvod a smer zmeny vedome rozpoznaný?
 
-> Je dôvod a smer zmeny vedome rozpoznaný?
+**VK:** Premieta sa zmena jednej časti primerane do súvisiacich častí a celku?
 
-## VK — vibrácia × korešpondencia
+**VV:** Dokáže sa disciplinovaný prejav meniť bez straty identity?
 
-> Premieta sa zmena jednej časti do všetkých súvisiacich častí a do celku?
+**VP:** Možno rozlíšiť primerané prispôsobenie od opustenia zámeru alebo pravidla?
 
-## VV — vibrácia × vibrácia
+**VR:** Deje sa prispôsobenie v primeranom rytme a nie náhodne?
 
-> Dokáže sa disciplína meniť a prispôsobovať bez straty svojej identity?
+**VN:** Má každá zmena rozpoznateľnú príčinu a vyhodnotený následok?
 
-## VP — vibrácia × polarita
-
-> Možno rozlíšiť primerané prispôsobenie od opustenia zámeru alebo pravidla?
-
-## VR — vibrácia × rytmus
-
-> Deje sa prispôsobenie v primeranom rytme a nie náhodne?
-
-## VN — vibrácia × príčina a následok
-
-> Má každá zmena rozpoznateľnú príčinu a vyhodnotený následok?
-
-## VG — vibrácia × generativita
-
-> Vedie spracovaná zmena k funkčnejšiemu stavu alebo k zachovaniu schopnosti konať?
+**VG:** Vedie zmena k funkčnejšiemu stavu alebo zachovaniu schopnosti konať?
 
 ---
 
-# P — Rozlíšenie, hranice a prípustné rozpätie
+# P — hranice a prípustné rozpätie
 
-## PM — polarita × mentalizmus
+**PM:** Sú hranice disciplinovaného konania vedome odvodené od zámeru?
 
-> Sú hranice disciplinovaného konania vedome odvodené od zámeru?
+**PK:** Platia hranice v celku aj v jednotlivých častiach?
 
-## PK — polarita × korešpondencia
+**PV:** Môžu sa hranice primerane meniť bez straty svojej funkcie?
 
-> Platia rovnaké hranice v celku aj v jednotlivých častiach?
+**PP:** Sú oba póly a prípustné rozpätie medzi nimi jednoznačne rozlíšené?
 
-## PV — polarita × vibrácia
+**PR:** Uplatňujú sa hranice opakovane a nie iba náhodne alebo selektívne?
 
-> Dokážu sa hranice primerane meniť bez straty svojej ochrannej alebo riadiacej funkcie?
+**PN:** Sú následky dodržania aj prekročenia hraníc známe a overiteľné?
 
-## PP — polarita × polarita
-
-> Sú oba póly a prípustné rozpätie medzi nimi jednoznačne rozlíšené?
-
-## PR — polarita × rytmus
-
-> Uplatňujú sa hranice opakovane a nie iba náhodne alebo selektívne?
-
-## PN — polarita × príčina a následok
-
-> Sú následky dodržania aj prekročenia hraníc známe a overiteľné?
-
-## PG — polarita × generativita
-
-> Podporujú hranice bezpečné a zmysluplné tvorenie namiesto jeho bezdôvodného blokovania?
+**PG:** Podporujú hranice bezpečné a zmysluplné tvorenie?
 
 ---
 
-# R — Pravidelnosť, opakovanie a kontinuita
+# R — pravidelnosť, opakovanie a kontinuita
 
-## RM — rytmus × mentalizmus
+**RM:** Je rytmus konania vedome určený podľa zámeru?
 
-> Je rytmus konania vedome určený podľa zámeru?
+**RK:** Je rytmus jednotlivých krokov zladený s rytmom celého procesu?
 
-## RK — rytmus × korešpondencia
+**RV:** Dokáže sa rytmus primerane meniť bez prerušenia kontinuity?
 
-> Je rytmus jednotlivých krokov zladený s rytmom celého procesu?
+**RP:** Sú jednotlivé fázy cyklu jednoznačne rozlíšené?
 
-## RV — rytmus × vibrácia
+**RR:** Opakuje sa požadované konanie pri určenom spúšťači alebo intervale?
 
-> Dokáže sa rytmus primerane meniť bez prerušenia kontinuity?
+**RN:** Má každý cyklus rozpoznateľný spúšťač, priebeh a následok?
 
-## RP — rytmus × polarita
-
-> Sú rozlíšené jednotlivé fázy cyklu, napríklad činnosť a kontrola, začiatok a ukončenie?
-
-## RR — rytmus × rytmus
-
-> Opakuje sa požadované konanie pri určenom spúšťači alebo v určenom intervale?
-
-## RN — rytmus × príčina a následok
-
-> Má každý cyklus rozpoznateľný spúšťač, priebeh a vyhodnotiteľný výsledok?
-
-## RG — rytmus × generativita
-
-> Vedie opakovanie k stabilite, učeniu, obnove alebo rastu schopnosti?
+**RG:** Vedie opakovanie k stabilite, učeniu, obnove alebo rastu schopnosti?
 
 ---
 
-# N — Zodpovednosť, príčina a dôsledok
+# N — príčina, následok a Zodpovednosť
 
-## NM — príčina a následok × mentalizmus
+**NM:** Je dôvod disciplinovaného činu vedome známy?
 
-> Je dôvod disciplinovaného činu vedome známy?
+**NK:** Zodpovedajú následky činu celkovému cieľu, Povinnostiam a pravidlám?
 
-## NK — príčina a následok × korešpondencia
+**NV:** Sleduje sa, ako konkrétny zásah zmenil stav procesu?
 
-> Zodpovedajú dôsledky jednotlivého činu celkovému cieľu a pravidlám?
+**NP:** Možno rozlíšiť žiaduci následok od nežiaduceho?
 
-## NV — príčina a následok × vibrácia
+**NR:** Vyhodnocujú sa príčiny a následky opakovane?
 
-> Sleduje sa, ako konkrétny zásah zmenil stav skúmaného procesu?
+**NN:** Je väzba medzi konkrétnou príčinou a následkom preukázateľná?
 
-## NP — príčina a následok × polarita
-
-> Možno rozlíšiť žiaduci následok od nežiaduceho?
-
-## NR — príčina a následok × rytmus
-
-> Vyhodnocujú sa príčiny a následky opakovane, nie iba jednorazovo?
-
-## NN — príčina a následok × príčina a následok
-
-> Je väzba medzi konkrétnou príčinou a konkrétnym následkom preukázateľná?
-
-## NG — príčina a následok × generativita
-
-> Vedie prijatie zodpovednosti za následok k oprave, poučeniu alebo vzniku lepšieho riešenia?
+**NG:** Vedie prijatie následku k oprave, poučeniu alebo lepšiemu riešeniu?
 
 ---
 
-# G — Tvorivý výsledok a pokračovanie života
+# G — tvorivý výsledok a pokračovanie
 
-## GM — generativita × mentalizmus
+**GM:** Je vedome určené, čo má disciplinované konanie vytvoriť?
 
-> Je vedome určené, čo má disciplinované konanie vytvoriť?
+**GK:** Vzniká výsledok súladom jednotlivých častí, ľudí alebo činností?
 
-## GK — generativita × korešpondencia
+**GV:** Dokáže tvorivý proces spracovať zmenu a pokračovať?
 
-> Vzniká výsledok súladom jednotlivých častí, ľudí alebo činností?
+**GP:** Spolupracujú dopĺňajúce sa póly tak, aby vytvorili výsledok?
 
-## GV — generativita × vibrácia
+**GR:** Je výsledok opakovateľný, obnoviteľný alebo ďalej rozvíjateľný?
 
-> Dokáže tvorivý proces spracovať zmenu a pokračovať?
+**GN:** Možno výsledok priradiť ku konkrétnym disciplinovaným činom?
 
-## GP — generativita × polarita
-
-> Spolupracujú dopĺňajúce sa póly tak, aby sa navzájom nerušili, ale vytvorili výsledok?
-
-## GR — generativita × rytmus
-
-> Je tvorivý výsledok opakovateľný, obnoviteľný alebo ďalej rozvíjateľný?
-
-## GN — generativita × príčina a následok
-
-> Možno výsledok preukázateľne priradiť ku konkrétnym disciplinovaným činom?
-
-## GG — generativita × generativita
-
-> Vytvára výsledok ďalšiu schopnosť učiť sa, tvoriť, pokračovať alebo udržiavať život procesu?
+**GG:** Vytvára výsledok ďalšiu schopnosť učiť sa, tvoriť alebo pokračovať?
 
 ---
 
-# Výsledok prvého skúmania
+# Výsledok doterajšieho skúmania
 
-Všetkých 49 otázok možno pri disciplíne zmysluplne a logicky sformulovať. Disciplína je preto objektívne skúmateľná v rovine X/Y.
+Všetkých 49 otázok možno pre disciplínu zmysluplne sformulovať. To potvrdzuje, že disciplína je principiálne skúmateľná.
 
-Zároveň sa ukazuje, že disciplína nie je jediný jednoduchý čin ani jedna izolovaná vlastnosť. Je spoločným prejavom viacerých procesov:
+Doterajší rozbor však ešte neurčuje všeobecnú hodnotu disciplíny. Potvrdzuje iba bázu otázok, ktorými možno skúmať **konkrétny stav disciplíny vo veci**.
+
+Disciplína sa prejavuje ako spoločný stav procesov:
 
 ```text
 zámer
@@ -318,20 +280,29 @@ zámer
 × prispôsobovanie
 × hranice
 × rytmus
-× zodpovednosť
+× nesenie následkov
 × tvorenie
 ```
 
-Každý z týchto procesov sa musí prejavovať všetkými siedmimi spôsobmi.
+Tento zápis neopisuje samostatný vzorec Autority ani konečný vzorec Zodpovednosti. Je pracovným obrazom vlastností, ktorých harmonický alebo disharmonický stav sa skúma.
 
-Preto otázka:
+---
 
-> Je agent disciplinovaný?
+# Zaradenie do hodnotenia Autority
 
-nie je dostatočne presná na spoľahlivú odpoveď `1/0`.
+Postup ďalšieho skúmania je:
 
-Logicky overiteľná musí byť otázka viazaná na konkrétny prejav, napríklad:
+```text
+Autorita
+→ Zodpovednosť ako jeden zo súčiniteľov Auth
+→ disciplína ako atribút Zodpovednosti
+→ konkrétna otázka disciplíny vo veci
+→ 49 principiálnych otázok
+→ 49 odpovedí 1/0
+→ binárny vstup do hodnotenia Zodpovednosti
+→ binárny vstup do hodnotenia Autority
+```
 
-> Prečítal agent pred začatím práce celú platnú univerzálnu metodiku?
+Spôsob redukcie týchto bitov na výsledný bit Zodpovednosti a následne Autority ešte nie je definovaný. Musí vzniknúť ďalším metodickým a algoritmickým skúmaním.
 
-Takúto konkrétnu otázku možno preskúmať všetkými 49 univerzálnymi otázkami, odpovede podložiť dôkazom a až následne z nej vytvoriť položku checklistu.
+> Bez disciplíny niet Zodpovednosti. Bez správne preskúmanej Zodpovednosti nemožno správne vyhodnotiť Autoritu.
