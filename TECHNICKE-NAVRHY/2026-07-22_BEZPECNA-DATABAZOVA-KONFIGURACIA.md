@@ -3,52 +3,18 @@
 ## Stav dokumentu
 
 ```text
-PRACOVNÝ
+ČIASTOČNE-IMPLEMENTOVANÝ
 ```
 
-Tento dokument zaznamenáva bezpečnostný technický zásah po zistení, že sledovaný súbor `codei/app/Config/Database.php` obsahoval databázové prihlasovacie údaje.
+Tento dokument vedie aktuálny technický kontrakt databázovej konfigurácie po odstránení tajomstiev zo sledovaného kódu, rotácii pôvodného hesla a presunutí aktívnej konfigurácie mimo `/codei`.
 
-Dokument neobsahuje a nesmie opakovať žiadnu kompromitovanú hodnotu.
+Dokument neobsahuje a nesmie opakovať žiadnu minulú ani aktuálnu tajnú hodnotu.
 
 ---
 
-# 1. Predmet zásahu
+# 1. Sledovaný kód
 
-Dotknuté súbory:
-
-```text
-codei/app/Config/Database.php
-codei/.env.example
-codei/.gitignore
-```
-
-Cieľ:
-
-```text
-sledovaný kód bez tajomstiev
-+
-lokálne alebo hostingové premenné prostredia
-+
-oddelená testovacia konfigurácia bez produkčných údajov
-```
-
----
-
-# 2. Prijatý konfiguračný kontrakt
-
-## 2.1 Sledovaný PHP súbor
-
-`codei/app/Config/Database.php` smie obsahovať iba:
-
-```text
-technický tvar databázovej skupiny,
-neškodné defaulty,
-DBDriver,
-charset a koláciu,
-port,
-technické prepínače,
-testovaciu SQLite konfiguráciu.
-```
+`codei/app/Config/Database.php` smie obsahovať iba technický tvar databázových skupín, neškodné defaulty, ovládač, charset, koláciu a oddelenú testovaciu SQLite konfiguráciu.
 
 Nesmie obsahovať:
 
@@ -58,30 +24,39 @@ produkčné heslo,
 produkčný názov databázy,
 API kľúč,
 setup token,
-iné tajomstvo alebo súkromný prístupový údaj.
+iné tajomstvo.
 ```
 
-## 2.2 Lokálne prostredie
+---
 
-Skutočné hodnoty sa dodávajú prostredníctvom:
+# 2. Aktívne externé prostredie
+
+Skutočné hodnoty sú uložené mimo webového a aplikačného koreňa v súrodeneckom súbore:
 
 ```text
-codei/.env
+../private/metodika.env
 ```
 
-alebo premenných prostredia hostingu.
+voči `/codei`.
 
-`codei/.env` je ignorovaný pravidlami v `codei/.gitignore`.
-
-## 2.3 Verejná šablóna
-
-Sledovaný súbor:
+Prednosť má serverová premenná:
 
 ```text
-codei/.env.example
+METODIKA_ENV_FILE
 ```
 
-obsahuje iba názvy konfiguračných premenných a zástupné hodnoty. Nesmie obsahovať platný účet ani heslo.
+Ak nie je nastavená, `ExternalEnvironment` použije uvedenú súrodeneckú cestu. Loader sa vykoná pred webovým aj CLI bootstrapom CodeIgnitera.
+
+Súbor s tajomstvom:
+
+```text
+nesmie byť súčasťou Git repozitára,
+nesmie byť prístupný cez HTTP,
+má byť čitateľný iba oprávneným serverovým používateľom,
+nesmie sa kopírovať do codei/.env ani do release balíka.
+```
+
+`codei/.env.example` zostáva iba verejnou šablónou bez platných údajov.
 
 ---
 
@@ -94,91 +69,66 @@ SQLite3
 :memory:
 ```
 
-Bez databázového používateľského mena a hesla.
-
-Testovacie prostredie nesmie pri automatickom teste prepnúť na produkčnú databázu.
+bez produkčných prihlasovacích údajov. Testovacie prostredie nesmie prepnúť na produkčnú databázu.
 
 ---
 
-# 4. Stav kompromitovaného tajomstva
+# 4. Stav pôvodného tajomstva
 
-Odstránenie tajomstva z aktuálnej vetvy:
+Používateľ potvrdil rotáciu pôvodného databázového hesla 22. júla 2026. Tým bola stará commitnutá hodnota zneplatnená pre ďalšie pripojenia.
+
+Platí však:
 
 ```text
-≠ rotácia tajomstva
+rotácia tajomstva
 ≠ odstránenie tajomstva z histórie Git
-≠ dôkaz, že tajomstvo nebolo prečítané
+≠ dôkaz, že historická hodnota nebola prečítaná
 ```
 
-Preto platí:
-
-```text
-historicky commitnuté databázové heslo
-→ považovať za kompromitované
-→ zmeniť v hostiteľskom prostredí
-→ starú hodnotu zneplatniť
-```
-
-Rotáciu musí vykonať oprávnený správca databázy alebo hostingu. Tento repozitárový zásah ju nevykonal.
+Očistenie histórie zostáva samostatným deštruktívnym zásahom a nesmie sa vykonať bez samostatného oprávnenia a plánu návratu.
 
 ---
 
-# 5. História Git
-
-Tajomstvo môže zostať dostupné v starších commitoch, klonoch, cache alebo forkoch.
-
-Očistenie histórie je samostatný deštruktívny zásah, ktorý môže vyžadovať:
+# 5. Povinné prevádzkové pravidlá
 
 ```text
-zálohu repozitára,
-identifikáciu všetkých výskytov,
-prepísanie histórie,
-force push,
-obnovu alebo reclone pracovných kópií,
-koordináciu s ostatnými používateľmi repozitára.
-```
-
-História sa nesmie prepísať automaticky bez samostatného výslovného oprávnenia a plánu návratu.
-
-Rotácia tajomstva má prednosť pred očistením histórie, pretože zneplatňuje uniknutú hodnotu aj v existujúcich kópiách.
-
----
-
-# 6. Povinné prevádzkové pravidlá
-
-```text
-1. žiadne tajomstvo do sledovaných PHP, Markdown, YAML ani JSON súborov,
-2. produkčné hodnoty iba v lokálnom `.env` alebo serverovom secret store,
-3. `.env.example` iba so zástupnými hodnotami,
+1. žiadne tajomstvo do sledovaných súborov,
+2. produkčné hodnoty iba v externom private env alebo serverovom secret store,
+3. verejná šablóna iba so zástupnými hodnotami,
 4. DBDebug v produkcii vypnutý,
 5. testy používajú oddelenú databázovú skupinu,
-6. logy nesmú vypisovať heslá ani celé DSN,
-7. chyba pripojenia nesmie vracať tajomstvo klientovi,
-8. nové tajomstvo sa po rotácii nesmie zapísať do chatu ani repozitára.
+6. logy a CLI výstupy nesmú vypisovať heslá ani celé DSN,
+7. chyba pripojenia nesmie vracať detaily účtu klientovi,
+8. nové tajomstvo sa nesmie zapísať do chatu ani repozitára.
 ```
 
 ---
 
-# 7. Kritériá ďalšieho overenia servera
+# 6. Diagnostika servera
 
-Praktické overenie databázového servera možno vykonať až po:
-
-```text
-rotácii kompromitovaného hesla,
-bezpečnom vložení nového hesla do serverového prostredia,
-overení, že aktuálna vetva neobsahuje staré ani nové tajomstvo.
-```
-
-Pri overení sa smú zaznamenať iba necitlivé technické výsledky:
+Pripravený CLI príkaz môže zaznamenať iba:
 
 ```text
-server a verzia,
+server a verziu,
 InnoDB,
-utf8mb4,
 utf8mb4_bin,
 DATETIME(6),
-cudzie kľúče,
-transakčné správanie.
+úplný úspech alebo zlyhanie kontroly.
+```
+
+Nevypisuje používateľské meno, názov databázy, heslo ani DSN.
+
+---
+
+# 7. Aktuálny stav
+
+```text
+rotácia hesla = potvrdená používateľom,
+externý private env = vytvorený používateľom,
+loader = implementovaný,
+diagnostický príkaz = implementovaný,
+migrácie M1 až M8 = pripravené, ale nespustené,
+praktický výsledok servera = zatiaľ nezistený.
 ```
 
 ---
@@ -186,9 +136,8 @@ transakčné správanie.
 # 8. Nasledujúci logický krok
 
 ```text
-oprávnený správca zrotuje databázové heslo
-→ nové tajomstvo uloží iba do hostiteľského prostredia
-→ overí sa pripojenie bez zverejnenia tajomstva
-→ overia sa vlastnosti databázového servera
-→ až potom vzniknú migrácie M1 až M8
+spustiť bezpečnú diagnostiku v hostiteľskom prostredí
+→ pri úplnom úspechu spustiť migrácie M1 až M8
+→ overiť fyzickú schému a cudzie kľúče
+→ reValidovať implementovaný stav
 ```
