@@ -20,8 +20,10 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - strom v [`README.md`](README.md) bol zosúladený s aktuálne evidovaným obsahom vetvy `main`,
 - zavedený záväzný register stavov pracovných postupov v [`postupy/README.md`](postupy/README.md),
 - zavedený záväzný register stavov pracovných poznámok v [`poznámky/README.md`](poznámky/README.md),
+- zavedený osobitný koreň technickej architektúry [`TECHNICKE-NAVRHY/`](TECHNICKE-NAVRHY) s vlastným registrom [`TECHNICKE-NAVRHY/README.md`](TECHNICKE-NAVRHY/README.md),
 - každý existujúci dokument v `postupy/` a `poznámky/` dostal explicitný stav,
 - dokument `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md` zostáva označený ako `NEPLATNÝ`; ostatné existujúce metodické postupy zostávajú `PRACOVNÉ`, kým nie sú potvrdené a prenesené do autoritatívnych dokumentov,
+- historický technický dokument [`postupy/2026-07-22_09-38_CodeIgniter.md`](postupy/2026-07-22_09-38_CodeIgniter.md) bol v registri označený `PREKONANÝ`; aktívna technická náhrada je v [`TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md`](TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md),
 - vytvorený potvrdený pracovný postup [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md), ktorý syntetizuje existujúce pravidlá povinnej prípravy pred každou prácou; jeho stav `POTVRDENÝ-NA-PRENESENIE` eviduje [`postupy/README.md`](postupy/README.md).
 
 ### Algoritmy otázok
@@ -39,6 +41,13 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - algoritmus zatiaľ nevykonáva hodnotenie, neodvodzuje odpoveď a neurčuje technickú implementáciu,
 - autoritatívnym východiskom zostávajú pravidlá otázok v [`OTAZKY/README.md`](OTAZKY/README.md), univerzálna matica v [`OTAZKY/UNIVERZALNE/Objektivita-XY.md`](OTAZKY/UNIVERZALNE/Objektivita-XY.md) a platné definície v [`POJMY-A-DEFINICIE.md`](POJMY-A-DEFINICIE.md).
 
+### Technické návrhy
+
+- vytvorený oddelený aktívny technický základ [`TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md`](TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md), ktorý vedie CodeIgniter 4.7.4 ako technický nosič a nie ako zdroj významu,
+- vytvorený odvodený technický návrh [`TECHNICKE-NAVRHY/2026-07-22_APLIKACNA-SLUZBA-ODVODZOVANIA-OTAZOK.md`](TECHNICKE-NAVRHY/2026-07-22_APLIKACNA-SLUZBA-ODVODZOVANIA-OTAZOK.md) pre `QuestionDerivationApplicationService`, technické dátové objekty, porty, poradie vykonania, krátke transakcie, chybové kanály a testovací kontrakt bez zmeny Validovaného aplikačného kontraktu,
+- vytvorená Validácia [`TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-APLIKACNEJ-SLUZBY-ODVODZOVANIA-OTAZOK.md`](TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-APLIKACNEJ-SLUZBY-ODVODZOVANIA-OTAZOK.md) s výsledkom `VALID_WITH_LIMITATIONS`; všetkých pätnásť kritérií návrhu je splnených, pred repository obmedzeniami a API retry správaním treba rozhodnúť politiku opakovanej `REQUEST_REFERENCE`,
+- technické dokumenty zostávajú `PRACOVNÉ`; ich stav eviduje [`TECHNICKE-NAVRHY/README.md`](TECHNICKE-NAVRHY/README.md).
+
 ### Riadenie zmien
 
 - CHANGELOG bol skrátený na záznam zmien s odkazmi na platné definície a registre stavov,
@@ -51,7 +60,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - pre Hostinger Business (shared hosting) boli doplnené fallback postupy a šablóny v [`codei/deploy/hostinger/README.md`](codei/deploy/hostinger/README.md),
 - pre nasadenie bez zmeny website root boli pridané shim súbory [`codei/index.php`](codei/index.php) a [`codei/.htaccess`](codei/.htaccess), ktoré smerujú požiadavky do `public/`,
 - base URL pre tento režim bola zosúladená na [`codei/app/Config/App.php`](codei/app/Config/App.php) s hodnotou `https://dremont.in/codei/public/`,
-- vytvorený pracovný architektonický záznam [`postupy/2026-07-22_09-38_CodeIgniter.md`](postupy/2026-07-22_09-38_CodeIgniter.md), ktorý oddeľuje technickú logiku CodeIgniter 4.7.4 od významovej domény METODIKY; jeho stav `PRACOVNÝ` eviduje [`postupy/README.md`](postupy/README.md).
+- pôvodný pracovný architektonický záznam v `postupy/` zostáva zachovaný historicky; aktívne technické pravidlá sú vedené v [`TECHNICKE-NAVRHY/`](TECHNICKE-NAVRHY).
 
 ### Skripty spustenia a release
 
