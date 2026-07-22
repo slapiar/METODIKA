@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
+use App\Services\DatabaseCapabilityInspector;
 use CodeIgniter\CLI\BaseCommand;
 use CodeIgniter\CLI\CLI;
-use Throwable;
+use Config\Services;
 
 final class VerifyDatabaseCapabilities extends BaseCommand
 {
@@ -17,42 +18,23 @@ final class VerifyDatabaseCapabilities extends BaseCommand
 
     public function run(array $params)
     {
-        try {
-            $db = db_connect('default');
-            $db->initialize();
+        /** @var DatabaseCapabilityInspector $inspector */
+        $inspector = Services::databaseCapabilityInspector();
+        $result = $inspector->inspect();
 
-            $version = $db->query('SELECT VERSION() AS server_version')->getRowArray();
-            $engine = $db->query("SELECT SUPPORT FROM INFORMATION_SCHEMA.ENGINES WHERE ENGINE = 'InnoDB'")->getRowArray();
-            $collation = $db->query("SHOW COLLATION LIKE 'utf8mb4_bin'")->getRowArray();
-            $datetime = $db->query("SELECT CAST('2026-01-01 00:00:00.123456' AS DATETIME(6)) AS datetime_6")->getRowArray();
+        CLI::write('Databázový server: ' . ($result['serverVersion'] !== '' ? $result['serverVersion'] : 'nezistený'));
+        CLI::write(sprintf('%-14s %s', 'Spojenie:', $result['connection'] ? 'OK' : 'NIE'), $result['connection'] ? 'green' : 'red');
+        CLI::write(sprintf('%-14s %s', 'Server:', $result['server'] ? 'OK' : 'NIE'), $result['server'] ? 'green' : 'red');
+        CLI::write(sprintf('%-14s %s', 'InnoDB:', $result['innodb'] ? 'OK' : 'NIE'), $result['innodb'] ? 'green' : 'red');
+        CLI::write(sprintf('%-14s %s', 'utf8mb4_bin:', $result['utf8mb4Bin'] ? 'OK' : 'NIE'), $result['utf8mb4Bin'] ? 'green' : 'red');
+        CLI::write(sprintf('%-14s %s', 'DATETIME(6):', $result['datetime6'] ? 'OK' : 'NIE'), $result['datetime6'] ? 'green' : 'red');
 
-            $checks = [
-                'Spojenie' => true,
-                'Server' => is_array($version)
-                    && is_string($version['server_version'] ?? null)
-                    && $version['server_version'] !== '',
-                'InnoDB' => is_array($engine)
-                    && in_array(strtoupper((string) ($engine['SUPPORT'] ?? '')), ['YES', 'DEFAULT'], true),
-                'utf8mb4_bin' => is_array($collation) && $collation !== [],
-                'DATETIME(6)' => is_array($datetime)
-                    && str_ends_with((string) ($datetime['datetime_6'] ?? ''), '.123456'),
-            ];
-
-            CLI::write('Databázový server: ' . (string) ($version['server_version'] ?? 'nezistený'));
-            foreach ($checks as $label => $passed) {
-                CLI::write(sprintf('%-14s %s', $label . ':', $passed ? 'OK' : 'NIE'), $passed ? 'green' : 'red');
-            }
-
-            if (in_array(false, $checks, true)) {
-                CLI::error('Databázový server nespĺňa všetky požadované schopnosti.');
-                return EXIT_ERROR;
-            }
-
-            CLI::write('Všetky požadované schopnosti boli potvrdené.', 'green');
-            return EXIT_SUCCESS;
-        } catch (Throwable) {
+        if ($result['errorCode'] !== null) {
             CLI::error('Databázové overenie zlyhalo. Skontrolujte externú konfiguráciu a dostupnosť servera.');
             return EXIT_ERROR;
         }
+
+        CLI::write('Všetky požadované schopnosti boli potvrdené.', 'green');
+        return EXIT_SUCCESS;
     }
 }

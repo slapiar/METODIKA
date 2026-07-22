@@ -84,6 +84,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - vytvorený idempotentný skript [`.devcontainer/setup-php-extensions.sh`](.devcontainer/setup-php-extensions.sh), ktorý pre aktívny `/usr/local/php` rebuildne rovnakú verziu PHP s `intl` a `mysqli` a prepne symlink `current` bez prechodu na systémové `/usr/bin/php`,
 - technický záznam je v [`TECHNICKE-NAVRHY/2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`](TECHNICKE-NAVRHY/2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md),
 - Validácia výsledku je v [`TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`](TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md).
+- doplnený bezpečný webový diagnostický endpoint databázy cez [`codei/app/Controllers/DiagnosticsController.php`](codei/app/Controllers/DiagnosticsController.php) a views v [`codei/app/Views/diagnostics/`](codei/app/Views/diagnostics),
+- diagnostika je gated serverovými premennými `METODIKA_DIAGNOSTICS_ENABLED` a `METODIKA_DIAGNOSTICS_TOKEN`, používa POST token overenie s `hash_equals`, krátkodobú session autorizáciu, CSRF filter a no-cache/noindex hlavičky,
+- SQL capability logika je zdieľaná v [`codei/app/Services/DatabaseCapabilityInspector.php`](codei/app/Services/DatabaseCapabilityInspector.php) a používaná súčasne CLI príkazom [`codei/app/Commands/VerifyDatabaseCapabilities.php`](codei/app/Commands/VerifyDatabaseCapabilities.php) aj webovým controllerom,
+- explicitné routes sú v [`codei/app/Config/Routes.php`](codei/app/Config/Routes.php) s vypnutým auto-routingom,
+- do [`codei/.env.example`](codei/.env.example) boli doplnené bezpečné placeholdery pre diagnostics gate bez commitu reálneho tokenu,
+- minimálne testy boli doplnené v [`codei/tests/session/DiagnosticsControllerTest.php`](codei/tests/session/DiagnosticsControllerTest.php) a [`codei/tests/unit/DatabaseCapabilityInspectorTest.php`](codei/tests/unit/DatabaseCapabilityInspectorTest.php),
+- technický záznam je v [`TECHNICKE-NAVRHY/2026-07-22_WEBOVA-DIAGNOSTIKA-PRODUKCNEJ-DATABAZY.md`](TECHNICKE-NAVRHY/2026-07-22_WEBOVA-DIAGNOSTIKA-PRODUKCNEJ-DATABAZY.md),
+- Validácia je v [`TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-WEBOVEJ-DIAGNOSTIKY-PRODUKCNEJ-DATABAZY.md`](TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-WEBOVEJ-DIAGNOSTIKY-PRODUKCNEJ-DATABAZY.md) s výsledkom `VALID_WITH_LIMITATIONS`.
 
 ---
 

@@ -8,6 +8,8 @@ use RuntimeException;
 
 final class ExternalEnvironment
 {
+    private static bool $loaded = false;
+
     public static function load(): void
     {
         $configuredPath = getenv('METODIKA_ENV_FILE');
@@ -16,6 +18,7 @@ final class ExternalEnvironment
             : dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env';
 
         if (!is_file($path)) {
+            self::$loaded = false;
             return;
         }
 
@@ -56,5 +59,12 @@ final class ExternalEnvironment
             $_ENV[$name] = $value;
             $_SERVER[$name] = $value;
         }
+
+        self::$loaded = true;
+    }
+
+    public static function isLoaded(): bool
+    {
+        return self::$loaded;
     }
 }

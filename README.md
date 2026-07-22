@@ -222,6 +222,39 @@ Podrobnosti a Validácia sú v:
 
 ---
 
+# Webová diagnostika DB
+
+Pre praktické serverové overenie databázových schopností je zavedená zabezpečená
+webová diagnostika s explicitným gate modelom.
+
+URL bez tokenu:
+
+```text
+https://dremont.in/codei/public/diagnostics/database
+```
+
+Zapnutie iba dočasne:
+
+```text
+METODIKA_DIAGNOSTICS_ENABLED=1
+METODIKA_DIAGNOSTICS_TOKEN=<tajná náhodná hodnota>
+```
+
+Vypnutie po overení:
+
+```text
+METODIKA_DIAGNOSTICS_ENABLED=0
+```
+
+Diagnostika je čítacia, neindexovateľná a nevykonáva migrácie.
+
+Technický návrh a Validácia:
+
+- `TECHNICKE-NAVRHY/2026-07-22_WEBOVA-DIAGNOSTIKA-PRODUKCNEJ-DATABAZY.md`
+- `TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-WEBOVEJ-DIAGNOSTIKY-PRODUKCNEJ-DATABAZY.md`
+
+---
+
 # Rozmery života
 
 ```text
