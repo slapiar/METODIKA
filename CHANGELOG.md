@@ -34,6 +34,20 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - CHANGELOG bol skrátený na záznam zmien s odkazmi na platné definície a registre stavov,
 - do [`README.md`](README.md) bolo doplnené pravidlo, že zmena dokumentu, jeho stavu a záznamu v CHANGELOG tvoria jeden pracovný úkon.
 
+### Integrácia CodeIgniter a hosting
+
+- overený SHA256 a rozbalený balík `codei-git-ready.zip`; do repozitára bol pridaný runtime strom [`codei/`](codei),
+- pre CodeIgniter boli doplnené šablóny Apache + PHP-FPM v [`codei/deploy/apache/README.md`](codei/deploy/apache/README.md) a konfigoch v `codei/deploy/apache/`,
+- pre Hostinger Business (shared hosting) boli doplnené fallback postupy a šablóny v [`codei/deploy/hostinger/README.md`](codei/deploy/hostinger/README.md),
+- pre nasadenie bez zmeny website root boli pridané shim súbory [`codei/index.php`](codei/index.php) a [`codei/.htaccess`](codei/.htaccess), ktoré smerujú požiadavky do `public/`,
+- base URL pre tento režim bola zosúladená na [`codei/app/Config/App.php`](codei/app/Config/App.php) s hodnotou `https://dremont.in/codei/public/`.
+
+### Skripty spustenia a release
+
+- pôvodná release logika bola presunutá do nového skriptu [`release.sh`](release.sh),
+- skript [`startApp.sh`](startApp.sh) bol zmenený na lokálny launcher CodeIgniter servera (`php spark serve`) s otvorením URL v prehliadači,
+- do hostinger dokumentácie boli doplnené aj voliteľné no-redirect šablóny pre variant bez HTTP presmerovania.
+
 ---
 
 ## 2026-07-21
