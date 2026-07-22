@@ -80,7 +80,9 @@ Význam:
 | `2026-07-22_POLITIKA-OPAKOVANEJ-REQUEST-REFERENCE.md` | PRACOVNÝ | Technická politika `IDEMPOTENT_REPLAY_BY_REQUEST_REFERENCE`: jedna konkrétna požiadavka vytvára najviac jeden `QUESTION_DERIVATION`; replay používa existujúci beh a odlišný obsah vytvára technický konflikt. |
 | `2026-07-22_VALIDACIA-POLITIKY-OPAKOVANEJ-REQUEST-REFERENCE.md` | PRACOVNÝ | Validácia replay politiky s výsledkom `VALID`. |
 | `2026-07-22_REPOSITORY-KONTRAKT-REQUEST-REFERENCE.md` | PRACOVNÝ | Repository kontrakt atómovej rezervácie, vyhľadania a korelácie `REQUEST_REFERENCE`; neurčuje SQL schému ani adaptér. Spoločná Validácia skončila `VALID`. |
-| `2026-07-22_VALIDACIA-REPOSITORY-KONTRAKTU-REQUEST-REFERENCE.md` | PRACOVNÝ | Spoločná Validácia aktualizovanej služby a repository kontraktu. Výsledok `VALID`; možno odvodiť technický model uloženia. |
+| `2026-07-22_VALIDACIA-REPOSITORY-KONTRAKTU-REQUEST-REFERENCE.md` | PRACOVNÝ | Spoločná Validácia aktualizovanej služby a repository kontraktu. Výsledok `VALID`; umožnila odvodiť technický model uloženia. |
+| `2026-07-22_TECHNICKY-MODEL-ULOZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Technický model oddeleného uloženia rezervácie, behu, vetiev, závislostí, kandidátov, finálneho výsledku a auditnej stopy. Validácia skončila `VALID`; neurčuje SQL schému ani migrácie. |
+| `2026-07-22_VALIDACIA-TECHNICKEHO-MODELU-ULOZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Validácia technického modelu uloženia. Všetkých pätnásť kritérií je splnených; možno odvodiť databázový návrh a migračné obmedzenia. |
 
 ---
 
