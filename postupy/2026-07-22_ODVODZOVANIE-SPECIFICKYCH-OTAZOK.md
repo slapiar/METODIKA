@@ -74,6 +74,7 @@ vykonanie odvodzovacieho úkonu
 ```text
 DERIVATION_CONTEXT
 ≠ DERIVATION_SCOPE
+≠ INTENDED_APPLICABILITY_SCOPE
 ```
 
 ```text
@@ -91,18 +92,13 @@ odvodenie otázky
 ≠ použitie otázky
 ```
 
-```text
-jazyková správnosť
-≠ metodická správnosť
-```
-
 Univerzálna otázka nesie všeobecnú skúmanú podmienku. Kandidát špecifickej otázky túto podmienku zachováva, ale viaže ju na presne určený predmet odvodenia, jeho relevantný prejav, význam, kontext a rozsah.
 
 ---
 
 # 3. Minimálny vstupný kontrakt
 
-Algoritmus sa nesmie spustiť bez významovo určeného vstupu:
+Algoritmus prijíma surový vstup, ktorý ešte nemusí byť platný. Pokus o odvodzovací úkon sa musí historicky zaznamenať skôr, než sa platnosť jednotlivých vstupov potvrdí.
 
 ```text
 DERIVATION_INPUT
@@ -118,7 +114,7 @@ DERIVATION_INPUT
 }
 ```
 
-Každý vstup musí byť buď jednoznačne identifikovaným odkazom na existujúcu identitu, alebo explicitne určenou vlastnosťou konkrétneho odvodzovacieho úkonu.
+Každý vstup musí byť po kontrole buď jednoznačne identifikovaným odkazom na existujúcu identitu, alebo explicitne určenou vlastnosťou konkrétneho odvodzovacieho úkonu.
 
 Voľný text môže byť podkladom na doplnenie vstupu, ale nesmie byť bez kontroly považovaný za platný ontologický vstup.
 
@@ -136,8 +132,6 @@ PRINCIPLE_X
 PRINCIPLE_Y
 SOURCE_DOCUMENT alebo iný autoritatívny pôvod
 ```
-
-Pri otázkach objektívnej matice predstavujú `PRINCIPLE_X` a `PRINCIPLE_Y` polohu v matici 7 × 7.
 
 ```text
 QUESTION_TEXT
@@ -159,37 +153,19 @@ aký rozsah SUBJECT-u vstupuje do odvodzovania
 čo musí zostať zachované, aby išlo stále o ten istý SUBJECT
 ```
 
-Predmet, z ktorého významu sa otázka odvodila, nemusí byť automaticky totožný s každým budúcim predmetom hodnotenia. Rozsah použiteľnosti kandidáta sa musí určiť pri jeho prijatí.
+Predmet, z ktorého významu sa otázka odvodila, nemusí byť automaticky totožný s každým budúcim predmetom hodnotenia.
 
 ## 3.3 DERIVATION_PURPOSE
 
-Účel určuje, aké poznanie má odvodená otázka umožniť, napríklad:
-
-```text
-poznanie aktuálneho stavu
-odhalenie príčiny problému
-porovnanie variantov
-Validácia funkcie
-posúdenie rizika
-príprava rozhodnutia
-```
-
-Účel nesmie obsahovať želanú odpoveď ani predurčiť výsledok.
+Účel určuje, aké poznanie má odvodená otázka umožniť. Nesmie obsahovať želanú odpoveď ani predurčiť výsledok.
 
 ## 3.4 DERIVATION_CONTEXT
 
-Kontext určuje okolnosti a významové vzťahy, v ktorých sa odvodzovanie vykonáva. Môže zahŕňať:
-
-```text
-projektový alebo doménový kontext
-vzťah k iným SUBJECT-om
-relevantný proces alebo situáciu
-verziu alebo stav ako okolnosť významu
-```
+Kontext určuje okolnosti a významové vzťahy, v ktorých sa odvodzovanie vykonáva.
 
 ## 3.5 DERIVATION_SCOPE
 
-Rozsah určuje hranice toho, čo odvodzovanie zahŕňa a čo už nezahŕňa. Musí vedieť určiť:
+Rozsah určuje hranice konkrétneho odvodzovacieho úkonu:
 
 ```text
 vecné hranice
@@ -199,35 +175,15 @@ procesné hranice
 zahrnuté a vylúčené prejavy SUBJECT-u
 ```
 
-Rovnaký údaj nesmie byť bez odôvodnenia evidovaný raz ako kontext a inokedy ako rozsah.
-
-Do textu kandidáta patrí iba `REQUIRED_QUESTION_CONTEXT`, bez ktorého by sa menil alebo strácal význam otázky. Kontext konkrétneho budúceho použitia patrí až hodnotiacemu záznamu.
+Do textu kandidáta patrí iba `REQUIRED_QUESTION_CONTEXT`, bez ktorého by sa menil alebo strácal význam otázky.
 
 ## 3.6 DOMAIN_TERM_REFERENCES
 
-Definitívna ontologická identita doménového pojmu ešte nie je potvrdená. Algoritmus preto používa spätne citovateľné odkazy na určené významy pojmov.
-
-Každý rozhodujúci odkaz musí určiť najmenej:
-
-```text
-TERM
-DEFINED_MEANING
-DOMAIN alebo PROJECT_SCOPE
-SOURCE_OF_DEFINITION
-VALIDITY alebo VERSION, ak sa význam môže meniť
-```
-
-Neznámy alebo viacznačný pojem sa nesmie doplniť odhadom.
+Algoritmus používa spätne citovateľné odkazy na určené významy doménových pojmov. Neznámy alebo viacznačný význam sa nesmie doplniť odhadom.
 
 ## 3.7 ACTOR_REFERENCE
 
 Každý odvodzovací úkon musí mať určiteľného `ACTOR-a`.
-
-```text
-ACTOR
-=
-SUBJECT, ktorý vykonáva odvodzovací úkon
-```
 
 ## 3.8 AUTHORITY_CONTEXT
 
@@ -246,7 +202,7 @@ Autorita nemusí byť pri začatí úkonu potvrdená. Jej stav však nesmie byť
 
 # 4. Výstupný kontrakt
 
-Výsledok algoritmu musí mať významový tvar:
+Každý ukončený pokus o odvodzovanie musí vytvoriť jednotný výsledok:
 
 ```text
 DERIVATION_RESULT
@@ -255,9 +211,12 @@ DERIVATION_RESULT
     candidates: list<QUESTION_CANDIDATE>,
     trace: DERIVATION_TRACE,
     state,
-    stop_reason?
+    stop_reason?,
+    failed_control?
 }
 ```
+
+Pri úspechu je `stop_reason` a `failed_control` prázdny. Pri zastavení musia presne pomenovať dôvod a kontrolu, ktorá neprešla.
 
 Každý `QUESTION_CANDIDATE` musí obsahovať alebo jednoznačne odkazovať najmenej na:
 
@@ -272,11 +231,27 @@ SPECIFIC_CONDITION
 MEANING_OF_1
 MEANING_OF_0
 REQUIRED_QUESTION_CONTEXT
+INTENDED_APPLICABILITY_SCOPE
 DERIVATION_TRACE
 STATE = CANDIDATE
 ```
 
-`DERIVATION_TRACE` je auditná a provenienčná stopa pôvodu kandidáta. Nie je dôkazom budúcej odpovede na otázku.
+```text
+DERIVATION_SCOPE
+=
+hranice konkrétneho odvodzovacieho úkonu
+```
+
+```text
+INTENDED_APPLICABILITY_SCOPE
+=
+predbežný rozsah predmetov, situácií, verzií alebo vzťahov,
+pre ktoré môže byť kandidát navrhnutý na prijatie
+```
+
+`INTENDED_APPLICABILITY_SCOPE` nesmie automaticky určovať konečný rozsah prijatej otázky. Ten vzniká až pri samostatnom metodickom prijatí a Validácii kandidáta.
+
+`DERIVATION_TRACE` je auditná a provenienčná stopa pôvodu kandidáta a celého odvodzovacieho úkonu. Nie je dôkazom budúcej odpovede na otázku.
 
 Prípustné základné výsledky procesu sú pracovné:
 
@@ -288,52 +263,36 @@ STOPPED_NO_RELEVANT_MANIFESTATION
 RETURNED_FOR_DECOMPOSITION
 ```
 
-Až samostatné prijatie a Validácia môžu určiť, či sa kandidát stane otázkou prijatou na použitie.
-
 ---
 
 # 5. Minimálny odvodzovací algoritmus
 
-## Krok 1 — Založenie QUESTION_DERIVATION
+## Krok 1 — Založenie pokusu o QUESTION_DERIVATION
 
-Vytvoriť historicky zachytiteľný odvodzovací úkon s jednoznačným záznamom času, vstupov a počiatočného stavu.
+Bezprostredne po prijatí surového vstupu vytvoriť historicky zachytiteľný záznam pokusu o odvodzovací úkon s časom, dostupnými vstupmi a počiatočným stavom:
+
+```text
+DERIVATION_ATTEMPT_RECORDED
+```
+
+Založenie pokusu nepotvrdzuje správnosť ani úplnosť vstupov.
 
 ```text
 QUESTION_DERIVATION
 ≠ QUESTION_DERIVATION_RECORD
 ```
 
-Budúca technická implementácia môže vytvoriť záznam úkonu, nesmie ho však zameniť s metodickým úkonom samotným.
+## Krok 2 — Kontrola ACTOR-a a kontextu Autority
 
-## Krok 2 — Identifikácia ACTOR-a a kontextu Autority
+Overiť, že je určený ACTOR a zachytený `AUTHORITY_CONTEXT`. Pri neúspechu ukončiť úkon jednotným `DERIVATION_RESULT`.
 
-Overiť, že je určený ACTOR a zachytený `AUTHORITY_CONTEXT`.
+## Krok 3 — Kontrola zdrojovej QUESTION
 
-Samotné vykonanie úkonu nepotvrdzuje oprávnenosť. Ak Autorita nie je potvrdená, jej stav sa zachytí ako neurčený alebo neValidovaný; nesmie sa domyslieť.
+Overiť identitu, významový stav, univerzálnu podmienku, primárny rozmer a autoritatívny pôvod zdrojovej otázky.
 
-## Krok 3 — Načítanie zdrojovej QUESTION
+## Krok 4 — Kontrola DERIVATION_SUBJECT-u
 
-Načítať existujúcu otázku v úlohe zdroja, jej presné znenie, významový stav, univerzálnu podmienku, primárny rozmer, polohu v matici a autoritatívny pôvod.
-
-Kontrola:
-
-```text
-Je zdrojová QUESTION a jej významový stav jednoznačne identifikovaný?
-```
-
-Ak nie, algoritmus sa zastaví.
-
-## Krok 4 — Prijatie DERIVATION_SUBJECT-u
-
-Overiť, že SUBJECT prešiel minimálnym testom určiteľnosti, rozlíšiteľnosti, rozsahu a výsledkovej neutrality.
-
-Kontrola:
-
-```text
-Môže byť význam kandidáta omylom priradený inému predmetu, časti, verzii alebo rozsahu?
-```
-
-Ak áno, SUBJECT treba spresniť alebo rozdeliť.
+Overiť určiteľnosť, rozlíšiteľnosť, rozsah, kontinuitu identity a výsledkovú neutralitu SUBJECT-u.
 
 ## Krok 5 — Kontrola účelu, kontextu a rozsahu
 
@@ -346,175 +305,97 @@ rozsah určuje zahrnuté a vylúčené hranice
 kontext a rozsah sa bez odôvodnenia neprekrývajú
 ```
 
-## Krok 6 — Extrakcia univerzálnej podmienky
+## Krok 6 — Kontrola doménových významov
 
-Zo zdrojovej otázky oddeliť gramatickú formu od významu, ktorý má odpoveď `[1/0]` potvrdiť.
+Overiť, že každý rozhodujúci doménový význam je určený a spätne citovateľný.
 
-```text
-UNIVERSAL_CONDITION
-=
-podmienka zachovaná vo všetkých prípustných špecifikáciách otázky
-```
+## Krok 7 — Extrakcia univerzálnej podmienky
 
-Algoritmus nesmie zachovať iba podobné slová a pritom zmeniť skúmanú podmienku.
+Oddeliť gramatickú formu otázky od významu, ktorý má odpoveď `[1/0]` potvrdiť.
 
-## Krok 7 — Určenie relevantného prejavu DERIVATION_SUBJECT-u
+## Krok 8 — Určenie relevantného prejavu DERIVATION_SUBJECT-u
 
-Vyhľadať, ktorá časť, vlastnosť, vzťah, stav, proces alebo udalosť SUBJECT-u zodpovedá univerzálnej podmienke.
+Vyhľadať časť, vlastnosť, vzťah, stav, proces alebo udalosť SUBJECT-u zodpovedajúcu univerzálnej podmienke.
 
-```text
-DERIVATION_SUBJECT
-→ mapovanie univerzálnej podmienky
-→ SUBJECT_MANIFESTATION
-```
+Ak žiadny prejav nezodpovedá, ukončiť úkon s `NO_RELEVANT_MANIFESTATION`.
 
-Ak univerzálnej podmienke nezodpovedá žiadny prejav, algoritmus sa zastaví.
+Ak zodpovedá viac samostatných prejavov, vytvoriť viac kandidátov alebo vrátiť podmienku na rozklad.
 
-Ak jej zodpovedá viac samostatných prejavov, nesmú sa zlúčiť do jednej otázky. Vznikne viac kandidátov.
-
-`SUBJECT_MANIFESTATION` nie je automaticky nový SUBJECT. Ak má mať samostatnú identitu, musí prejsť samostatným logickým zdôvodnením.
-
-## Krok 8 — Doménové dosadenie
+## Krok 9 — Doménové dosadenie
 
 Nahradiť všeobecné výrazy konkrétnymi doménovo určenými významami bez zmeny logického významu.
 
-Dosadenie nesmie:
-
-```text
-meniť primárny rozmer otázky
-vytvoriť nový predpoklad
-rozšíriť alebo zúžiť podmienku bez záznamu
-nahradiť neznámy význam odhadom
-```
-
-## Krok 9 — Určenie jednej špecifickej podmienky
+## Krok 10 — Určenie jednej špecifickej podmienky
 
 Zostaviť jednu podmienku, ktorej potvrdenie alebo nepotvrdenie možno jednoznačne rozlíšiť.
 
-```text
-SPECIFIC_CONDITION
-```
+## Krok 11 — Kontrola primárneho rozmeru
 
-Ak veta obsahuje dve podmienky, ktoré môžu mať rozdielne odpovede, musí sa rozdeliť.
+Špecifikácia nesmie zmeniť primárny rozmer bez vzniku novej otázky a nového odôvodnenia.
 
-## Krok 10 — Kontrola rozmeru
+## Krok 12 — Zostavenie vety kandidáta
 
-Overiť, čo sa mení medzi odpoveďou `1` a `0`:
+Veta musí:
 
 ```text
-X — predmet, existencia, identita alebo hranica
-Y — spôsob, stav, mechanizmus alebo priebeh
-Z — hodnota, miera, primeranosť alebo význam
-T — čas, trvanie, poradie, platnosť alebo priorita
+skúmať jednu podmienku
+vzťahovať sa na určený predmet alebo jeho prejav
+zachovávať univerzálnu podmienku
+nepredurčovať výsledok
+umožňovať odpoveď [1/0]
+obsahovať iba nevyhnutný REQUIRED_QUESTION_CONTEXT
 ```
 
-Špecifikácia nesmie zmeniť primárny rozmer bez toho, aby vznikla nová otázka s novým odôvodnením.
+## Krok 13 — Určenie významu odpovedí 1 a 0
 
-## Krok 11 — Zostavenie vety kandidáta
+Význam `1` a `0` musí byť jednoznačne viazaný na jednu špecifickú podmienku. Hodnota `0` nesmie automaticky znamenať absolútnu neexistenciu SUBJECT-u.
 
-Vytvoriť jazykovo prirodzenú vetu, ktorá:
+## Krok 14 — Kontrola elementárnosti a neutrality
 
-```text
-skúma jednu podmienku
-vzťahuje sa na určený predmet alebo jeho prejav
-zachováva univerzálnu podmienku
-nepredurčuje výsledok
-umožňuje odpoveď [1/0]
-obsahuje iba nevyhnutný REQUIRED_QUESTION_CONTEXT
-```
+Ak možno rozdielne časti vety potvrdiť rozdielne, kandidát sa musí rozdeliť. Otázka nesmie predurčovať želaný výsledok.
 
-Gramatický tvar nie je rozhodujúci. Rozhodujúci je význam odpovede.
+## Krok 15 — Určenie INTENDED_APPLICABILITY_SCOPE
 
-## Krok 12 — Určenie významu odpovede 1
+Pre každý kandidát určiť predbežný rozsah predmetov, situácií, verzií alebo vzťahov, pre ktoré môže byť navrhnutý na prijatie.
 
-```text
-MEANING_OF_1
-=
-špecifická podmienka je v určenom význame, rozsahu a nevyhnutnom kontexte potvrdená
-```
+Tento rozsah musí byť odvodený z významu kandidáta, jeho SUBJECT-u, univerzálnej podmienky a nevyhnutného kontextu. Nesmie byť automaticky skopírovaný z `DERIVATION_SCOPE`.
 
-## Krok 13 — Určenie významu odpovede 0
-
-```text
-MEANING_OF_0
-=
-špecifická podmienka v určenom význame nebola potvrdená
-```
-
-Hodnota `0` nesmie automaticky znamenať absolútnu neexistenciu SUBJECT-u. Podľa kontextu môže byť potrebné odlíšiť:
-
-```text
-podmienka neplatí
-prejav nie je prítomný
-chýba dôkaz
-predmet je nepresne určený
-ešte nenastal alebo už uplynul príslušný čas
-otázka sa musí ďalej rozložiť
-Validácia nebola vykonaná alebo neuspela
-```
-
-Tieto stavy sa bez ďalšej metodiky nesmú zlievať do jedného tvrdenia o realite.
-
-## Krok 14 — Kontrola elementárnosti
-
-Položiť kontrolnú otázku:
-
-```text
-Môže byť niektorá časť vety potvrdená a iná nepotvrdená?
-```
-
-Ak áno, kandidát nie je elementárny a musí sa rozdeliť.
-
-## Krok 15 — Kontrola spätnej odvoditeľnosti
+## Krok 16 — Kontrola spätnej odvoditeľnosti
 
 Musí byť možné bez domýšľania odpovedať:
 
 ```text
-Ktorý ACTOR úkon vykonal?
-V akom kontexte Autority konal?
-Z ktorej QUESTION kandidát vznikol?
-Ktorú univerzálnu podmienku zachoval?
-Ktorý DERIVATION_SUBJECT a jeho prejav konkretizoval?
-Ktoré doménové významy boli použité?
-Aký kontext a rozsah boli rozhodujúce?
-Prečo zostal v rovnakom primárnom rozmere?
-Ktoré kontroly prešli alebo neprešli?
+ktorý ACTOR úkon vykonal
+v akom kontexte Autority konal
+z ktorej QUESTION kandidát vznikol
+ktorú univerzálnu podmienku zachoval
+ktorý DERIVATION_SUBJECT a prejav konkretizoval
+ktoré doménové významy použil
+aký kontext a rozsah boli rozhodujúce
+ako vznikol INTENDED_APPLICABILITY_SCOPE
+prečo zostal kandidát v rovnakom primárnom rozmere
+ktoré kontroly prešli alebo neprešli
 ```
 
-Ak niektorý krok nemožno doložiť, kandidát sa odmietne alebo vráti na revíziu.
+## Krok 17 — Ukončenie úkonu
 
-## Krok 16 — Kontrola neutrality
-
-Otázka nesmie obsahovať hodnotiace alebo presviedčacie výrazy, ktoré vopred určujú odpoveď.
-
-Neprípustné:
+Každý beh sa musí ukončiť jednotným `DERIVATION_RESULT`:
 
 ```text
-Funguje už správne navrhnuté načítanie TEMP?
+úspech
+→ CANDIDATES_CREATED
+
+zastavenie
+→ príslušný STOPPED_* alebo RETURNED_FOR_DECOMPOSITION
 ```
 
-Prípustné:
-
-```text
-Spustí kliknutie na mapu požiadavku na načítanie TEMP pre zvolené súradnice?
-```
-
-## Krok 17 — Vytvorenie kandidátov a DERIVATION_TRACE
-
-Ak všetky kontroly prešli, vytvoriť:
-
-```text
-QUESTION_CANDIDATE alebo viac QUESTION_CANDIDATE
-DERIVATION_TRACE
-```
-
-Kandidát nesmie byť automaticky zaradený medzi prijaté projektové otázky bez samostatného metodického prijatia a Validácie.
+Žiadne zastavenie nesmie zostať bez `DERIVATION_TRACE`, `stop_reason` a `failed_control`.
 
 ---
 
 # 6. Zastavovacie podmienky
 
-Algoritmus sa musí zastaviť najmenej pri týchto stavoch:
+Algoritmus sa musí zastaviť najmenej pri stavoch:
 
 ```text
 SOURCE_QUESTION_NOT_IDENTIFIED
@@ -531,39 +412,139 @@ MULTIPLE_CONDITIONS_REQUIRE_DECOMPOSITION
 PRIMARY_DIMENSION_CHANGED
 ANSWER_MEANING_UNDEFINED
 RESULT_NOT_NEUTRAL
+APPLICABILITY_SCOPE_UNDEFINED
 DERIVATION_NOT_TRACEABLE
 ```
 
-Zastavenie nie je chybou systému. Je metodickým výsledkom, že vstupy alebo podmienky zatiaľ nestačia na bezpečné odvodenie otázky.
+Každé zastavenie je historicky zachytiteľný metodický výsledok, nie strata záznamu ani technická výnimka bez významu.
 
 ---
 
-# 7. Pracovný pseudokód
+# 7. Jednotný mechanizmus zastavenia
 
 ```text
-FUNCTION derive_specific_questions(input: DERIVATION_INPUT):
-
-    REQUIRE identified(input.actor)
-    REQUIRE authority_context_recorded(input.authority_context)
-    REQUIRE identified(input.source_question)
-    REQUIRE justified(input.derivation_subject)
-    REQUIRE defined(input.purpose)
-    REQUIRE neutral(input.purpose)
-    REQUIRE context_distinct_from_scope(input.context, input.scope)
-    REQUIRE scope_unambiguous(input.scope)
-    REQUIRE domain_terms_defined(input.domain_terms)
-
-    derivation = begin_question_derivation(
-        actor = input.actor,
-        authority_context = input.authority_context,
-        source_question = input.source_question,
-        derivation_subject = input.derivation_subject,
-        purpose = input.purpose,
-        context = input.context,
-        scope = input.scope,
-        domain_terms = input.domain_terms
+FUNCTION stop_derivation(
+    derivation,
+    state,
+    stop_reason,
+    failed_control,
+    trace_context
+):
+    trace = record_derivation_trace(
+        derivation = derivation,
+        result = state,
+        stop_reason = stop_reason,
+        failed_control = failed_control,
+        context = trace_context
     )
 
+    RETURN DERIVATION_RESULT(
+        derivation = derivation,
+        candidates = [],
+        trace = trace,
+        state = state,
+        stop_reason = stop_reason,
+        failed_control = failed_control
+    )
+```
+
+Všetky neúspešné kontroly musia použiť tento významovo jednotný mechanizmus alebo jeho ekvivalent.
+
+---
+
+# 8. Pracovný pseudokód
+
+```text
+FUNCTION derive_specific_questions(raw_input):
+
+    derivation = record_question_derivation_attempt(
+        raw_input = raw_input,
+        state = DERIVATION_ATTEMPT_RECORDED,
+        time = now()
+    )
+
+    IF NOT identified(raw_input.actor):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_INSUFFICIENT_INPUT,
+            ACTOR_NOT_IDENTIFIED,
+            ACTOR_CONTROL,
+            raw_input
+        )
+
+    IF NOT authority_context_recorded(raw_input.authority_context):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_INSUFFICIENT_INPUT,
+            AUTHORITY_CONTEXT_MISSING,
+            AUTHORITY_CONTEXT_CONTROL,
+            raw_input
+        )
+
+    IF NOT identified(raw_input.source_question):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_INSUFFICIENT_INPUT,
+            SOURCE_QUESTION_NOT_IDENTIFIED,
+            SOURCE_QUESTION_CONTROL,
+            raw_input
+        )
+
+    IF NOT justified(raw_input.derivation_subject):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_INSUFFICIENT_INPUT,
+            SUBJECT_NOT_JUSTIFIED,
+            SUBJECT_CONTROL,
+            raw_input
+        )
+
+    IF NOT defined(raw_input.purpose):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_INSUFFICIENT_INPUT,
+            PURPOSE_NOT_DEFINED,
+            PURPOSE_CONTROL,
+            raw_input
+        )
+
+    IF NOT neutral(raw_input.purpose):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_AMBIGUOUS_INPUT,
+            PURPOSE_NOT_NEUTRAL,
+            PURPOSE_NEUTRALITY_CONTROL,
+            raw_input
+        )
+
+    IF NOT context_distinct_from_scope(raw_input.context, raw_input.scope):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_AMBIGUOUS_INPUT,
+            CONTEXT_AMBIGUOUS,
+            CONTEXT_SCOPE_CONTROL,
+            raw_input
+        )
+
+    IF NOT scope_unambiguous(raw_input.scope):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_AMBIGUOUS_INPUT,
+            SCOPE_AMBIGUOUS,
+            SCOPE_CONTROL,
+            raw_input
+        )
+
+    IF NOT domain_terms_defined(raw_input.domain_terms):
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_AMBIGUOUS_INPUT,
+            DOMAIN_TERM_AMBIGUOUS,
+            DOMAIN_TERM_CONTROL,
+            raw_input
+        )
+
+    input = accept_validated_derivation_input(raw_input)
     universal_condition = extract_condition(input.source_question)
 
     manifestation_set = map_condition_to_subject(
@@ -574,18 +555,18 @@ FUNCTION derive_specific_questions(input: DERIVATION_INPUT):
     )
 
     IF manifestation_set is empty:
-        RETURN DERIVATION_RESULT(
-            derivation = derivation,
-            candidates = [],
-            trace = record_derivation_trace(),
-            state = STOPPED_NO_RELEVANT_MANIFESTATION,
-            stop_reason = NO_RELEVANT_MANIFESTATION
+        RETURN stop_derivation(
+            derivation,
+            STOPPED_NO_RELEVANT_MANIFESTATION,
+            NO_RELEVANT_MANIFESTATION,
+            SUBJECT_MANIFESTATION_CONTROL,
+            input
         )
 
     candidates = []
 
     FOR manifestation IN manifestation_set:
-        specific_condition = specialize(
+        condition_set = specialize_and_decompose(
             universal_condition,
             manifestation,
             input.domain_terms,
@@ -593,12 +574,7 @@ FUNCTION derive_specific_questions(input: DERIVATION_INPUT):
             input.scope
         )
 
-        IF contains_multiple_conditions(specific_condition):
-            specific_conditions = decompose(specific_condition)
-        ELSE:
-            specific_conditions = [specific_condition]
-
-        FOR condition IN specific_conditions:
+        FOR condition IN condition_set:
             required_context = determine_required_question_context(
                 condition,
                 input.context,
@@ -611,24 +587,76 @@ FUNCTION derive_specific_questions(input: DERIVATION_INPUT):
                 required_context
             )
 
-            REQUIRE same_primary_dimension(
-                input.source_question,
-                candidate_text
-            )
-            REQUIRE elementary(candidate_text)
-            REQUIRE result_neutral(candidate_text)
-            REQUIRE meaning_of_1_defined(condition)
-            REQUIRE meaning_of_0_defined(condition)
+            IF NOT same_primary_dimension(input.source_question, candidate_text):
+                RETURN stop_derivation(
+                    derivation,
+                    STOPPED_AMBIGUOUS_INPUT,
+                    PRIMARY_DIMENSION_CHANGED,
+                    PRIMARY_DIMENSION_CONTROL,
+                    current_state()
+                )
 
-            trace = record_derivation_trace(
+            IF NOT elementary(candidate_text):
+                RETURN stop_derivation(
+                    derivation,
+                    RETURNED_FOR_DECOMPOSITION,
+                    MULTIPLE_CONDITIONS_REQUIRE_DECOMPOSITION,
+                    ELEMENTARITY_CONTROL,
+                    current_state()
+                )
+
+            IF NOT result_neutral(candidate_text):
+                RETURN stop_derivation(
+                    derivation,
+                    STOPPED_AMBIGUOUS_INPUT,
+                    RESULT_NOT_NEUTRAL,
+                    NEUTRALITY_CONTROL,
+                    current_state()
+                )
+
+            IF NOT meaning_of_1_defined(condition) OR NOT meaning_of_0_defined(condition):
+                RETURN stop_derivation(
+                    derivation,
+                    STOPPED_INSUFFICIENT_INPUT,
+                    ANSWER_MEANING_UNDEFINED,
+                    ANSWER_MEANING_CONTROL,
+                    current_state()
+                )
+
+            applicability_scope = determine_intended_applicability_scope(
+                candidate_text,
+                input.derivation_subject,
+                manifestation,
+                universal_condition,
+                required_context
+            )
+
+            IF NOT applicability_scope_defined(applicability_scope):
+                RETURN stop_derivation(
+                    derivation,
+                    STOPPED_INSUFFICIENT_INPUT,
+                    APPLICABILITY_SCOPE_UNDEFINED,
+                    APPLICABILITY_SCOPE_CONTROL,
+                    current_state()
+                )
+
+            candidate_trace = record_derivation_trace(
                 derivation = derivation,
                 manifestation = manifestation,
                 condition = condition,
                 required_context = required_context,
+                intended_applicability_scope = applicability_scope,
                 controls = current_controls()
             )
 
-            REQUIRE derivation_traceable(trace)
+            IF NOT derivation_traceable(candidate_trace):
+                RETURN stop_derivation(
+                    derivation,
+                    STOPPED_INSUFFICIENT_INPUT,
+                    DERIVATION_NOT_TRACEABLE,
+                    TRACEABILITY_CONTROL,
+                    current_state()
+                )
 
             candidates.append(
                 QUESTION_CANDIDATE(
@@ -642,139 +670,70 @@ FUNCTION derive_specific_questions(input: DERIVATION_INPUT):
                     meaning_1 = define_1(condition),
                     meaning_0 = define_0(condition),
                     required_question_context = required_context,
-                    derivation_trace = trace,
+                    intended_applicability_scope = applicability_scope,
+                    derivation_trace = candidate_trace,
                     state = CANDIDATE
                 )
             )
 
+    final_trace = record_derivation_trace(
+        derivation = derivation,
+        candidates = candidates,
+        result = CANDIDATES_CREATED,
+        controls = all_controls()
+    )
+
     RETURN DERIVATION_RESULT(
         derivation = derivation,
         candidates = candidates,
-        trace = record_derivation_trace(),
-        state = CANDIDATES_CREATED
+        trace = final_trace,
+        state = CANDIDATES_CREATED,
+        stop_reason = null,
+        failed_control = null
     )
 ```
 
 ---
 
-# 8. Prvý skúšobný príklad
-
-## SOURCE_QUESTION_REFERENCE
+# 9. Skúšobný príklad TermikaXC
 
 ```text
-QUESTION:
+SOURCE_QUESTION_REFERENCE:
 MM — Má skúmaný jav určiteľný pôvod, myšlienku, zámer alebo dôvod svojej existencie?
 
 UNIVERSAL_CONDITION:
 prejav má určiteľný pôvod alebo dôvod vzniku
-```
 
-## DERIVATION_SUBJECT
+DERIVATION_SUBJECT:
+proces automatického načítania TEMP po kliknutí na mapu v určenej verzii TermikaXC
 
-```text
-proces automatického načítania TEMP
-po kliknutí na mapu
-v určenej verzii TermikaXC
-```
-
-## DERIVATION_PURPOSE
-
-```text
+DERIVATION_PURPOSE:
 zistiť, či technický proces vzniká z určiteľného spúšťacieho podnetu
-```
 
-## DERIVATION_CONTEXT
+DERIVATION_CONTEXT:
+projekt TermikaXC; proces komunikácie mapy s načítaním TEMP
 
-```text
-projekt TermikaXC
-proces komunikácie mapy s načítaním TEMP
-```
+DERIVATION_SCOPE:
+zahrnutý vznik požiadavky po kliknutí na mapu;
+vylúčená odpoveď servera, správnosť údajov, zobrazenie TEMP a použiteľnosť výsledku
 
-## DERIVATION_SCOPE
-
-```text
-zahrnuté:
-vznik požiadavky po kliknutí na mapu pre zvolené súradnice
-
-vylúčené:
-odpoveď servera
-správnosť údajov
-zobrazenie TEMP
-použiteľnosť výsledku
-```
-
-## DOMAIN_TERM_REFERENCES
-
-```text
-kliknutie na mapu
-zvolené súradnice
-požiadavka na načítanie TEMP
-```
-
-Ich význam a pôvod musia byť spätne citovateľné v projektovej doméne.
-
-## ACTOR_REFERENCE
-
-```text
-ACTOR vykonávajúci odvodzovací úkon musí byť jednoznačne zachytený v zázname úkonu.
-```
-
-## AUTHORITY_CONTEXT
-
-```text
-Musí byť zachytené, na základe akého oprávnenia ACTOR odvodzuje projektovú otázku, pre aký projekt, SUBJECT, rozsah a čas a v akom stave je Validácia tohto oprávnenia.
-```
-
-Tento pracovný príklad neurčuje konkrétnu osobu ani nepredstiera potvrdenú Autoritu.
-
-## SUBJECT_MANIFESTATION
-
-```text
+SUBJECT_MANIFESTATION:
 vznik požiadavky na načítanie TEMP
-```
 
-## Doménové dosadenie
-
-```text
-pôvod prejavu
-→ kliknutie na mapu so zvolenými súradnicami
-
-konkrétny prejav
-→ požiadavka na načítanie TEMP
-```
-
-## QUESTION_CANDIDATE
-
-```text
+QUESTION_CANDIDATE:
 Spustí kliknutie na mapu požiadavku na načítanie TEMP pre zvolené súradnice?
+
+INTENDED_APPLICABILITY_SCOPE:
+kandidát je predbežne navrhnutý pre hodnotenie totožného typu spúšťacieho vzťahu
+v presne určených verziách alebo stavoch TermikaXC, v ktorých význam pojmov
+„kliknutie na mapu“, „zvolené súradnice“ a „požiadavka na načítanie TEMP“ zostáva totožný
 ```
 
-## Význam odpovedí
-
-```text
-1 = po kliknutí na mapu vznikla pre zvolené súradnice preukázateľná požiadavka na načítanie TEMP
-
-0 = vznik takejto požiadavky po kliknutí na mapu nebol v určenom význame potvrdený
-```
-
-## Poznámka k príkladu
-
-Kandidát skúma iba bezprostredný spúšťací pôvod technického prejavu. Nehodnotí:
-
-```text
-či server odpovedal
-či boli údaje správne
-či sa TEMP zobrazil
-či bol výsledok použiteľný
-```
-
-Tieto podmienky musia byť odvodené ako samostatné otázky.
-
-Príklad je neúplným behom algoritmu, kým nie sú konkrétne určené a zaznamenané `ACTOR_REFERENCE`, `AUTHORITY_CONTEXT` a autoritatívne odkazy použitých doménových významov.
+Príklad nie je úplným vykonaným behom, kým nie sú konkrétne určené a zaznamenané `ACTOR_REFERENCE`, `AUTHORITY_CONTEXT` a autoritatívne odkazy doménových významov.
 
 ---
 
-# 9. Minimálna Validácia kandidáta otázky
+# 10. Minimálna Validácia kandidáta otázky
 
 Pred prijatím kandidáta sa musí overiť najmenej:
 
@@ -782,7 +741,7 @@ Pred prijatím kandidáta sa musí overiť najmenej:
 1. Je zdrojová QUESTION a jej významový stav jednoznačne určený?
 2. Je DERIVATION_SUBJECT dostatočne vymedzený?
 3. Je ACTOR jednoznačne určený?
-4. Je zachytený kontext Autority ACTOR-a bez domyslenia jej platnosti?
+4. Je zachytený kontext Autority ACTOR-a?
 5. Je účel odvodzovania určený a neutrálny?
 6. Sú DERIVATION_CONTEXT a DERIVATION_SCOPE odlíšené?
 7. Zachovala sa univerzálna podmienka?
@@ -791,27 +750,18 @@ Pred prijatím kandidáta sa musí overiť najmenej:
 10. Je význam odpovede 1 jednoznačný?
 11. Je význam odpovede 0 jednoznačný?
 12. Je kandidát neutrálny voči výsledku?
-13. Sú doménové významy určené bez domýšľania a spätne citovateľné?
-14. Je REQUIRED_QUESTION_CONTEXT obmedzený iba na nevyhnutný význam otázky?
-15. Je celý postup odvodenia spätne citovateľný v DERIVATION_TRACE?
-16. Je DERIVATION_TRACE odlíšený od EVIDENCE budúceho hodnotenia?
-17. Je kandidát odlíšený od prijatej otázky a budúceho hodnotenia?
+13. Sú doménové významy spätne citovateľné?
+14. Je REQUIRED_QUESTION_CONTEXT iba nevyhnutný?
+15. Je INTENDED_APPLICABILITY_SCOPE určený a odlíšený od DERIVATION_SCOPE?
+16. Je celý postup spätne citovateľný v DERIVATION_TRACE?
+17. Je DERIVATION_TRACE odlíšený od EVIDENCE budúceho hodnotenia?
+18. Je kandidát odlíšený od prijatej otázky a budúceho hodnotenia?
+19. Vytvorilo každé zastavenie jednotný DERIVATION_RESULT?
 ```
-
-Pracovný výsledok Validácie môže byť:
-
-```text
-ACCEPTED_FOR_USE
-RETURNED_FOR_REVISION
-REJECTED
-NOT_VERIFIABLE
-```
-
-Tieto označenia zatiaľ netvoria potvrdený číselník METODIKY.
 
 ---
 
-# 10. Hranica prvého algoritmu
+# 11. Hranica prvého algoritmu
 
 Tento algoritmus zatiaľ nerieši:
 
@@ -822,7 +772,7 @@ poradie odvodených otázok
 definitívnu identitu DOMAIN_TERM
 Autoritu prijatia kandidáta
 úplnú Validáciu kandidáta
-rozsah opakovateľnej použiteľnosti prijatej otázky
+konečný rozsah opakovateľnej použiteľnosti prijatej otázky
 odvodzovanie otázok Z a T do zloženého vzťahu S
 dedukciu odpovedí
 výber dôkazov
@@ -831,4 +781,4 @@ Autoritu Validácie hodnotenia
 technickú implementáciu
 ```
 
-Najbližším logickým krokom je spoločné metodické preskúmanie tohto algoritmu a ontológie ako jedného významového celku. Až po ich prijatí možno odvodiť aplikačný kontrakt prvého doménového algoritmu v CodeIgniteri.
+Najbližším logickým krokom je spoločná reValidácia tohto algoritmu a ontológie ako jedného významového celku. Až pri výsledku `VALID` alebo `VALID_WITH_LIMITATIONS` možno odvodiť aplikačný kontrakt prvého doménového algoritmu.
