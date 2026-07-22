@@ -31,8 +31,9 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - vytvorená pôvodná spoločná Validácia [`postupy/2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md`](postupy/2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md) s historickým výsledkom `CONDITIONALLY_VALID`,
 - v odvodzovacom algoritme boli opravené tri blokujúce body: doplnený `INTENDED_APPLICABILITY_SCOPE`, pokus o `QUESTION_DERIVATION` sa zaznamenáva pred vstupnými kontrolami a všetky zastavenia používajú jednotný `DERIVATION_RESULT` s auditnou stopou,
 - vytvorená nová spoločná reValidácia [`postupy/2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md`](postupy/2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md) s výsledkom `VALID_WITH_LIMITATIONS`,
-- reValidácia povoľuje odvodiť aplikačný kontrakt; ten musí pred implementáciou výslovne určiť, či je jeden beh algoritmu atómový alebo zachováva čiastočne vytvorené kandidáty,
-- ontológia, algoritmus, pôvodná Validácia aj reValidácia zostávajú `PRACOVNÉ`; ich aktuálny stav eviduje [`postupy/README.md`](postupy/README.md),
+- vytvorený prvý aplikačný kontrakt [`postupy/2026-07-22_APLIKACNY-KONTRAKT-ODVODZOVANIA-OTAZOK.md`](postupy/2026-07-22_APLIKACNY-KONTRAKT-ODVODZOVANIA-OTAZOK.md), ktorý určuje topológiu odozvy `PARTIAL_RUN_WITH_ATOMIC_GATE`: spoločné vstupy tvoria atómovú bránu, nezávislé kandidátske vetvy pokračujú samostatne a každý vetvový aj nadradený výsledok sa vracia zdroju s auditnou stopou,
+- kontrakt odlišuje metodickú transakčnú hranicu od databázovej transakcie a zakazuje vymazať už ukončené nezávislé vetvy pre zlyhanie neskoršej vetvy,
+- aplikačný kontrakt zostáva `PRACOVNÝ` a čaká na Validáciu pred návrhom služby, repository, migrácií, controllera a API odpovede; stav eviduje [`postupy/README.md`](postupy/README.md),
 - algoritmus zatiaľ nevykonáva hodnotenie, neodvodzuje odpoveď a neurčuje technickú implementáciu,
 - autoritatívnym východiskom zostávajú pravidlá otázok v [`OTAZKY/README.md`](OTAZKY/README.md), univerzálna matica v [`OTAZKY/UNIVERZALNE/Objektivita-XY.md`](OTAZKY/UNIVERZALNE/Objektivita-XY.md) a platné definície v [`POJMY-A-DEFINICIE.md`](POJMY-A-DEFINICIE.md).
 
