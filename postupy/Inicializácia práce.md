@@ -131,6 +131,7 @@ Na konci stručne uviesť:
 - čo zostáva otvorené,
 - aké riziká pretrvávajú,
 - identifikátor commitu,
+- zapísať,
 - nasledujúci logický krok.
 
 Ak išlo o významnú zmenu, vytvoriť checkpoint.
@@ -139,7 +140,7 @@ Ak išlo o významnú zmenu, vytvoriť checkpoint.
 
 # Základné pravidlo
 
-> Najprv overiť prístup, potom obnoviť kontext, následne analyzovať a až potom vykonať zmenu.
+> Najprv overiť prístup, potom obnoviť kontext, následne analyzovať a až potom vykonať zmenu a nezabudnúť ju zapísať kde treba.
 
 Skrátené poradie:
 
