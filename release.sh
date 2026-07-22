@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Vytvorí nasaditeľný release výhradne z autoritatívneho runtime app/.
-# Obsah app/ sa uloží priamo do koreňa ZIP-u:
-#   index.php, app/, ux/, infrastructure/, services/, kernels/, ...
-# Adresáre app/ ani XC/ sa v archíve nesmú objaviť.
+# Vytvori nasaditelny release ZIP pre CodeIgniter projekt v codei/.
+# Archiv je urceny pre Hostinger fallback deployment bez zmeny web rootu,
+# teda pre rozbalenie do public_html tak, aby vznikol adresar public_html/codei.
 #
 # Použitie:
 #   ./release.sh
@@ -17,12 +16,12 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 VERSION_FILE="$ROOT_DIR/RELEASE_VERSION"
-app_ROOT="$ROOT_DIR/app"
-app_VERSION_FILE="$app_ROOT/app/asset/RELEASE_VERSION.txt"
+PROJECT_DIR="$ROOT_DIR/codei"
 DEFAULT_VERSION="1.0.0"
 AUTO_COMMIT=false
 AUTO_PUSH=false
 COMMIT_MESSAGE=""
+TARGET_LAYOUT="codei"
 
 VERSION=""
 BUMP_MODE=""
@@ -37,24 +36,32 @@ for arg in "$@"; do
     --commit-message=*)
       COMMIT_MESSAGE="${arg#*=}"
       ;;
+    --target=codei)
+      TARGET_LAYOUT="codei"
+      ;;
+    --target=*)
+      echo "Error: unsupported target '${arg#*=}'. Supported target is: codei" >&2
+      exit 1
+      ;;
     patch|minor|major|mini)
       if [[ -n "$VERSION" || -n "$BUMP_MODE" ]]; then
-        echo "Usage: $0 [--auto-commit] [--auto-push] [--commit-message=...] [version|patch|minor|major|mini]" >&2
+        echo "Usage: $0 [--auto-commit] [--auto-push] [--commit-message=...] [--target=codei] [version|patch|minor|major|mini]" >&2
         exit 1
       fi
       BUMP_MODE="$arg"
       ;;
     -h|--help)
       cat <<'EOF'
-Usage: ./release.sh [--auto-commit] [--auto-push] [--commit-message=...] [version|patch|minor|major|mini]
+Usage: ./release.sh [--auto-commit] [--auto-push] [--commit-message=...] [--target=codei] [version|patch|minor|major|mini]
 
-Vytvorí ZIP z obsahu app/ bez nadradeného priečinka app/ a bez akéhokoľvek súboru z XC/.
-ZIP je pripravený na priame rozbalenie do koreňa aplikácie na hostingu.
+Vytvori ZIP pre deployment CodeIgniter projektu codei/ na Hostinger shared hostingu.
+ZIP je pripraveny na rozbalenie do public_html, kde vytvori public_html/codei.
 
 Voľby:
-  --auto-commit           Commitne RELEASE_VERSION, app marker a vytvorený ZIP
+  --auto-commit           Commitne RELEASE_VERSION a vytvoreny ZIP
   --auto-push             Po commite pushne aktuálnu pracovnú vetvu
   --commit-message=MSG    Vlastná správa auto-commitu
+  --target=codei          Cielovy layout release (predvolene codei)
 
 Verzia:
   version                 Explicitná verzia, napr. 3.1.5
@@ -66,7 +73,7 @@ EOF
       ;;
     *)
       if [[ -n "$VERSION" ]]; then
-        echo "Usage: $0 [--auto-commit] [--auto-push] [--commit-message=...] [version|patch|minor|major|mini]" >&2
+        echo "Usage: $0 [--auto-commit] [--auto-push] [--commit-message=...] [--target=codei] [version|patch|minor|major|mini]" >&2
         exit 1
       fi
       VERSION="$arg"
@@ -124,75 +131,91 @@ if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?$ ]]; then
   exit 1
 fi
 
-# Kontrolujú sa iba skutočné, nasadzované vstupy app. Release nikdy nesmie
-# dopĺňať chýbajúci súbor z historického stromu XC/.
-REQUIRED_app_PATHS=(
-  "app/index.php"
-  "app/app/index.php"
-  "app/app/terrain-analysis-test.php"
-  "app/app/release-version.php"
-  "app/app/asset/RELEASE_VERSION.txt"
-  "app/registry/modules.json"
-  "app/ux"
-  "app/infrastructure"
-  "app/services"
-  "app/kernels"
+if [[ ! -d "$PROJECT_DIR" ]]; then
+  echo "Error: missing project directory: $PROJECT_DIR" >&2
+  exit 1
+fi
+
+if [[ "$TARGET_LAYOUT" != "codei" ]]; then
+  echo "Error: unsupported release target layout: $TARGET_LAYOUT" >&2
+  exit 1
+fi
+
+REQUIRED_PROJECT_PATHS=(
+  "codei/public/index.php"
+  "codei/public/.htaccess"
+  "codei/app/Config/App.php"
+  "codei/system/CodeIgniter.php"
+  "codei/index.php"
+  "codei/.htaccess"
 )
-for required_path in "${REQUIRED_app_PATHS[@]}"; do
+for required_path in "${REQUIRED_PROJECT_PATHS[@]}"; do
   if [[ ! -e "$ROOT_DIR/$required_path" ]]; then
-    echo "Error: missing required app runtime path: $required_path" >&2
+    echo "Error: missing required runtime path: $required_path" >&2
     exit 1
   fi
 done
 
-# Pred zmenou markerov musí byť pracovný strom čistý. Samotné release markery
-# sú povolené, pretože ich skript zjednotí na požadovanú verziu.
-DIRTY_STATUS="$(git status --porcelain | grep -vE '^[ MARC?DU]{1,2} (RELEASE_VERSION|app/app/asset/RELEASE_VERSION\.txt)$' || true)"
+# Pred release musi byt pracovny strom cisty. Povoli sa iba release marker
+# a predosle release ZIPy.
+DIRTY_STATUS="$(git status --porcelain | grep -vE '^[ MARC?DU]{1,2} (RELEASE_VERSION|releases/[^ ]+\.zip)$' || true)"
 if [[ -n "$DIRTY_STATUS" ]]; then
   echo "Error: git working tree is not clean. Commit or stash your changes before releasing." >&2
   echo "$DIRTY_STATUS" >&2
   exit 1
 fi
 
-# Repozitárový marker riadi verziu. Nasadzovaný marker patrí do app aplikácie.
 printf '%s\n' "$VERSION" > "$VERSION_FILE"
-printf '%s\n' "$VERSION" > "$app_VERSION_FILE"
 
 OUT_DIR="$ROOT_DIR/releases"
-OUT_FILE="$OUT_DIR/termika-xc-${VERSION}.zip"
+OUT_FILE="$OUT_DIR/metodika-codei-hostinger-${VERSION}.zip"
 TMP_DIR="$(mktemp -d)"
-SOURCE_LIST="$TMP_DIR/app-source-files.txt"
+SOURCE_LIST="$TMP_DIR/codei-source-files.txt"
 STAGE_DIR="$TMP_DIR/release-root"
 ARCHIVE_LIST="$TMP_DIR/archive-files.txt"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
 mkdir -p "$OUT_DIR" "$STAGE_DIR"
 
-# Zdrojom je výhradne Gitom sledovaný obsah app/. Prefix app/ sa pri kopírovaní
-# odstráni, takže výsledný ZIP možno rozbaliť priamo do document rootu aplikácie.
-git -C "$ROOT_DIR" ls-files "app/" > "$SOURCE_LIST"
+# Zdrojom je vyhradne Gitom sledovany obsah codei/.
+git -C "$ROOT_DIR" ls-files "codei/" > "$SOURCE_LIST"
 
 if [[ ! -s "$SOURCE_LIST" ]]; then
-  echo "Error: no tracked files found in app/." >&2
+  echo "Error: no tracked files found in codei/." >&2
   exit 1
 fi
 
 while IFS= read -r source_path; do
   [[ -n "$source_path" ]] || continue
 
-  if [[ "$source_path" != app/* ]]; then
-    echo "Error: release source escaped app/: $source_path" >&2
+  if [[ "$source_path" != codei/* ]]; then
+    echo "Error: release source escaped codei/: $source_path" >&2
     exit 1
   fi
 
-  relative_path="${source_path#app/}"
+  relative_path="${source_path#codei/}"
   if [[ -z "$relative_path" ]]; then
     continue
   fi
 
   case "$relative_path" in
-    .local-config.php|*/.local-config.php|app/asset/local-config.php)
-      echo "Error: local secret configuration must not be packaged: $source_path" >&2
+    .env|.env.*|local-config.php|.local-config.php|*/local-config.php|*/.local-config.php)
+      echo "Error: secret configuration must not be packaged: $source_path" >&2
+      exit 1
+      ;;
+    writable/cache/*|writable/debugbar/*|writable/logs/*|writable/session/*|writable/uploads/*)
+      if [[ "$relative_path" != */index.html ]]; then
+        continue
+      fi
+      ;;
+    tests/*|phpunit.dist.xml)
+      continue
+      ;;
+    deploy/apache/*)
+      continue
+      ;;
+    vendor/*)
+      echo "Error: vendor directory is tracked in git, but must not be released from repository artifacts: $source_path" >&2
       exit 1
       ;;
   esac
@@ -209,14 +232,12 @@ while IFS= read -r source_path; do
     fi
   fi
 
-  mkdir -p "$STAGE_DIR/$(dirname "$relative_path")"
-  cp -p "$ROOT_DIR/$source_path" "$STAGE_DIR/$relative_path"
+  mkdir -p "$STAGE_DIR/codei/$(dirname "$relative_path")"
+  cp -p "$ROOT_DIR/$source_path" "$STAGE_DIR/codei/$relative_path"
 done < "$SOURCE_LIST"
 
-# Marker sa musí dostať do ZIP-u aj v prípade, že bol v pracovnom strome práve
-# zmenený a ešte nebol commitnutý.
-mkdir -p "$STAGE_DIR/app/asset"
-cp -p "$app_VERSION_FILE" "$STAGE_DIR/app/asset/RELEASE_VERSION.txt"
+mkdir -p "$STAGE_DIR/codei/deploy"
+printf '%s\n' "$VERSION" > "$STAGE_DIR/codei/deploy/RELEASE_VERSION.txt"
 
 rm -f "$OUT_FILE"
 (
@@ -237,25 +258,31 @@ if [[ ! -s "$ARCHIVE_LIST" ]]; then
   exit 1
 fi
 
-if grep -Eq '^(app|XC)/' "$ARCHIVE_LIST"; then
+if grep -Eq '^(app|public|system|writable|deploy)/' "$ARCHIVE_LIST"; then
   rm -f "$OUT_FILE"
-  echo "Error: archive contains forbidden top-level app/ or XC/ directory." >&2
+  echo "Error: archive root is invalid. Expected top-level directory codei/." >&2
   exit 1
 fi
 
-if grep -Eq '(^|/)(\.local-config\.php|local-config\.php)$' "$ARCHIVE_LIST"; then
+if grep -Ev '^codei/' "$ARCHIVE_LIST" >/dev/null; then
   rm -f "$OUT_FILE"
-  echo "Error: archive contains a local secret configuration file." >&2
+  echo "Error: archive contains entries outside codei/ root." >&2
+  exit 1
+fi
+
+if grep -Eq '(^|/)(\.env(\..+)?)$|(^|/)(\.local-config\.php|local-config\.php)$' "$ARCHIVE_LIST"; then
+  rm -f "$OUT_FILE"
+  echo "Error: archive contains secret configuration files (.env/local-config)." >&2
   exit 1
 fi
 
 REQUIRED_ARCHIVE_FILES=(
-  "index.php"
-  "app/index.php"
-  "app/terrain-analysis-test.php"
-  "app/release-version.php"
-  "app/asset/RELEASE_VERSION.txt"
-  "registry/modules.json"
+  "codei/index.php"
+  "codei/.htaccess"
+  "codei/public/index.php"
+  "codei/public/.htaccess"
+  "codei/app/Config/App.php"
+  "codei/deploy/RELEASE_VERSION.txt"
 )
 for required_file in "${REQUIRED_ARCHIVE_FILES[@]}"; do
   if ! grep -Fxq "$required_file" "$ARCHIVE_LIST"; then
@@ -265,7 +292,7 @@ for required_file in "${REQUIRED_ARCHIVE_FILES[@]}"; do
   fi
 done
 
-for required_prefix in "ux/" "infrastructure/" "services/" "kernels/"; do
+for required_prefix in "codei/app/" "codei/system/" "codei/writable/" "codei/public/"; do
   if ! grep -q "^${required_prefix}" "$ARCHIVE_LIST"; then
     rm -f "$OUT_FILE"
     echo "Error: created archive does not contain runtime tree $required_prefix" >&2
@@ -273,7 +300,7 @@ for required_prefix in "ux/" "infrastructure/" "services/" "kernels/"; do
   fi
 done
 
-ARCHIVED_VERSION="$(unzip -p "$OUT_FILE" app/asset/RELEASE_VERSION.txt | tr -d '[:space:]')"
+ARCHIVED_VERSION="$(unzip -p "$OUT_FILE" codei/deploy/RELEASE_VERSION.txt | tr -d '[:space:]')"
 if [[ "$ARCHIVED_VERSION" != "$VERSION" ]]; then
   rm -f "$OUT_FILE"
   echo "Error: archived release marker '$ARCHIVED_VERSION' does not match requested version '$VERSION'." >&2
@@ -281,10 +308,10 @@ if [[ "$ARCHIVED_VERSION" != "$VERSION" ]]; then
 fi
 
 echo "Release created: $OUT_FILE"
-echo "Contents: $(wc -l < "$ARCHIVE_LIST") files from app/"
-echo "Deployment: extract ZIP directly into the application document root"
-echo "Verified: ZIP root contains index.php, app/, ux/, infrastructure/, services/ and kernels/"
-echo "Verified: ZIP contains neither app/ nor XC/ and no local secret configuration"
+echo "Contents: $(wc -l < "$ARCHIVE_LIST") files from codei/"
+echo "Deployment: extract ZIP into public_html to create/overwrite public_html/codei"
+echo "Verified: archive root is codei/ and includes index.php shim + public front controller"
+echo "Verified: archive excludes .env/local-config and runtime writable payload files"
 echo "Verified release marker: $ARCHIVED_VERSION"
 
 if [[ "$AUTO_COMMIT" == true ]]; then
@@ -293,7 +320,6 @@ if [[ "$AUTO_COMMIT" == true ]]; then
   fi
 
   git add "$VERSION_FILE"
-  git add "$app_VERSION_FILE"
   git add -f "$OUT_FILE"
 
   if git diff --cached --quiet; then
