@@ -1,0 +1,14 @@
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Keep direct /public requests untouched.
+    RewriteCond %{REQUEST_URI} /public(/|$) [NC]
+    RewriteRule ^ - [L]
+
+    # Send all requests through root index.php shim.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L,QSA]
+</IfModule>

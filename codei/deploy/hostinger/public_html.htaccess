@@ -1,0 +1,17 @@
+# Optional hardening when using fallback path /codei/public on shared hosting.
+# Place this file as public_html/.htaccess and adapt if needed.
+
+RewriteEngine On
+
+# Block direct access to non-public internals under /codei.
+RewriteRule ^codei/(app|system|writable|tests|vendor|spark|env)(/|$) - [F,L,NC]
+RewriteRule ^codei/(composer\.(json|lock)|phpunit\.dist\.xml|preload\.php)$ - [F,L,NC]
+
+# If a static file exists in codei/public, serve it directly.
+RewriteCond %{DOCUMENT_ROOT}/codei/public/$1 -f
+RewriteRule ^(.+)$ /codei/public/$1 [L]
+
+# Otherwise route through public_html/index.php (redirect shim).
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L,QSA]
