@@ -15,7 +15,7 @@ final class VerifyDatabaseCapabilities extends BaseCommand
     protected $description = 'Overí verziu servera, InnoDB, utf8mb4_bin a DATETIME(6) bez výpisu tajomstiev.';
     protected $usage = 'metodika:db-capabilities';
 
-    public function run(array $params): int
+    public function run(array $params)
     {
         try {
             $db = db_connect('default');
