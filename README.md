@@ -6,7 +6,7 @@
 
 # Poslanie projektu
 
-Projekt **METODIKA** vznikol ako centrálny systém uchovávania univerzálnych princípov skúmania a riadenia živých projektov.
+Projekt **METODIKA** je centrálnym systémom uchovávania univerzálnych princípov skúmania a riadenia živých projektov.
 
 Jeho cieľom je:
 
@@ -38,7 +38,9 @@ Implementácia nesmie predbehnúť metodiku. Databázová alebo softvérová št
 
 ---
 
-# Aktuálna štruktúra repozitára
+# Skutočná štruktúra repozitára
+
+Nasledujúci strom zachytáva aktuálne evidované súbory a významové korene vetvy `main`. Prázdne adresáre môžu byť v Gite neprítomné, kým neobsahujú súbor.
 
 ```text
 METODIKA/
@@ -47,34 +49,69 @@ METODIKA/
 ├── POJMY-A-DEFINICIE.md
 ├── AUTORITA.md
 ├── CHANGELOG.md
-├── uQestions.md                  # rozcestník pre staršie odkazy
-├── DISCIPLINA.md                 # rozcestník pre staršie odkazy
+├── uQestions.md
+├── DISCIPLINA.md
+├── lara_dep.md
+├── startApp.sh
 ├── .gitignore
 │
 ├── OTAZKY/
+│   ├── README.md
+│   ├── SIEDMA-PLOCHA-S.md
 │   ├── UNIVERZALNE/
 │   │   ├── README.md
 │   │   └── Objektivita-XY.md
 │   ├── ATRIBUTOVE/
+│   │   ├── README.md
 │   │   └── ZODPOVEDNOST/
 │   │       └── Disciplina.md
 │   └── PROJEKTOVE/
+│       └── README.md
 │
 ├── HODNOTENIA/
+│   └── README.md
 │
 ├── PRINCIPY/
+│   └── HermetickePrincipy.md
+│
 ├── PROJEKTY/
+│   └── ZoznamProjektov.md
+│
 ├── CHECKLISTY/
-├── AGENTI/
+│   └── StartProjektu.md
+│
 ├── postupy/
+│   ├── README.md
+│   ├── 2026-07-21_10-23_DB-METODIKA-MAPMET.md
+│   ├── 2026-07-21_13-52_LOG-MODEL-METODIC.md
+│   ├── 2026-07-21_AKTOR-A-AUTORITA.md
+│   ├── 2026-07-21_AUTORITA-IDENTITY-SUBJEKTU.md
+│   ├── 2026-07-21_DOKAZ-TVRDENIE-A-PRAVDA.md
+│   ├── 2026-07-21_IDENTITA-A-IDENTIFIKATORY.md
+│   ├── 2026-07-21_KONTINUITA-SUBJEKTU.md
+│   ├── 2026-07-21_KRITERIA-IDENTITY-SUBJEKTU.md
+│   ├── 2026-07-21_LOGICKE-ZDOVODNENIE-SUBJEKTU.md
+│   ├── 2026-07-21_METODICKE-UKONY.md
+│   ├── 2026-07-21_MINIMALNY-LOGICKY-MODEL.md
+│   ├── 2026-07-21_NASLEDKY-METODICKYCH-UKONOV.md
+│   ├── 2026-07-21_PLATNOST-A-UCINNOST.md
+│   ├── 2026-07-21_POSTULAT-SUBJEKTU.md
+│   ├── 2026-07-21_SKUTOCNOST-MERANIE-A-TVRDENIE.md
+│   └── 2026-07-21_VALIDACIA.md
+│
 ├── poznámky/
+│   ├── README.md
+│   └── 2026-07-21_08-06_DB-OTAZKY-ALG.md
+│
+├── AGENTI/
 ├── ARCHIV/
 │
 └── app/
-    └── setup.php
+    ├── setup.php
+    └── db.env
 ```
 
-Tento strom zachytáva významové korene. Prázdne alebo ďalej rozvíjané adresáre sa dopĺňajú až podľa metodicky potvrdenej potreby.
+`app/db.env` je historicky zachytený prevádzkový súbor, nie autoritatívna konfigurácia ani vzor pre release. Lokálne tajomstvá patria výhradne do ignorovaných lokálnych konfiguračných súborov.
 
 ---
 
@@ -82,11 +119,16 @@ Tento strom zachytáva významové korene. Prázdne alebo ďalej rozvíjané adr
 
 - [POJMY-A-DEFINICIE.md](POJMY-A-DEFINICIE.md) — platné základné pojmy, rozmery a logické rozlíšenia.
 - [AUTORITA.md](AUTORITA.md) — spoločný pracovný koreň Autority.
+- [OTAZKY/README.md](OTAZKY/README.md) — pravidlá otázok a ich rozmerového zaradenia.
 - [OTAZKY/UNIVERZALNE/Objektivita-XY.md](OTAZKY/UNIVERZALNE/Objektivita-XY.md) — univerzálna objektívna matica otázok.
-- [OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md](OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md) — disciplína ako atribút Zodpovednosti.
-- [CHANGELOG.md](CHANGELOG.md) — priebežný záznam podstatných zmien.
+- [OTAZKY/SIEDMA-PLOCHA-S.md](OTAZKY/SIEDMA-PLOCHA-S.md) — metodický koreň logického vzťahu S medzi Z a T.
+- [OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md](OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md) — Disciplína ako atribút Zodpovednosti.
+- [HODNOTENIA/README.md](HODNOTENIA/README.md) — pravidlá hodnotiacich záznamov.
+- [postupy/README.md](postupy/README.md) — záväzný register stavu pracovných postupov.
+- [poznámky/README.md](poznámky/README.md) — záväzný register stavu pracovných poznámok.
+- [CHANGELOG.md](CHANGELOG.md) — stručný záznam zmien a odkazy na miesta platných definícií.
 
-Dokumenty v `poznámky/` a `postupy/` môžu zachytávať vývoj, pracovné hypotézy a neplatné návrhy. Nesmú mať vyššiu Autoritu než platné definície.
+Dokumenty v `poznámky/` a `postupy/` nemajú vyššiu Autoritu než platné definície. Ich aktuálny stav sa neurčuje dojmom ani názvom súboru, ale registrami v príslušných adresároch.
 
 ---
 
@@ -117,14 +159,7 @@ Elementárna otázka musí viesť k jednej presne určenej odpovedi:
 0 = skúmaná podmienka nie je v určenom význame potvrdená
 ```
 
-Hodnota `0` sama osebe neznamená absolútnu neexistenciu. Môže znamenať napríklad:
-
-- neprítomnosť prejavu,
-- nesplnenie podmienky,
-- chýbajúci dôkaz,
-- nesprávny čas,
-- nepresne určený predmet,
-- potrebu ďalšieho rozkladu otázky.
+Hodnota `0` sama osebe neznamená absolútnu neexistenciu. Môže znamenať neprítomnosť prejavu, nesplnenie podmienky, chýbajúci dôkaz, nesprávny čas, nepresne určený predmet alebo potrebu ďalšieho rozkladu otázky.
 
 ---
 
@@ -157,9 +192,7 @@ Z a T sú samostatné rozmery subjektivity. Zápis `Subjektivita = Z × T` sa ne
 
 ```text
 Život = X × Y × Z × T
-```
 
-```text
 X × Y         = [1/0]^2
 X × Y × Z     = [1/0]^3
 X × Y × Z × T = [1/0]^4
@@ -190,20 +223,6 @@ Z ⊕ T   — XOR
 ```
 
 Logický operátor sa nesmie vybrať automaticky. Musí ho určiť presný význam otázky.
-
-`AND` a `IF` nie sú zameniteľné:
-
-```text
-Z ∧ T
-```
-
-vyžaduje súčasné potvrdenie Z aj T, kým:
-
-```text
-T → Z
-```
-
-je nepravdivé iba vtedy, keď `T = 1` a `Z = 0`.
 
 ---
 
@@ -255,6 +274,8 @@ Spôsob algoritmického zloženia veľkého množstva elementárnych odpovedí d
 8. Pracovný postup ani poznámka sa nesmú vydávať za platnú definíciu.
 9. Pri nejasnosti sa najprv hľadá správna otázka.
 10. SQL schéma ani softvérový model nesmú predbehnúť elementárnu logiku.
+11. Každý dokument v `postupy/` a `poznámky/` musí mať explicitný stav v príslušnom registri.
+12. Zmena súboru, jeho stavu a príslušného záznamu v `CHANGELOG.md` tvoria jeden pracovný úkon.
 
 ---
 
