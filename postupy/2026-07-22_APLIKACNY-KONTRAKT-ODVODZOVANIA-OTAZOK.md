@@ -16,35 +16,23 @@ postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md
 postupy/2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md
 ```
 
-Neurčuje ešte PHP triedy, databázové tabuľky, HTTP route ani používateľské rozhranie. Určuje významovú hranicu aplikačnej operácie, topológiu odozvy jedného behu a povinné vstupy a výstupy, ktoré musí budúca služba zachovať.
+Neurčuje PHP triedy, databázové tabuľky, HTTP route ani používateľské rozhranie. Určuje významovú hranicu aplikačnej operácie, topológiu odozvy jedného behu a povinné väzby, ktoré musí budúca služba zachovať.
 
 ---
 
 # 1. Predmet kontraktu
 
-Aplikačná operácia vykonáva jeden metodický úkon odvodzovania:
-
 ```text
-DERIVATION_INPUT
+DERIVATION_APPLICATION_INPUT
 → QUESTION_DERIVATION
-→ DERIVATION_RESULT
+→ DERIVATION_RUN_RESULT
 ```
 
-Kontrakt musí zabezpečiť, aby:
-
-```text
-- každý pokus bol historicky zachytený,
-- spoločné vstupné podmienky boli overené pred vetvením,
-- každý kandidát vznikal vo vlastnej preskúmateľnej vetve,
-- zlyhanie jednej vetvy nevymazalo platné výsledky iných vetiev,
-- každý výsledok sa vrátil k zdroju spolu s dôvodom a auditnou stopou.
-```
+Každý pokus musí byť historicky zachytený. Spoločné vstupy sa musia overiť pred vetvením. Každá kandidátska vetva musí mať vlastný výsledok a auditnú stopu. Výsledok celého behu sa musí dať bez domýšľania spojiť so zdrojovou požiadavkou a cieľom návratu.
 
 ---
 
-# 2. Rozhodnutie transakčnej hranice
-
-Pre prvý doménový algoritmus sa prijíma:
+# 2. Režim behu
 
 ```text
 RUN_MODE
@@ -52,21 +40,19 @@ RUN_MODE
 PARTIAL_RUN_WITH_ATOMIC_GATE
 ```
 
-Ide o `PARTIAL RUN` s jednou spoločnou atómovou vstupnou bránou.
-
 ```text
-ATOMIC INPUT GATE
+ATOMIC_INPUT_GATE
 =
 spoločné podmienky, bez ktorých nesmie vzniknúť žiadna kandidátska vetva
 ```
 
 ```text
-PARTIAL CANDIDATE PROCESSING
+PARTIAL_CANDIDATE_PROCESSING
 =
-po úspešnom prechode vstupnou bránou sa každá samostatná kandidátska vetva spracúva a ukončuje osobitne
+po prechode bránou sa každá samostatná kandidátska vetva spracúva a ukončuje osobitne
 ```
 
-Toto rozhodnutie znamená:
+Platí:
 
 ```text
 zlyhanie spoločného vstupu
@@ -74,115 +60,54 @@ zlyhanie spoločného vstupu
 ```
 
 ```text
-zlyhanie jednej kandidátskej vetvy
-→ táto vetva sa vráti k zdroju s vlastným výsledkom
+zlyhanie jednej nezávislej vetvy
+→ vetva sa vráti s vlastným výsledkom
 → úplne vytvorené kandidáty zostávajú zachované
 → ostatné nezávislé vetvy môžu pokračovať
 ```
 
 ---
 
-# 3. Dôvod voľby PARTIAL RUN
-
-Jedna univerzálna podmienka môže zodpovedať viacerým samostatným prejavom `DERIVATION_SUBJECT-u`.
-
-```text
-jedna SOURCE QUESTION
-→ viac SUBJECT_MANIFESTATION
-→ viac nezávislých kandidátskych vetiev
-```
-
-Ak jedna vetva zlyhá pre neelementárnosť, nejasný rozsah použiteľnosti alebo zmenu primárneho rozmeru, nevzniká tým automaticky dôvod zneplatniť kandidáta odvodeného z iného samostatného prejavu.
-
-Úplne atómový beh by spôsobil:
-
-```text
-jedna chybná vetva
-→ strata všetkých už korektne odvodených kandidátov
-```
-
-To by miešalo výsledok jednej vetvy s výsledkom celého metodického úkonu a skrývalo by, ktorá časť skutočne zlyhala.
-
-`PARTIAL_RUN_WITH_ATOMIC_GATE` zachováva:
-
-```text
-spoločnú integritu vstupov
-+
-nezávislosť kandidátskych vetiev
-+
-spätnú preskúmateľnosť každého výsledku
-```
-
----
-
-# 4. Topológia odozvy
-
-## 4.1 Zdroj behu
-
-Zdrojom aplikačnej operácie je ACTOR alebo nadradený aplikačný proces, ktorý predložil `DERIVATION_INPUT`.
+# 3. Zdroj, požiadavka a cieľ návratu
 
 ```text
 REQUEST_SOURCE
-≠ automaticky ACTOR
+≠ ACTOR
+≠ AUTHORITY
 ```
 
-Technický žiadateľ môže byť používateľské rozhranie, API, CLI alebo iný proces. Metodický ACTOR musí byť určený osobitne.
+`REQUEST_SOURCE` je technický alebo aplikačný zdroj operácie. Môže ním byť používateľské rozhranie, API, CLI alebo nadradený proces. Metodický ACTOR sa určuje osobitne.
 
-## 4.2 Spoločná odozva behu
-
-Každý beh vracia jeden nadradený výsledok:
+Každý vstup musí obsahovať:
 
 ```text
-DERIVATION_RUN_RESULT
-```
-
-Ten sa vždy vracia zdroju operácie a obsahuje stav celého behu.
-
-## 4.3 Odozva kandidátskej vetvy
-
-Každá vetva vracia:
-
-```text
-CANDIDATE_BRANCH_RESULT
-```
-
-Vetva môže skončiť:
-
-```text
-CANDIDATE_CREATED
-BRANCH_STOPPED
-RETURNED_FOR_DECOMPOSITION
-```
-
-Výsledok vetvy sa pripojí k nadradenému výsledku behu. Neúspešná vetva sa nepresúva automaticky na ďalšie spracovanie ako kandidát.
-
-## 4.4 Pokračovanie k ďalšiemu kandidátovi
-
-Po ukončení jednej vetvy platí:
-
-```text
-ak existuje ďalší nezávislý SUBJECT_MANIFESTATION
-→ pokračovať ďalšou vetvou
+REQUEST_REFERENCE
+=
+jednoznačný odkaz na konkrétnu predloženú aplikačnú požiadavku
 ```
 
 ```text
-ak ďalšia vetva závisí od neúspešného výsledku predchádzajúcej vetvy
-→ nepokračovať
-→ vrátiť závislosť k zdroju ako BLOCKED_BY_DEPENDENCY
+RESPONSE_TARGET_REFERENCE
+=
+jednoznačný odkaz na zdroj alebo nadradený proces, ktorému sa má vrátiť výsledok
 ```
 
-Tým sa odlišuje:
+Musí byť zachovaná korelačná cesta:
 
 ```text
-nezávislý ďalší kandidát
-≠ následný krok závislý od neúspešného kandidáta
+REQUEST_REFERENCE
+→ QUESTION_DERIVATION
+→ DERIVATION_RUN_RESULT
+→ RESPONSE_TARGET_REFERENCE
 ```
+
+`REQUEST_REFERENCE` nepreukazuje identitu ACTOR-a ani jeho Autoritu. Slúži iba na jednoznačné priradenie požiadavky, behu a odpovede.
 
 ---
 
-# 5. Atómová vstupná brána
+# 4. Atómová vstupná brána
 
-Pred vytvorením kandidátskych vetiev musí prejsť spoločná kontrola:
+Pred vytvorením vetiev sa overuje najmenej:
 
 ```text
 ACTOR_REFERENCE
@@ -194,41 +119,35 @@ DERIVATION_CONTEXT
 DERIVATION_SCOPE
 DOMAIN_TERM_REFERENCES
 UNIVERSAL_CONDITION
+REQUEST_REFERENCE
+RESPONSE_TARGET_REFERENCE
 ```
 
-Ak zlyhá ktorákoľvek z týchto kontrol:
+Ak zlyhá ktorákoľvek kontrola:
 
 ```text
-RUN_STATE = STOPPED_AT_GATE
+run_state = STOPPED_AT_GATE
 candidates = []
 branch_results = []
 ```
 
-Výsledok musí obsahovať:
+Výsledok musí obsahovať `derivation`, `request_reference`, `response_target_reference`, `run_state`, `stop_reason`, `failed_control` a `trace`.
 
-```text
-derivation
-run_state
-stop_reason
-failed_control
-trace
-```
-
-Atómová brána nepotvrdzuje Autoritu ako platnú. Potvrdzuje iba, že jej kontext a stav sú zachytené tak, aby bolo možné úkon preskúmať.
+Atómová brána nepotvrdzuje Autoritu ako platnú. Potvrdzuje iba, že jej kontext a stav sú zachytené.
 
 ---
 
-# 6. Kandidátska vetva
+# 5. Kandidátska vetva
 
 Po úspešnom prechode bránou vzniká pre každý samostatný `SUBJECT_MANIFESTATION` jedna vetva:
 
 ```text
 CANDIDATE_BRANCH
 {
-    branch_id,
+    branch_reference,
     derivation_reference,
     subject_manifestation,
-    branch_dependencies,
+    dependencies: list<BRANCH_DEPENDENCY>,
     branch_state,
     branch_trace
 }
@@ -242,21 +161,97 @@ Vetva vykonáva najmenej:
 → kontrolu primárneho rozmeru
 → formuláciu kandidáta
 → význam odpovedí 1 a 0
-→ určenie REQUIRED_QUESTION_CONTEXT
-→ určenie INTENDED_APPLICABILITY_SCOPE
+→ REQUIRED_QUESTION_CONTEXT
+→ INTENDED_APPLICABILITY_SCOPE
 → kontrolu neutrality a spätnej odvoditeľnosti
 ```
 
-Každá vetva musí byť ukončená osobitným výsledkom bez ohľadu na úspech alebo neúspech.
+Každá vetva sa ukončí osobitným výsledkom.
 
 ---
 
-# 7. Vstupný kontrakt
+# 6. Vetvová závislosť
+
+Závislosť nesmie vzniknúť voľným technickým odhadom. Musí byť významovo určená a spätne citovateľná.
+
+```text
+BRANCH_DEPENDENCY
+{
+    dependency_reference,
+    dependent_branch_reference,
+    prerequisite_reference,
+    dependency_type,
+    justification,
+    determined_by_reference,
+    validation_control_reference,
+    trace
+}
+```
+
+Význam polí:
+
+```text
+dependent_branch_reference
+= vetva, ktorej pokračovanie závisí od podmienky
+
+prerequisite_reference
+= konkrétna vetva, výsledok, podmienka alebo rozklad, ktorý musí byť úspešne dokončený
+
+dependency_type
+= významová, poradová alebo metodická závislosť
+
+justification
+= dôvod, prečo bez predpokladu nemožno bezpečne pokračovať
+
+determined_by_reference
+= ACTOR alebo metodický úkon, ktorý závislosť určil
+
+validation_control_reference
+= kontrola, podľa ktorej sa závislosť potvrdila alebo vetva zablokovala
+```
+
+Technická závislosť infraštruktúry sama osebe nie je `BRANCH_DEPENDENCY`, pokiaľ nemení význam alebo prípustnosť metodickej vetvy.
+
+Vetva sa označí:
+
+```text
+BLOCKED_BY_DEPENDENCY
+```
+
+iba ak existuje citovateľný `BRANCH_DEPENDENCY` a jeho `prerequisite_reference` neskončil stavom, ktorý povoľuje pokračovanie.
+
+---
+
+# 7. Pokračovanie medzi vetvami
+
+```text
+nezávislá ďalšia vetva
+→ pokračovať
+```
+
+```text
+vetva so splnenými predpokladmi
+→ pokračovať
+```
+
+```text
+vetva s nesplneným citovateľným predpokladom
+→ nepokračovať
+→ CANDIDATE_BRANCH_RESULT.state = BLOCKED_BY_DEPENDENCY
+```
+
+Zlyhanie jednej vetvy nesmie automaticky vytvoriť závislosť ostatných vetiev.
+
+---
+
+# 8. Vstupný kontrakt
 
 ```text
 DERIVATION_APPLICATION_INPUT
 {
+    request_reference,
     request_source,
+    response_target_reference,
     source_question: SOURCE_QUESTION_REFERENCE,
     derivation_subject: DERIVATION_SUBJECT_REFERENCE,
     purpose: DERIVATION_PURPOSE,
@@ -269,17 +264,17 @@ DERIVATION_APPLICATION_INPUT
 }
 ```
 
-`run_mode` je v prvom kontrakte pevne určený. Nie je používateľskou voľbou ani voľným technickým nastavením.
-
-Budúca zmena režimu musí byť novým metodickým rozhodnutím, nie zmenou konfigurácie bez Validácie.
+`run_mode` je pevne určený. Nie je používateľskou voľbou ani voľným technickým nastavením.
 
 ---
 
-# 8. Výstupný kontrakt
+# 9. Výstupný kontrakt
 
 ```text
 DERIVATION_RUN_RESULT
 {
+    request_reference,
+    response_target_reference,
     derivation: QUESTION_DERIVATION,
     run_mode: PARTIAL_RUN_WITH_ATOMIC_GATE,
     run_state,
@@ -292,63 +287,111 @@ DERIVATION_RUN_RESULT
 }
 ```
 
-Každý vetvový výsledok má tvar:
-
 ```text
 CANDIDATE_BRANCH_RESULT
 {
-    branch_id,
+    branch_reference,
     subject_manifestation,
     state,
     candidate?,
     stop_reason?,
     failed_control?,
-    dependencies,
+    dependencies: list<BRANCH_DEPENDENCY>,
     trace
 }
 ```
 
-Nadradený `run_state` môže byť pracovný:
+Vetvové stavy sú pracovné:
 
 ```text
-STOPPED_AT_GATE
-COMPLETED_ALL_BRANCHES
-COMPLETED_WITH_BRANCH_FAILURES
+CANDIDATE_CREATED
+BRANCH_STOPPED
 RETURNED_FOR_DECOMPOSITION
+BLOCKED_BY_DEPENDENCY
 ```
-
-Tieto označenia zatiaľ netvoria potvrdený globálny číselník METODIKY.
 
 ---
 
-# 9. Pravidlá zachovania výsledkov
+# 10. Deterministická agregácia run_state
 
-## 9.1 Zachová sa
+Nadradený stav sa odvodzuje iba z výsledku brány a úplnej množiny vetvových výsledkov.
 
-Pri zlyhaní jednej kandidátskej vetvy sa zachová:
-
-```text
-- historický záznam celého behu,
-- úspešne ukončené kandidáty,
-- výsledky všetkých už ukončených vetiev,
-- auditná stopa zlyhanej vetvy,
-- dôvod zastavenia a neúspešná kontrola,
-- väzba výsledku na zdrojový úkon.
-```
-
-## 9.2 Nezachová sa ako kandidát
-
-Neúplná alebo zlyhaná vetva sa nesmie zaradiť medzi `QUESTION_CANDIDATE`.
-
-Môže byť zachovaná iba ako:
+## 10.1 Priorita brány
 
 ```text
-CANDIDATE_BRANCH_RESULT
+ak vstupná brána zlyhala
+→ run_state = STOPPED_AT_GATE
 ```
 
-so stavom a auditnou stopou.
+Vetvové stavy sa v tomto prípade nevytvárajú.
 
-## 9.3 Nesmie sa domyslieť
+## 10.2 Agregácia po úspešnej bráne
+
+Nech:
+
+```text
+C = počet CANDIDATE_CREATED
+S = počet BRANCH_STOPPED
+D = počet RETURNED_FOR_DECOMPOSITION
+B = počet BLOCKED_BY_DEPENDENCY
+N = celkový počet vetiev
+```
+
+Potom platí presne v tomto poradí:
+
+```text
+ak N = 0
+→ run_state = COMPLETED_NO_BRANCHES
+```
+
+```text
+ak C = N
+→ run_state = COMPLETED_ALL_BRANCHES
+```
+
+```text
+ak C > 0 a (S + D + B) > 0
+→ run_state = COMPLETED_WITH_BRANCH_LIMITATIONS
+```
+
+```text
+ak C = 0 a D > 0 a S = 0 a B = 0
+→ run_state = RETURNED_FOR_DECOMPOSITION
+```
+
+```text
+ak C = 0 a B > 0 a S = 0 a D = 0
+→ run_state = BLOCKED_BY_DEPENDENCIES
+```
+
+```text
+ak C = 0 a S > 0 a D = 0 a B = 0
+→ run_state = COMPLETED_WITH_BRANCH_FAILURES
+```
+
+```text
+ak C = 0 a najmenej dva z množín S, D, B sú nenulové
+→ run_state = COMPLETED_WITH_MIXED_BRANCH_RESULTS
+```
+
+Každý beh musí dostať práve jeden nadradený stav. Súhrnný stav nesmie vymazať ani nahradiť jednotlivé vetvové výsledky.
+
+---
+
+# 11. Zachovanie výsledkov
+
+Pri zlyhaní jednej vetvy sa zachová:
+
+```text
+historický záznam behu
+úspešne vytvorené kandidáty
+všetky ukončené vetvové výsledky
+auditná stopa zlyhanej vetvy
+vetvové závislosti a ich odôvodnenie
+väzba na REQUEST_REFERENCE a RESPONSE_TARGET_REFERENCE
+```
+
+Neúplná, zlyhaná alebo zablokovaná vetva sa nesmie uložiť ako `QUESTION_CANDIDATE`.
 
 ```text
 zlyhanie vetvy
@@ -359,118 +402,77 @@ zlyhanie vetvy
 
 ---
 
-# 10. Sumárna odozva zdroju
+# 12. Sumárna odozva zdroju
 
 Zdroj operácie musí dostať výsledok, ktorý rozlišuje:
 
 ```text
-čo bolo prijaté ako spoločný vstup
-čo bolo odmietnuté na vstupnej bráne
-koľko kandidátskych vetiev vzniklo
+ktorá požiadavka bola spracovaná
+kam sa výsledok vracia
+čo prešlo vstupnou bránou
+čo bolo odmietnuté
+koľko vetiev vzniklo
 ktoré vetvy vytvorili kandidáta
-ktoré vetvy zlyhali
-prečo zlyhali
-ktoré vetvy boli zablokované závislosťou
+ktoré zlyhali alebo sa majú rozložiť
+ktoré boli zablokované a na čom záviseli
 čo môže pokračovať
-čo sa musí vrátiť na doplnenie alebo rozklad
+aký je deterministický stav celého behu
 ```
 
-Kontrakt teda nevracia iba technické `success/error`. Vracia topológiu výsledku metodického behu.
+Kontrakt nevracia iba technické `success/error`. Vracia topológiu metodického výsledku.
 
 ---
 
-# 11. Hranica aplikačnej služby
+# 13. Hranica aplikačnej služby
 
-Budúca aplikačná služba smie:
+Služba smie prijať vstup, založiť historický pokus, koordinovať bránu a vetvy, vyhodnotiť závislosti podľa kontraktu, agregovať `run_state` a vrátiť `DERIVATION_RUN_RESULT`.
 
-```text
-- prijať aplikačný vstup,
-- založiť historický pokus,
-- koordinovať atómovú vstupnú bránu,
-- vytvoriť a koordinovať nezávislé kandidátske vetvy,
-- zhromaždiť výsledky vetiev,
-- vrátiť DERIVATION_RUN_RESULT.
-```
-
-Nesmie:
-
-```text
-- automaticky prijať kandidáta ako platnú otázku,
-- vykonať budúce hodnotenie otázky,
-- dedukovať odpoveď 1 alebo 0,
-- domyslieť Autoritu,
-- zameniť neúspech vetvy za metodickú odpoveď,
-- meniť režim PARTIAL RUN bez nového metodického rozhodnutia.
-```
+Nesmie automaticky prijať kandidáta ako platnú otázku, vykonať hodnotenie, dedukovať odpoveď, domyslieť Autoritu, zameniť neúspech vetvy za odpoveď ani meniť režim behu bez nového metodického rozhodnutia.
 
 ---
 
-# 12. Hranica technickej transakcie
-
-Metodický `PARTIAL RUN` neznamená, že databázové zápisy majú prebiehať bez technických transakcií.
-
-Treba rozlíšiť:
+# 14. Metodická a databázová transakcia
 
 ```text
 metodická transakčná hranica
 ≠ databázová transakcia
 ```
 
-Budúca implementácia môže používať krátke technické transakcie pre konzistentný zápis:
-
-```text
-- založenia behu,
-- ukončenia jednej vetvy,
-- zápisu kandidáta spolu s jeho auditnou stopou,
-- finálneho súhrnu behu.
-```
-
-Nesmie však jednou databázovou rollback operáciou vymazať historicky platné výsledky už ukončených nezávislých vetiev iba preto, že neskoršia vetva zlyhala.
+Budúca implementácia môže používať krátke technické transakcie pre založenie behu, ukončenie vetvy, zápis kandidáta s auditnou stopou a finálny súhrn. Databázový rollback nesmie vymazať historicky platné výsledky už ukončených nezávislých vetiev pre zlyhanie neskoršej vetvy.
 
 ---
 
-# 13. Kritériá úspechu kontraktu
+# 15. Kritériá pripravenosti
 
-Aplikačný kontrakt je pripravený na technický návrh, ak možno bez domýšľania určiť:
+Bez domýšľania musí byť určiteľné:
 
 ```text
-1. čo tvorí jeden beh,
-2. čo je spoločná atómová vstupná brána,
-3. kedy vzniká kandidátska vetva,
-4. kedy sa celý beh vracia k zdroju,
-5. kedy môže pokračovať ďalší nezávislý kandidát,
-6. čo sa zachová pri zlyhaní jednej vetvy,
-7. čo nesmie byť uložené ako kandidát,
-8. aký nadradený výsledok sa vracia zdroju,
-9. ako sa odlišuje metodická a databázová transakčná hranica.
+čo tvorí jeden beh
+čo je atómová vstupná brána
+ako sa koreluje požiadavka, beh, výsledok a cieľ návratu
+kedy vzniká vetva
+ako vzniká a Validuje sa vetvová závislosť
+kedy môže pokračovať ďalšia vetva
+čo sa zachová pri zlyhaní
+čo nesmie byť kandidátom
+ako sa deterministicky odvodí run_state
+ako sa odlišuje metodická a databázová transakcia
 ```
 
 ---
 
-# 14. Otvorené technické rozhodnutia
+# 16. Otvorené technické rozhodnutia
 
-Tento kontrakt ešte neurčuje:
+Kontrakt ešte neurčuje názvy PHP tried a metód, DTO, repository rozhrania, SQL schému, migrácie, HTTP route, status kódy, JSON formát, databázovú transakčnú implementáciu, asynchrónnosť ani paralelizáciu.
 
-```text
-názov PHP služby a jej metód
-DTO alebo Value Object triedy
-repository rozhrania
-SQL schému a migrácie
-HTTP route a status kódy
-formát JSON odpovede
-konkrétnu stratégiu databázových transakcií
-asynchrónne spracovanie
-paralelizáciu kandidátskych vetiev
-```
-
-Tieto rozhodnutia sa môžu odvodiť až z tohto kontraktu a nesmú meniť jeho topológiu odozvy.
+Tieto rozhodnutia nesmú meniť jeho významové väzby ani topológiu odozvy.
 
 ---
 
-# 15. Nasledujúci logický krok
+# 17. Nasledujúci logický krok
 
 ```text
-Validovať aplikačný kontrakt proti ontológii, algoritmu a reValidácii
-→ po úspešnej Validácii odvodiť technický návrh aplikačnej služby
-→ až potom navrhnúť repository, migrácie, controller a API odpoveď v CodeIgniteri
+vykonať reValidáciu aplikačného kontraktu
+→ pri VALID alebo VALID_WITH_LIMITATIONS odvodiť technický návrh aplikačnej služby
+→ až potom navrhnúť repository, migrácie, controller a API odpoveď
 ```
