@@ -56,6 +56,7 @@ Technické súbory:
  - TECHNICKE-NAVRHY/README.md
  - TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md
  - TECHNICKE-NAVRHY/2026-07-22_APLIKACNA-SLUZBA-ODVODZOVANIA-OTAZOK.md
+ - TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-APLIKACNEJ-SLUZBY-ODVODZOVANIA-OTAZOK.md
 Poznámky: Autoritatívny projektový koreň univerzálnej metodiky. CodeIgniter je technický nosič, nie zdroj významových definícií. Technické návrhy sa vedú oddelene v /TECHNICKE-NAVRHY.
 ```
 
