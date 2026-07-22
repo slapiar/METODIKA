@@ -32,8 +32,8 @@ Význam:
 |---|---|---|
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
 | `2026-07-22_09-38_CodeIgniter.md` | PRACOVNÝ | Pracovné architektonické pochopenie CodeIgniter 4.7.4 ako technického nosiča METODIKY. Čaká na preskúmanie a potvrdenie pred implementáciou aplikačnej štruktúry. |
-| `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Prvý minimálny významový algoritmus od univerzálnej otázky ku kandidátovi špecifickej otázky. Čaká na metodické preskúmanie a potvrdenie. |
-| `2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Revidovaná pracovná ontológia vstupov. Odlišuje identity, ich roly v odvodzovaní, ACTOR-a, kontext Autority, kontext od rozsahu, výstupy, technický záznam úkonu a budúce hodnotenie. Čaká na spoločné preskúmanie s odvodzovacím algoritmom. |
+| `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Algoritmus bol zosúladený s revidovanou ontológiou vstupov: používa roly identít, ACTOR-a, kontext Autority, oddelený kontext a rozsah, auditnú stopu a odlíšenie od budúceho hodnotenia. Čaká na spoločné metodické preskúmanie s ontológiou. |
+| `2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Revidovaná pracovná ontológia vstupov. Odlišuje identity, ich roly v odvodzovaní, ACTOR-a, kontext Autority, kontext od rozsahu, výstupy, technický záznam úkonu a budúce hodnotenie. Čaká na spoločné metodické preskúmanie s odvodzovacím algoritmom. |
 | `2026-07-21_10-23_DB-METODIKA-MAPMET.md` | PRACOVNÝ | Databázový návrh nesmie predbehnúť potvrdenú metodiku. |
 | `2026-07-21_13-52_LOG-MODEL-METODIC.md` | NEPLATNÝ | V `CHANGELOG.md` bol výslovne označený ako neplatný pracovný návrh určený na revíziu. |
 | `2026-07-21_AKTOR-A-AUTORITA.md` | PRACOVNÝ | Súvisí s `AUTORITA.md`; platí iba to, čo bolo prenesené do autoritatívneho dokumentu. |
