@@ -32,9 +32,10 @@ Význam:
 |---|---|---|
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
 | `2026-07-22_09-38_CodeIgniter.md` | PRACOVNÝ | Pracovné architektonické pochopenie CodeIgniter 4.7.4 ako technického nosiča METODIKY. Čaká na preskúmanie a potvrdenie pred implementáciou aplikačnej štruktúry. |
-| `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Algoritmus bol zosúladený s revidovanou ontológiou vstupov. Spoločná Validácia odhalila tri povinné opravy pred odvodením aplikačného kontraktu. |
-| `2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Revidovaná pracovná ontológia vstupov. Spoločná Validácia s algoritmom skončila výsledkom `CONDITIONALLY_VALID`; jadro sa zachováva, ale algoritmus vyžaduje tri opravy. |
-| `2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md` | PRACOVNÝ | Spoločná Validácia ontológie a algoritmu ako jedného významového celku. Výsledok `CONDITIONALLY_VALID`; pred reValidáciou treba doplniť rozsah použiteľnosti kandidáta, založenie úkonu pred kontrolami a jednotný výsledok každého zastavenia. |
+| `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Tri blokujúce body boli opravené: doplnený `INTENDED_APPLICABILITY_SCOPE`, historický záznam pokusu vzniká pred kontrolami a každé zastavenie vracia jednotný `DERIVATION_RESULT`. Spoločná reValidácia skončila `VALID_WITH_LIMITATIONS`. |
+| `2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Revidovaná pracovná ontológia vstupov. Spoločná reValidácia s opraveným algoritmom skončila `VALID_WITH_LIMITATIONS`; možno odvodiť aplikačný kontrakt pri zachovaní uvedeného obmedzenia. |
+| `2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md` | PRACOVNÝ | Historická spoločná Validácia s výsledkom `CONDITIONALLY_VALID`; zachováva tri vtedy zistené blokujúce opravy. |
+| `2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md` | PRACOVNÝ | Nová spoločná reValidácia po opravách. Výsledok `VALID_WITH_LIMITATIONS`; aplikačný kontrakt musí určiť atómové alebo čiastočné spracovanie jedného behu. |
 | `2026-07-21_10-23_DB-METODIKA-MAPMET.md` | PRACOVNÝ | Databázový návrh nesmie predbehnúť potvrdenú metodiku. |
 | `2026-07-21_13-52_LOG-MODEL-METODIC.md` | NEPLATNÝ | V `CHANGELOG.md` bol výslovne označený ako neplatný pracovný návrh určený na revíziu. |
 | `2026-07-21_AKTOR-A-AUTORITA.md` | PRACOVNÝ | Súvisí s `AUTORITA.md`; platí iba to, čo bolo prenesené do autoritatívneho dokumentu. |
