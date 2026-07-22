@@ -12,7 +12,11 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 - zabezpečený webový setup povinným serverovým tokenom `METODIKA_SETUP_TOKEN`, CSRF ochranou, bezpečnostnými HTTP hlavičkami, požiadavkou HTTPS a automatickým uzamknutím po vytvorení konfigurácie; pozri [`app/setup.php`](app/setup.php),
 - vedomé prepísanie existujúcej konfigurácie je možné iba po serverovom nastavení `METODIKA_SETUP_ALLOW_OVERWRITE=1`,
-- nezabezpečené HTTP možno použiť iba pri výslovne povolenom lokálnom vývoji cez `METODIKA_SETUP_ALLOW_HTTP=1`.
+- nezabezpečené HTTP možno použiť iba pri výslovne povolenom lokálnom vývoji cez `METODIKA_SETUP_ALLOW_HTTP=1`,
+- z [`codei/app/Config/Database.php`](codei/app/Config/Database.php) boli odstránené commitnuté databázové prihlasovacie údaje; sledovaný súbor teraz obsahuje iba neškodný konfiguračný tvar a testovaciu SQLite skupinu,
+- vytvorená bezpečná šablóna [`codei/.env.example`](codei/.env.example); skutočné tajomstvá patria iba do ignorovaného `codei/.env` alebo do premenných prostredia hostingu,
+- bezpečnostný kontrakt je v [`TECHNICKE-NAVRHY/2026-07-22_BEZPECNA-DATABAZOVA-KONFIGURACIA.md`](TECHNICKE-NAVRHY/2026-07-22_BEZPECNA-DATABAZOVA-KONFIGURACIA.md),
+- Validácia sanitizácie aktuálnej vetvy je v [`TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md`](TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md) s výsledkom `VALID_WITH_LIMITATIONS`; externá rotácia kompromitovaného hesla a prípadné očistenie histórie Git zostávajú otvorené.
 
 ### Štruktúra a stav dokumentov
 
