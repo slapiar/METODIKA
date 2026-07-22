@@ -1,109 +1,71 @@
 # Changelog
 
-Podstatné zmeny projektu METODIKA sa od 21. júla 2026 zapisujú priebežne do tohto súboru.
+Tento súbor zaznamenáva **čo sa zmenilo, kedy sa to zmenilo a kde je uložená platná definícia alebo aktuálny pracovný stav**.
+
+CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore rozhoduje dokument uvedený v odkaze a jeho stav podľa príslušného registra.
+
+---
+
+## 2026-07-22
+
+### Bezpečnosť a prevádzka
+
+- zabezpečený webový setup povinným serverovým tokenom `METODIKA_SETUP_TOKEN`, CSRF ochranou, bezpečnostnými HTTP hlavičkami, požiadavkou HTTPS a automatickým uzamknutím po vytvorení konfigurácie; pozri [`app/setup.php`](app/setup.php),
+- vedomé prepísanie existujúcej konfigurácie je možné iba po serverovom nastavení `METODIKA_SETUP_ALLOW_OVERWRITE=1`,
+- nezabezpečené HTTP možno použiť iba pri výslovne povolenom lokálnom vývoji cez `METODIKA_SETUP_ALLOW_HTTP=1`.
+
+### Štruktúra a stav dokumentov
+
+- strom v [`README.md`](README.md) bol zosúladený s aktuálne evidovaným obsahom vetvy `main`,
+- zavedený záväzný register stavov pracovných postupov v [`postupy/README.md`](postupy/README.md),
+- zavedený záväzný register stavov pracovných poznámok v [`poznámky/README.md`](poznámky/README.md),
+- každý existujúci dokument v `postupy/` a `poznámky/` dostal explicitný stav,
+- dokument `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md` zostáva označený ako `NEPLATNÝ`; ostatné existujúce metodické postupy zostávajú `PRACOVNÉ`, kým nie sú potvrdené a prenesené do autoritatívnych dokumentov.
+
+### Riadenie zmien
+
+- CHANGELOG bol skrátený na záznam zmien s odkazmi na platné definície a registre stavov,
+- do [`README.md`](README.md) bolo doplnené pravidlo, že zmena dokumentu, jeho stavu a záznamu v CHANGELOG tvoria jeden pracovný úkon.
+
+---
 
 ## 2026-07-21
 
-### Pridané
+### Základ metodiky
 
-- vytvorený adresár `app/` ako koreň obslužného softvéru, ktorý bude súčasťou release,
-- pridaný `app/setup.php` na vytvorenie lokálneho súboru `local-config.php`,
-- setup podporuje konfiguráciu databáz `u550121827_metodic` a `u550121827_mapmet`,
-- setup umožňuje uložiť ďalšie lokálne API kľúče a hodnoty vo formáte `NAZOV=hodnota`,
-- pridaný `.gitignore` pre `local-config`, `local-config.php`, lokálne `.env` súbory a prevádzkové logy,
-- vytvorený súbor `POJMY-A-DEFINICIE.md` pre základné pojmy a pracovné definície METODIKY,
-- zavedená vlastná merná jednotka elementárneho hodnotenia `[1/0]`,
-- doplnený pojem hodnotiaceho záznamu vrátane odpovede, dôkazu, Validácie, Autority Validácie a časovej platnosti,
-- vytvorená oddelená štruktúra `OTAZKY/UNIVERZALNE`, `OTAZKY/ATRIBUTOVE` a `OTAZKY/PROJEKTOVE`,
-- vytvorený samostatný priestor `HODNOTENIA/` pre opis hodnotiacich záznamov,
-- univerzálna objektívna matica presunutá do `OTAZKY/UNIVERZALNE/Objektivita-XY.md`,
-- otázky Disciplíny presunuté pod `OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md`,
-- vytvorený pracovný logický model databázy v `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md`,
-- zavedená siedma plocha zmyslu života ako metaplocha, ktorá skúma logické vzťahy medzi samostatnými rozmermi `Z` a `T`,
-- zavedený pracovný zápis `S = logický vzťah(Z, T)` a rozlíšenie operátorov AND, OR, IF a XOR,
-- v `OTAZKY/README.md` definovaná elementárna otázka ako skúmanie jednej podmienky na jednom určenom predmete v jednom určenom význame,
-- v `HODNOTENIA/README.md` definovaná elementárna odpoveď, význam hodnoty `0`, stav `nezistené` a minimálne významové zloženie hodnotiaceho záznamu,
-- v `OTAZKY/README.md` doplnené rozlišovacie pravidlá a príklady pre otázky rozmerov X, Y, Z a T,
-- vytvorený `OTAZKY/SIEDMA-PLOCHA-S.md` ako samostatný metodický koreň pre vznik, definíciu, vyhodnotenie a Validáciu vzťahu S medzi odpoveďami Z a T,
-- vytvorený `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`, ktorý oddeľuje opakovateľné identity, vzťahové udalosti a výsledkové vlastnosti bez predčasného návrhu SQL,
-- vytvorený `postupy/2026-07-21_IDENTITA-A-IDENTIFIKATORY.md` pre pravidlá totožnosti objektov, nemennosti udalostí a minimálne požiadavky na ich stabilné citovanie,
-- vytvorený `postupy/2026-07-21_POSTULAT-SUBJEKTU.md`, ktorý určuje otvorený postulát subjektu a jeho logické hranice,
-- vytvorený `postupy/2026-07-21_LOGICKE-ZDOVODNENIE-SUBJEKTU.md`, ktorý určuje operatívny test prijatia predmetu skúmania bez potvrdenia jeho pravdivosti alebo existencie,
-- vytvorený `postupy/2026-07-21_KONTINUITA-SUBJEKTU.md`, ktorý odlišuje zmenu SUBJECT-u od vzniku nového SUBJECT-u a zavádza test zachovania jadra totožnosti,
-- vytvorený `postupy/2026-07-21_KRITERIA-IDENTITY-SUBJEKTU.md`, ktorý zavádza explicitné, spätne citovateľné a historicky sledovateľné kritériá kontinuity identity SUBJECT-u.
+- vytvorený autoritatívny koreň pojmov a rozmerov v [`POJMY-A-DEFINICIE.md`](POJMY-A-DEFINICIE.md),
+- potvrdené rozlíšenie `X × Y`, `Z`, `T`, subjektivity `(Z, T)` a vzťahu `S`; platné definície sú v [`POJMY-A-DEFINICIE.md`](POJMY-A-DEFINICIE.md),
+- potvrdený pracovný vzorec Autority a zaradenie Disciplíny pod Zodpovednosť; pozri [`AUTORITA.md`](AUTORITA.md),
+- oddelené otázky od hodnotiacich záznamov; pravidlá sú v [`OTAZKY/README.md`](OTAZKY/README.md) a [`HODNOTENIA/README.md`](HODNOTENIA/README.md),
+- univerzálna objektívna matica presunutá do [`OTAZKY/UNIVERZALNE/Objektivita-XY.md`](OTAZKY/UNIVERZALNE/Objektivita-XY.md),
+- otázky Disciplíny presunuté do [`OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md`](OTAZKY/ATRIBUTOVE/ZODPOVEDNOST/Disciplina.md),
+- vytvorený metodický koreň siedmej plochy v [`OTAZKY/SIEDMA-PLOCHA-S.md`](OTAZKY/SIEDMA-PLOCHA-S.md),
+- koreňové súbory [`uQestions.md`](uQestions.md) a [`DISCIPLINA.md`](DISCIPLINA.md) zostali ako rozcestníky pre staršie odkazy.
 
-### Zmenené
+### Pracovné modely a poznámky
 
-- koreňové súbory `uQestions.md` a `DISCIPLINA.md` zostávajú ako rozcestníky pre staršie odkazy,
-- definície otázok sú významovo oddelené od konkrétnych hodnotiacich záznamov,
-- nepresný zápis `Subjektivita = Z × T` bol nahradený zápisom `Subjektivita = (Z, T)`,
-- znak `×` v zápisoch rozmerov výslovne označuje spoločné skúmanie samostatných rozmerov, nie predvolený logický operátor AND,
-- implikácia `T → Z` alebo `Z → T` sa nesmie zamieňať so súčasnou platnosťou `Z ∧ T`,
-- dokument `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md` bol preradený z pracovného modelu pred SQL na neplatný pracovný návrh určený na revíziu,
-- z logického modelu boli odstránené predčasné architektonické tvrdenia; zachované zostalo iba potvrdené jadro hodnotiaceho záznamu, rozmerov a siedmej plochy,
-- `README.md` bolo zosúladené so skutočnou štruktúrou repozitára, platnými definíciami a povinným poradím ďalšej práce,
-- staršie označenia `Subjektivita — Z/T` a odkazy na pôvodné umiestnenie otázok boli z autoritatívneho prehľadu odstránené.
+- vznikli pracovné dokumenty v `postupy/` a pracovná poznámka v `poznámky/`; ich aktuálny stav určuje [`postupy/README.md`](postupy/README.md) a [`poznámky/README.md`](poznámky/README.md),
+- pôvodný dokument `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md` bol vyradený ako neplatný pracovný návrh určený na revíziu,
+- potvrdené zostáva pravidlo, že databázová schéma ani implementácia nesmú predbehnúť elementárnu logiku a autoritatívne definície; pozri [`README.md`](README.md).
 
-### Určené
+### Obslužný softvér
 
-- `local-config.php` sa vytvára v koreni projektu a nie je súčasťou release,
-- obslužné PHP skripty sa ukladajú do koreňa `/app`,
-- podstatné zmeny sa od tohto bodu zapisujú priebežne do `CHANGELOG.md`,
-- objektivita predstavuje prejav v existencii v rovine X/Y,
-- subjektivita predstavuje zmysel prejavu skúmaný dvojicou samostatných rozmerov `(Z, T)`,
-- `Z` určuje hodnotu a zmysel prejavu,
-- `T` určuje čas, v ktorom zmysel platí a nadobúda prioritu,
-- logický vzťah medzi `Z` a `T` musí určiť význam konkrétnej otázky; nesmie sa domyslieť automaticky,
-- siedma plocha nie je ďalším základným rozmerom popri X, Y, Z a T, ale metaplochou ich logického vzťahu,
-- zápis `X × Y = [1/0]^2` vyjadruje dve samostatne hodnotené binárne dimenzie,
-- otázka a hodnotiaci záznam nie sú ten istý druh údajov a nesmú sa ukladať v jednom nerozlíšenom priestore,
-- elementárna otázka skúma jednu podmienku; ak veta spája viac samostatne pravdivých podmienok, musí sa rozložiť,
-- jedna elementárna otázka primárne skúma jeden rozmer X, Y, Z alebo T,
-- rozmer otázky neurčuje predmet ani použité podstatné meno, ale druh skutočnosti, ktorú má odpoveď `[1/0]` potvrdiť,
-- pri rozlišovaní rozmeru sa skúma, čo sa mení medzi odpoveďou `1` a odpoveďou `0`,
-- predmet otázky a rozmer otázky sú odlišné významové údaje,
-- gramatická forma otázky ani slová `čo`, `ako`, `koľko` a `kedy` samy osebe neurčujú rozmer,
-- rozmer patrí významu elementárnej otázky; konkrétny predmet a čas použitia patria hodnotiacemu záznamu,
-- ak kontext zmení druh skutočnosti overovanej odpoveďou, zmenil sa význam otázky alebo je potrebné otázku spresniť,
-- samostatná otázka Z ani samostatná otázka T samy osebe nevytvárajú vzťah S; S vzniká až v zloženom hodnotení nad dvoma samostatnými odpoveďami,
-- `S` je vopred určené pravidlo zloženia odpovedí `z` a `t`, kým `s` je výsledok `[1/0]` použitia tohto pravidla,
-- operátor S aj poradie jeho argumentov sa musia určiť pred získaním výsledkov, nie dodatočne podľa želaného výsledku,
-- `S` patrí zloženému hodnoteniu, nie jednej elementárnej otázke,
-- pravdivostná tabuľka Validuje logický výpočet `s`, ale sama nevaliduje vstupné odpovede ani oprávnenosť výberu operátora S,
-- výsledok `s` sa nesmie zamieňať s výsledkami otázok Z a T ani s konečným rozhodnutím o konaní,
-- otázka, predmet, dôkaz a Autorita sú opakovateľné samostatné identity,
-- hodnotenie, použitie dôkazu, Validácia a zložené hodnotenie S sú historicky zachytiteľné vzťahové udalosti,
-- odpoveď `[1/0]`, stav `nezistené` a výsledok `s[1/0]` nie sú samostatné metodické identity, ale výsledky alebo stavy konkrétnych udalostí,
-- hodnotenie je konkrétne použitie otázky na predmet a nie iba technická M:N spojka,
-- dvojica `(QUESTION, SUBJECT)` sama osebe nemusí jednoznačne určovať hodnotenie, pretože rovnaká otázka môže byť na rovnaký predmet použitá opakovane v inom čase, rozsahu alebo stave,
-- dôkaz a hodnotenie majú významový vzťah M:N; význam použitia dôkazu patrí ich väzbe,
-- Validácia je udalosť s vlastnou históriou a nesmie byť nahradená jediným prepísateľným stavom hodnotenia,
-- zložené hodnotenie S musí odkazovať na konkrétne vstupné hodnotenia Z a T, nie iba na všeobecné otázky alebo ich aktuálne odpovede,
-- identita objektu a jeho technický identifikátor sú rozdielne veci; ID iba stabilne odkazuje na totožnosť určenú metodikou,
-- otázku významovo identifikuje skúmaná elementárna podmienka, predmet kontinuita existencie, dôkaz konkrétny nemenný obsah s pôvodom a Autoritu totožnosť agenta oddelená od jeho oprávnenia,
-- hodnotenie, Validácia a zložené hodnotenie S sú nemenné historické výskyty; nové poznanie vytvára nový záznam namiesto prepísania minulosti,
-- každá spätne citovateľná identita, revízia a udalosť potrebuje stabilný vnútorný identifikátor, ktorého technický formát ešte nie je určený,
-- vnútorné identifikátory sa nesmú zamieňať s názvami, kódmi ani vonkajšími identifikátormi iných registrov,
-- čas významového vzniku udalosti a čas jej zápisu do METODIKY sa musia dať rozlíšiť,
-- pôvodca zápisu nie je automaticky Autoritou Validácie,
-- subjektom môže byť čokoľvek logicky zdôvodnené ako samostatný predmet skúmania,
-- fyzická existencia nie je podmienkou subjektu; subjekt môže byť minulý, budúci, hypotetický, abstraktný, simulovaný alebo vzťahový,
-- otvorenosť pojmu `SUBJECT` obmedzuje požiadavka určeného rozsahu, rozlíšiteľnej totožnosti a zdôvodnenia jeho samostatnosti,
-- typológia subjektov je pomôckou pre pravidlá totožnosti a Validáciu, nie uzavretým zoznamom povolených predmetov,
-- výsledok udalosti sa môže stať novým subjektom iba na základe nového logického zdôvodnenia samostatného skúmania,
-- prijatie SUBJECT-u znamená prijatie predmetu skúmania, nie potvrdenie jeho pravdivosti, reálnosti ani existencie,
-- logické zdôvodnenie SUBJECT-u vyžaduje jeho určiteľnosť, rozlíšiteľnosť, dôvod samostatného skúmania, možnosť položiť elementárnu otázku, určený rozsah a neutralitu voči želanému výsledku,
-- zmena dôvodu skúmania sama osebe nevytvára nový SUBJECT; nový SUBJECT vzniká až pri zmene identity alebo hraníc predmetu,
-- SUBJECT zostáva tým istým SUBJECT-om, pokiaľ je zachovaná kontinuita jeho jadra totožnosti,
-- zmena názvu, stavu, vlastníka, umiestnenia, hodnotenia alebo nepodstatnej časti rozsahu sama osebe nevytvára nový SUBJECT,
-- nový SUBJECT vzniká vtedy, keď pôvodný predmet už nemožno bez logického rozporu považovať za pokračovanie toho istého predmetu skúmania,
-- rozdelenie, zlúčenie, odvodenie a nahradenie sa musia evidovať ako vzťahy medzi SUBJECT-mi; samy osebe nesmú automaticky určovať totožnosť,
-- kritériá kontinuity identity SUBJECT-u musia byť určené pred hodnotením alebo najneskôr pri prvom prijatí SUBJECT-u,
-- kritériá identity sa nesmú dodatočne prispôsobiť želanému výsledku konkrétneho prípadu,
-- rozhodnutie, že ide alebo nejde o ten istý SUBJECT, musí byť spätne zdôvodniteľné podľa explicitných a v danom čase platných kritérií,
-- zmena kritérií identity vytvára historicky zachytiteľnú revíziu a nesmie prepísať pôvodné kritériá ani minulé rozhodovanie,
-- odpoveď `0` znamená nepotvrdenie skúmanej podmienky v určenom význame, nie automaticky neznalosť, chýbajúci dôkaz ani absolútnu neexistenciu,
-- stav `nezistené` je stavom poznania alebo spracovania, nie treťou pravdivostnou hodnotou podmienky,
-- `nezistené` sa nesmie do binárneho rozhodovania potichu previesť na `0` ani `1`,
-- pôvodná verzia logického modelu zostáva dostupná v histórii Git ako záznam vývoja, ale nesmie byť použitá ako podklad SQL schémy,
-- SQL schéma sa nesmie vytvoriť pred potvrdením elementárnej logiky a otvorených rozhodnutí uvedených v revidovanom logickom modeli.
+- vytvorený adresár `app/` a prvá verzia `app/setup.php` na tvorbu lokálneho `local-config.php`,
+- zavedené lokálne konfigurácie databáz METODIKY a MAPMET,
+- pridaný [`.gitignore`](.gitignore) pre lokálne konfigurácie a prevádzkové súbory.
+
+---
+
+## Pravidlo ďalších zápisov
+
+Každý nový záznam má obsahovať iba:
+
+```text
+dátum
+× stručnú zmenu
+× dotknutý súbor alebo register
+× odkaz na miesto platnej definície
+× prípadnú zmenu stavu dokumentu
+```
+
+Definícia sa v CHANGELOG neopakuje. Zapisuje sa iba odkaz na dokument, ktorý ju nesie.
