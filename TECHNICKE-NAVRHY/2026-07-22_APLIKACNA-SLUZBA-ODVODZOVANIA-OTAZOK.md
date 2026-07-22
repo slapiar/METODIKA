@@ -6,17 +6,12 @@
 PRACOVNÝ
 ```
 
-Tento dokument technicky odvodzuje aplikačnú službu z Validovaného kontraktu:
+Tento dokument technicky odvodzuje aplikačnú službu z Validovaného aplikačného kontraktu a z Validovanej politiky opakovanej požiadavky:
 
 ```text
 postupy/2026-07-22_APLIKACNY-KONTRAKT-ODVODZOVANIA-OTAZOK.md
-```
-
-Aktuálna reValidácia kontraktu:
-
-```text
-postupy/2026-07-22_REVALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md
-VALIDATION_RESULT = VALID
++
+TECHNICKE-NAVRHY/2026-07-22_POLITIKA-OPAKOVANEJ-REQUEST-REFERENCE.md
 ```
 
 Technický návrh nesmie meniť:
@@ -29,9 +24,10 @@ BRANCH_DEPENDENCY
 deterministickú agregáciu run_state
 význam QUESTION_CANDIDATE
 význam metodického zastavenia
+IDEMPOTENT_REPLAY_BY_REQUEST_REFERENCE
 ```
 
-Neurčuje ešte SQL schému, migrácie, controller, HTTP route ani JSON odpoveď.
+Neurčuje ešte SQL schému, migrácie, CodeIgniter Model, controller, HTTP route ani JSON odpoveď.
 
 ---
 
@@ -49,7 +45,7 @@ Odporúčané umiestnenie:
 codei/app/Application/QuestionDerivation/
 ```
 
-Jej jediný verejný prípad použitia:
+Jediný verejný prípad použitia:
 
 ```php
 public function derive(
@@ -57,22 +53,23 @@ public function derive(
 ): DerivationRunResult;
 ```
 
-Názvy sú technické a pracovné. Nemenia identitu metodického úkonu `QUESTION_DERIVATION`.
+Názvy sú pracovné technické označenia. Nemenia identitu metodického úkonu `QUESTION_DERIVATION`.
 
 ---
 
 # 2. Zodpovednosť služby
 
-Služba koordinuje jeden beh odvodzovania:
+Služba koordinuje:
 
 ```text
 prijatie aplikačného vstupu
-→ založenie historického pokusu
-→ atómová vstupná brána
+→ kontrolu replay identity požiadavky
+→ pri FIRST_ACCEPTANCE založenie historického pokusu
+→ atómovú vstupnú bránu
 → vytvorenie kandidátskych vetiev
 → spracovanie vetiev a ich závislostí
 → zachovanie čiastkových výsledkov
-→ deterministická agregácia run_state
+→ deterministickú agregáciu run_state
 → vrátenie DERIVATION_RUN_RESULT
 ```
 
@@ -80,6 +77,7 @@ Služba smie:
 
 ```text
 koordinovať poradie krokov
+volať RequestReplayGuard
 volať doménový algoritmus
 volať technické porty
 udržiavať koreláciu požiadavky a výsledku
@@ -95,26 +93,27 @@ vytvoriť kandidáta bez doménového algoritmu
 určovať Autoritu
 zameniť technickú chybu za metodické zastavenie
 zameniť zlyhanie vetvy za odpoveď 0
-prepisovať výsledky už ukončených nezávislých vetiev
-meniť run_mode podľa používateľskej konfigurácie
+prepisovať výsledky ukončených nezávislých vetiev
+meniť run_mode podľa konfigurácie
+založiť nový QUESTION_DERIVATION pri REPLAY_EXISTING_RUN
+preložiť REQUEST_REFERENCE_CONFLICT na metodický stav
 ```
 
 ---
 
 # 3. Technické dátové objekty
 
-Odporúčané nemenné aplikačné objekty:
-
 ```text
 DerivationApplicationInput
 DerivationRunResult
 CandidateBranchResult
 BranchDependencyData
+RequestReplayDecision
 ```
 
 ## 3.1 DerivationApplicationInput
 
-Musí technicky reprezentovať najmenej:
+Musí reprezentovať najmenej:
 
 ```text
 request_reference
@@ -131,7 +130,7 @@ authority_context
 run_mode = PARTIAL_RUN_WITH_ATOMIC_GATE
 ```
 
-Objekt nevykonáva metodickú Validáciu. Môže overiť iba svoju technickú úplnosť a typovú konzistenciu.
+Objekt môže overiť iba technickú úplnosť a typovú konzistenciu. Nevykonáva metodickú Validáciu.
 
 ## 3.2 DerivationRunResult
 
@@ -153,8 +152,6 @@ summary
 
 ## 3.3 CandidateBranchResult
 
-Musí niesť najmenej:
-
 ```text
 branch_reference
 subject_manifestation
@@ -168,98 +165,108 @@ trace
 
 ## 3.4 BranchDependencyData
 
-Musí zachovať celý Validovaný význam:
+Musí zachovať celý Validovaný význam `BRANCH_DEPENDENCY`, nie iba dvojicu identifikátorov.
+
+## 3.5 RequestReplayDecision
 
 ```text
-dependency_reference
-dependent_branch_reference
-prerequisite_reference
-dependency_type
-justification
-determined_by_reference
-validation_control_reference
-trace
+REQUEST_REPLAY_DECISION
+{
+    request_reference,
+    payload_fingerprint,
+    decision,
+    derivation_reference?,
+    existing_run_state?,
+    conflict_reason?
+}
 ```
 
-Technický objekt nesmie redukovať závislosť iba na dvojicu databázových identifikátorov.
+Pracovné rozhodnutia:
+
+```text
+FIRST_ACCEPTANCE
+REPLAY_EXISTING_RUN
+REQUEST_REFERENCE_CONFLICT
+```
+
+Nie sú metodickými stavmi.
 
 ---
 
-# 4. Doménový spolupracovník
+# 4. Spolupracujúce zodpovednosti
 
-Aplikačná služba nevykonáva vlastnú kópiu algoritmu. Používa jeden doménový spolupracovník:
+## 4.1 QuestionDerivationAlgorithm
 
-```text
-QuestionDerivationAlgorithm
-```
-
-Odporúčané rozhranie zodpovedností:
+Doménový spolupracovník vykonáva jedinú implementáciu významových pravidiel:
 
 ```text
 validateAtomicGate(input)
 identifySubjectManifestations(input)
-deriveCandidateBranch(run, manifestation, dependencies)
 evaluateBranchDependencies(branch, completedBranchResults)
+deriveCandidateBranch(run, manifestation, dependencies)
 aggregateRunState(gateResult, branchResults)
 ```
 
-Presné PHP metódy sa môžu pri implementácii upraviť, ale technická realizácia musí zachovať tieto oddelené zodpovednosti.
+Aplikačná služba, controller ani repository nesmú algoritmus alebo agregáciu kopírovať.
 
-`aggregateRunState` musí byť jedinou implementáciou Validovaného agregačného pravidla. Controller, repository ani prezentačná vrstva ho nesmú skladať znovu.
+## 4.2 RequestReplayGuard
+
+Technický spolupracovník vykonáva:
+
+```text
+kanonizáciu kontraktového vstupu
+výpočet REQUEST_PAYLOAD_FINGERPRINT
+rezerváciu REQUEST_REFERENCE
+vyhľadanie existujúcej väzby
+rozlíšenie FIRST_ACCEPTANCE, REPLAY_EXISTING_RUN a CONFLICT
+```
+
+Nesmie vykonávať doménový algoritmus, určovať Autoritu ani zakladať nový pokus pri replay.
 
 ---
 
 # 5. Technické porty
 
-Služba smie závisieť iba od rozhraní aplikačnej alebo doménovej vrstvy.
-
-## 5.1 DerivationHistoryPort
+## 5.1 RequestReferenceRepositoryPort
 
 Zodpovednosť:
 
 ```text
-založiť pokus pred vstupnými kontrolami
-uložiť výsledok vstupnej brány
+atómovo rezervovať REQUEST_REFERENCE
+uložiť payload_fingerprint a derivation_reference
+nájsť rezerváciu podľa REQUEST_REFERENCE
+načítať stav existujúceho behu
+načítať existujúci DERIVATION_RUN_RESULT, ak je ukončený
+rozlíšiť úspešnú rezerváciu od už existujúcej rezervácie
+```
+
+Repository nesmie rozhodovať, či vzniká nový metodický pokus. Toto rozhodnutie určuje Validovaná replay politika.
+
+## 5.2 DerivationHistoryPort
+
+```text
+založiť pokus pred vstupnou bránou
+uložiť výsledok brány
 uložiť výsledok každej vetvy
 uložiť finálny súhrn behu
 zachovať auditnú stopu
 ```
 
-## 5.2 QuestionCandidatePort
+## 5.3 QuestionCandidatePort
 
-Zodpovednosť:
+Uloží iba úplný `QUESTION_CANDIDATE` spolu s väzbou na vetvu a beh.
 
-```text
-uložiť iba úplný QUESTION_CANDIDATE
-zachovať väzbu na vetvu a derivation_reference
-neuložiť BRANCH_STOPPED, RETURNED_FOR_DECOMPOSITION ani BLOCKED_BY_DEPENDENCY ako kandidáta
-```
+## 5.4 TransactionBoundaryPort
 
-## 5.3 TransactionBoundaryPort
+Zabezpečí krátke technické transakcie a nesmie jedným rollbackom vymazať výsledky ukončených nezávislých vetiev.
 
-Zodpovednosť:
+## 5.5 ReferenceGeneratorPort
 
-```text
-vykonať krátky konzistentný technický zápis
-nepoužiť jednu transakciu pre celý PARTIAL RUN
-nevrátiť rollbackom už potvrdené nezávislé vetvy
-```
+Generuje `derivation_reference`, `branch_reference` a `dependency_reference`. Nesmie nahrádzať vstupnú `request_reference`.
 
-## 5.4 ReferenceGeneratorPort
+## 5.6 ClockPort
 
-Generuje technicky jednoznačné referencie pre:
-
-```text
-derivation_reference
-branch_reference
-dependency_reference
-```
-
-`request_reference` a `response_target_reference` preberá zo vstupu. Generátor ich nesmie svojvoľne nahradiť.
-
-## 5.5 ClockPort
-
-Poskytuje čas metodických a technických záznamov bez priamej závislosti domény od systémových globálnych funkcií.
+Poskytuje čas záznamov bez priamej závislosti domény od globálnych systémových funkcií.
 
 ---
 
@@ -267,62 +274,58 @@ Poskytuje čas metodických a technických záznamov bez priamej závislosti dom
 
 ```text
 1. prijať DerivationApplicationInput
-2. overiť technickú zostaviteľnosť vstupného objektu
-3. vytvoriť derivation_reference a čas začatia
-4. cez DerivationHistoryPort založiť historický pokus
-5. zavolať doménovú kontrolu ATOMIC_INPUT_GATE
-6. pri zlyhaní brány uložiť STOPPED_AT_GATE a vrátiť výsledok bez vetiev
-7. pri úspechu brány identifikovať SUBJECT_MANIFESTATION vetvy
-8. pre každú vetvu určiť citovateľné BRANCH_DEPENDENCY
-9. zablokovanú vetvu ukončiť ako BLOCKED_BY_DEPENDENCY
-10. nezablokovanú vetvu odovzdať doménovému algoritmu
-11. uložiť výsledok každej vetvy v samostatnej krátkej transakcii
-12. uložiť iba úplné QUESTION_CANDIDATE
-13. po ukončení všetkých vetiev zavolať jedinú agregáciu run_state
-14. uložiť finálny súhrn behu
-15. vrátiť DerivationRunResult s pôvodnou koreláciou požiadavky a cieľa návratu
+2. overiť technickú zostaviteľnosť vstupu
+3. cez RequestReplayGuard vypočítať fingerprint a získať replay decision
+4. ak REQUEST_REFERENCE_CONFLICT → ukončiť technickým konfliktom bez metodického výsledku
+5. ak REPLAY_EXISTING_RUN a beh je ukončený → vrátiť existujúci DERIVATION_RUN_RESULT
+6. ak REPLAY_EXISTING_RUN a beh je rozpracovaný → priradiť sa k existujúcej derivation_reference; nezaložiť nový beh
+7. iba pri FIRST_ACCEPTANCE vytvoriť derivation_reference a čas začatia
+8. v jednej krátkej transakcii rezervovať referenciu a založiť historický QUESTION_DERIVATION
+9. až potom vykonať ATOMIC_INPUT_GATE
+10. pri zlyhaní brány uložiť STOPPED_AT_GATE a vrátiť výsledok bez vetiev
+11. pri úspechu identifikovať SUBJECT_MANIFESTATION vetvy
+12. pre každú vetvu určiť citovateľné BRANCH_DEPENDENCY
+13. zablokovanú vetvu ukončiť ako BLOCKED_BY_DEPENDENCY
+14. nezablokovanú vetvu odovzdať doménovému algoritmu
+15. výsledok každej vetvy uložiť v samostatnej krátkej transakcii
+16. uložiť iba úplné QUESTION_CANDIDATE
+17. po ukončení vetiev zavolať jedinú agregáciu run_state
+18. uložiť finálny súhrn
+19. vrátiť DerivationRunResult s pôvodnou koreláciou
 ```
 
-Krok 4 musí predchádzať kroku 5. Bez historicky založeného pokusu sa vstupná kontrola nesmie začať.
+Kroky 3 až 8 tvoria technickú ochranu identity požiadavky. Replay nie je ďalší metodický pokus a preto nevytvára nový historický záznam `QUESTION_DERIVATION`.
 
 ---
 
-# 7. Transakčná stratégia
-
-Odporúčaná technická hranica:
+# 7. Transakčné hranice
 
 ```text
-T1
-= založenie historického pokusu
+TR
+= rezervácia REQUEST_REFERENCE + fingerprint + derivation_reference + založenie historického pokusu
 
-T2
-= ukončenie na vstupnej bráne, ak brána zlyhala
+TG
+= ukončenie na vstupnej bráne
 
 TB[n]
-= výsledok jednej kandidátskej vetvy a prípadný kandidát
+= výsledok jednej vetvy a prípadný kandidát
 
 TF
 = finálny súhrn behu
 ```
 
-Platí:
+`TR` musí byť atómová voči súbežnému prvému prijatiu. Iba jeden technický tok smie vytvoriť väzbu jednej `REQUEST_REFERENCE` na jednu `derivation_reference`.
 
 ```text
-T1 ≠ jedna transakcia celého behu
+TR ≠ transakcia celého PARTIAL RUN
 TB[1] ≠ TB[2] ≠ ... ≠ TB[n]
 ```
-
-Ak neskoršia vetva zlyhá, už potvrdená `TB[n-1]` sa nesmie rollbackom vymazať.
-
-Technická transakcia však musí zabezpečiť, aby sa kandidát neuložil bez svojho vetvového výsledku a auditnej stopy.
 
 ---
 
 # 8. Chybové kanály
 
-## 8.1 Metodický výsledok
-
-Nasledujúce stavy sú riadnym návratovým výsledkom služby:
+## 8.1 Metodické výsledky
 
 ```text
 STOPPED_AT_GATE
@@ -330,71 +333,52 @@ CANDIDATE_CREATED
 BRANCH_STOPPED
 RETURNED_FOR_DECOMPOSITION
 BLOCKED_BY_DEPENDENCY
-nadradené run_state podľa Validovaného agregačného pravidla
+nadradené run_state
 ```
 
-## 8.2 Technická chyba infraštruktúry
-
-Príklady:
+## 8.2 Replay výsledky
 
 ```text
-nedostupné úložisko
-chyba transakcie
-porucha generovania referencie
-chyba zápisu auditu
+FIRST_ACCEPTANCE
+REPLAY_EXISTING_RUN
 ```
 
-Technická chyba sa nesmie preložiť na metodický stav ani odpoveď `0`.
+Sú technickým riadením korelácie, nie metodickým výsledkom.
 
-Služba ju oznamuje osobitným technickým chybovým kanálom, napríklad výnimkou aplikačnej vrstvy. Ak už boli niektoré vetvy uložené, ich história zostáva zachovaná.
+## 8.3 Konflikt identity
 
-## 8.3 Porušenie invariantu
+```text
+REQUEST_REFERENCE_CONFLICT
+```
 
-Ak doménový spolupracovník vráti výsledok odporujúci kontraktu, napríklad kandidáta v stave `BRANCH_STOPPED`, služba musí operáciu označiť ako technické porušenie invariantu. Nesmie taký výsledok opravovať domýšľaním.
+Je technické porušenie invariantu. Nesmie sa preložiť na odpoveď `0`, `STOPPED_AT_GATE` ani nový beh.
+
+## 8.4 Infraštruktúrna chyba
+
+Nedostupné úložisko, chyba transakcie alebo generovania referencie sa oznamujú samostatným technickým kanálom. Už uložené vetvy zostávajú zachované.
 
 ---
 
-# 9. Korelácia a opakovanie požiadavky
+# 9. Nezávislosť od vstupného kanála
 
-```text
-REQUEST_REFERENCE
-= korelačný odkaz
-≠ automaticky idempotency key
-```
-
-Tento návrh neurčuje, či opakované predloženie rovnakého `REQUEST_REFERENCE` vráti pôvodný beh, založí nový pokus alebo bude odmietnuté.
-
-To je samostatné technické rozhodnutie, ktoré musí byť odvodené pred návrhom repository a API. Nesmie sa potichu vyriešiť databázovým unikátnym indexom.
+Rovnakú službu používa web, API, CLI, automatický test aj budúci AI agent. Žiadny kanál nesmie implementovať vlastný replay guard, doménový algoritmus ani agregáciu `run_state`.
 
 ---
 
-# 10. Nezávislosť od vstupného kanála
-
-Rovnakú službu musí byť možné zavolať z:
-
-```text
-webového controllera
-API controllera
-CLI príkazu
-automatického testu
-budúceho AI agenta
-```
-
-Žiadny vstupný kanál nesmie mať vlastnú paralelnú implementáciu doménového algoritmu alebo agregácie `run_state`.
-
----
-
-# 11. Odporúčané technické členenie
+# 10. Odporúčané technické členenie
 
 ```text
 codei/app/Application/QuestionDerivation/
 ├── QuestionDerivationApplicationService.php
+├── RequestReplayGuard.php
 ├── Data/
 │   ├── DerivationApplicationInput.php
 │   ├── DerivationRunResult.php
 │   ├── CandidateBranchResult.php
-│   └── BranchDependencyData.php
+│   ├── BranchDependencyData.php
+│   └── RequestReplayDecision.php
 └── Contracts/
+    ├── RequestReferenceRepositoryPort.php
     ├── DerivationHistoryPort.php
     ├── QuestionCandidatePort.php
     ├── TransactionBoundaryPort.php
@@ -405,65 +389,58 @@ codei/app/Domain/QuestionDerivation/
 └── QuestionDerivationAlgorithm.php
 ```
 
-Toto je technické členenie zodpovedností, nie pokyn na okamžité vytvorenie všetkých súborov.
+Toto je návrh zodpovedností, nie pokyn na okamžitú implementáciu súborov.
 
 ---
 
-# 12. Testovací kontrakt služby
-
-Minimálne unit a aplikačné testy musia overiť:
+# 11. Testovací kontrakt služby
 
 ```text
-1. historický pokus vznikne pred vstupnou kontrolou
-2. zlyhaná brána nevytvorí vetvu ani kandidáta
-3. úspešná vetva zostane zachovaná po zlyhaní inej vetvy
-4. zlyhaná vetva sa neuloží ako QUESTION_CANDIDATE
-5. BLOCKED_BY_DEPENDENCY vyžaduje citovateľnú závislosť
-6. zlyhanie jednej vetvy nevytvorí automaticky závislosť ostatných
-7. agregácia každej kombinácie vetvových stavov vráti práve jeden run_state
-8. výsledok zachová REQUEST_REFERENCE a RESPONSE_TARGET_REFERENCE
-9. technická chyba sa nezmení na odpoveď 0 ani metodický stav
-10. controller alebo CLI nie sú potrebné na vykonanie testu služby
+1. prvé prijatie rezervuje referenciu a založí práve jeden beh,
+2. historický pokus vznikne pred vstupnou bránou,
+3. replay rovnakého obsahu nezaloží nový pokus,
+4. replay ukončeného behu vráti existujúci výsledok,
+5. replay rozpracovaného behu nevytvorí paralelný beh,
+6. rovnaká referencia s odlišným obsahom skončí konfliktom,
+7. súbežné prvé prijatie nevytvorí dve derivation_reference,
+8. zlyhaná brána nevytvorí vetvu ani kandidáta,
+9. úspešná vetva zostane zachovaná po zlyhaní inej vetvy,
+10. zlyhaná vetva sa neuloží ako QUESTION_CANDIDATE,
+11. BLOCKED_BY_DEPENDENCY vyžaduje citovateľnú závislosť,
+12. agregácia každej kombinácie vetvových stavov vráti práve jeden run_state,
+13. technický replay, konflikt ani chyba sa nezmenia na metodickú odpoveď 0,
+14. službu možno testovať bez controllera a UI.
 ```
 
 ---
 
-# 13. Čo tento návrh vedome neurčuje
+# 12. Čo návrh vedome neurčuje
 
 ```text
 konkrétne databázové tabuľky
 primárne a cudzie kľúče
+unikátny index
 CodeIgniter Models
-konkrétne repository adaptéry
-HTTP route
-HTTP status kódy
+repository adaptér
+HTTP route a status kódy
 JSON formát
-UI formulár
-asynchrónne fronty
-paralelné vykonávanie vetiev
-idempotenciu opakovanej požiadavky
+obnovu prerušeného behu
+vzťah medzi rozdielnymi REQUEST_REFERENCE
 ```
-
-Tieto rozhodnutia sa musia odvodiť z Validovaného kontraktu a tohto návrhu v samostatných technických krokoch.
 
 ---
 
-# 14. Kontrola zachovania Validovaného kontraktu
+# 13. Kontrola zachovania zdrojov
 
 ```text
-K1 — run_mode zostal PARTIAL_RUN_WITH_ATOMIC_GATE = 1
-K2 — historický pokus vzniká pred bránou = 1
-K3 — korelácia požiadavky a cieľa návratu je zachovaná = 1
-K4 — vetvové závislosti sa nedomýšľajú technickou vrstvou = 1
-K5 — každá vetva má vlastný výsledok a transakčnú hranicu = 1
-K6 — úspešné nezávislé vetvy sa pri neskoršom zlyhaní nemažú = 1
-K7 — neúspešná vetva sa neukladá ako kandidát = 1
-K8 — run_state agreguje jediný doménový spolupracovník = 1
-K9 — technická chyba je oddelená od metodického výsledku = 1
-K10 — návrh nepredbieha repository, SQL, controller ani API = 1
+K1 — Validovaný aplikačný kontrakt zostal nezmenený = 1
+K2 — replay politika IDEMPOTENT_REPLAY_BY_REQUEST_REFERENCE je premietnutá = 1
+K3 — iba FIRST_ACCEPTANCE zakladá nový QUESTION_DERIVATION = 1
+K4 — replay a konflikt sú oddelené od metodických stavov = 1
+K5 — historický pokus vzniká pred bránou = 1
+K6 — PARTIAL RUN a vetvové transakcie zostali zachované = 1
+K7 — návrh nepredbieha SQL, adaptéry ani API = 1
 ```
-
-Výsledok pracovnej kontroly:
 
 ```text
 TECHNICAL_DERIVATION_CHECK
@@ -471,15 +448,13 @@ TECHNICAL_DERIVATION_CHECK
 PASSED
 ```
 
-Tento výsledok nie je samostatnou autoritatívnou Validáciou implementácie. Potvrdzuje iba, že technický návrh pri svojom odvodení nezmenil Validovaný aplikačný kontrakt.
-
 ---
 
-# 15. Nasledujúci logický krok
+# 14. Nasledujúci logický krok
 
 ```text
-formálne Validovať technický návrh aplikačnej služby
-→ rozhodnúť technickú politiku opakovanej REQUEST_REFERENCE
-→ odvodiť repository kontrakty a model technického uloženia
-→ až potom navrhnúť migrácie, adaptéry, controller a API
+Validovať aktualizovanú technickú hranicu služby spolu s repository kontraktom
+→ až po úspešnej Validácii odvodiť technický model uloženia
+→ následne navrhnúť migrácie a repository adaptér
+→ až potom controller a API replay správanie
 ```
