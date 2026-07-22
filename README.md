@@ -82,6 +82,8 @@ METODIKA/
 │
 ├── postupy/
 │   ├── README.md
+│   ├── Inicializácia práce.md
+│   ├── 2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md
 │   ├── 2026-07-21_10-23_DB-METODIKA-MAPMET.md
 │   ├── 2026-07-21_13-52_LOG-MODEL-METODIC.md
 │   ├── 2026-07-21_AKTOR-A-AUTORITA.md
@@ -107,11 +109,8 @@ METODIKA/
 ├── ARCHIV/
 │
 └── app/
-    ├── setup.php
-    └── db.env
+    └── setup.php
 ```
-
-`app/db.env` je historicky zachytený prevádzkový súbor, nie autoritatívna konfigurácia ani vzor pre release. Lokálne tajomstvá patria výhradne do ignorovaných lokálnych konfiguračných súborov.
 
 ---
 
