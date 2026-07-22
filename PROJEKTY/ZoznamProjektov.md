@@ -22,6 +22,42 @@ Poznámky:
 
 ---
 
+# METODIKA
+
+```yaml
+Názov: METODIKA
+Repozitár: github.com/slapiar/metodika
+Autoritatívna vetva: main
+Aktuálny stav: vývoj univerzálnej metodiky a prvých doménových algoritmov v CodeIgniter 4.7.4
+Používané AI:
+ - ChatGPT
+ - Copilot
+ - Codex
+Hlavné významové oblasti:
+ - SUBJECT-y
+ - otázky
+ - hodnotenia
+ - dôkazy
+ - Validácia
+ - Autorita
+ - metodické úkony
+ - história
+Technické prostredie:
+ - CodeIgniter 4.7.4 v /codei
+Metodické súbory:
+ - README.md
+ - POJMY-A-DEFINICIE.md
+ - AUTORITA.md
+ - OTAZKY/README.md
+ - HODNOTENIA/README.md
+ - postupy/Inicializácia práce.md
+ - postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md
+ - postupy/2026-07-22_09-38_CodeIgniter.md
+Poznámky: Autoritatívny projektový koreň univerzálnej metodiky. CodeIgniter je technický nosič, nie zdroj významových definícií.
+```
+
+---
+
 # TERMIKAXC
 
 ```yaml
