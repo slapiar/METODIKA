@@ -6,9 +6,9 @@
 PRACOVNÝ
 ```
 
-Tento dokument zapisuje pracovnú ontológiu vstupov algoritmu odvodzovania špecifických otázok. Nadväzuje na `postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md`, autoritatívne pravidlá otázok v `OTAZKY/README.md`, definície `SUBJECT`, `IDENTITA`, `ÚKON` a `VALIDÁCIA` v `POJMY-A-DEFINICIE.md` a pracovné rozlíšenie identít a vzťahových udalostí v `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`.
+Tento dokument zapisuje pracovnú ontológiu vstupov algoritmu odvodzovania špecifických otázok. Nadväzuje na `postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md`, autoritatívne pravidlá otázok v `OTAZKY/README.md`, definície `SUBJECT`, `IDENTITA`, `AKTOR`, `AUTORITA`, `ÚKON` a `VALIDÁCIA` v `POJMY-A-DEFINICIE.md` a pracovné rozlíšenie identít a vzťahových udalostí v `postupy/2026-07-21_MINIMALNY-LOGICKY-MODEL.md`.
 
-Neurčuje SQL schému, názvy PHP tried, databázové tabuľky ani používateľské rozhranie. Určuje významové objekty, ktoré musí budúca implementácia zachovať.
+Neurčuje SQL schému, názvy PHP tried, databázové tabuľky ani používateľské rozhranie. Určuje významové objekty a vzťahy, ktoré musí budúca implementácia zachovať.
 
 ---
 
@@ -17,26 +17,35 @@ Neurčuje SQL schému, názvy PHP tried, databázové tabuľky ani používateľ
 Algoritmus nevytvára otázku voľným prepisom textu. Vykonáva metodický odvodzovací úkon:
 
 ```text
-zdrojová univerzálna otázka
+existujúca univerzálna QUESTION v úlohe zdrojovej otázky
 +
-logicky určený SUBJECT
+logicky určený DERIVATION_SUBJECT
 +
 účel odvodzovania
 +
-kontext a rozsah
+kontext
 +
-doménové pojmy
+rozsah
++
+doménové významy
++
+ACTOR
++
+kontext Autority
 →
-kandidát špecifickej otázky
+QUESTION_DERIVATION
+→
+QUESTION_CANDIDATE
 +
-záznam odvodenia
+DERIVATION_TRACE
 ```
 
 Predmetom tejto ontológie je určiť:
 
 ```text
-- ktoré vstupy sú samostatné identity,
+- ktoré vstupy sú odkazy na samostatné identity,
 - ktoré vstupy sú určením jedného odvodzovacieho úkonu,
+- kto úkon vykonáva a v akom kontexte Autority,
 - aké väzby musia byť zachované,
 - čo nie je vstupom algoritmu,
 - kedy sa odvodzovanie musí zastaviť.
@@ -44,16 +53,20 @@ Predmetom tejto ontológie je určiť:
 
 ---
 
-# 2. Základné rozlíšenie
+# 2. Základné rozlíšenia
 
 ```text
 trvalá alebo opakovateľne použiteľná identita
 ≠
-konkrétny odvodzovací úkon
+rola identity v konkrétnom úkone
+≠
+konkrétny metodický úkon
 ≠
 vlastnosť alebo obmedzenie úkonu
 ≠
 výstup úkonu
+≠
+technický záznam úkonu
 ≠
 neskoršie hodnotenie otázky
 ```
@@ -61,17 +74,28 @@ neskoršie hodnotenie otázky
 Pre tento algoritmus platí:
 
 ```text
-QUESTION_SOURCE
+QUESTION
 SUBJECT
-DOMAIN_TERM
+ACTOR
+AUTHORITY
 =
-opakovateľne použiteľné vstupné identity alebo odkazy na identity
+samostatné identity alebo odkazy na identity
+```
+
+```text
+SOURCE_QUESTION_REFERENCE
+DERIVATION_SUBJECT_REFERENCE
+ACTOR_REFERENCE
+AUTHORITY_CONTEXT
+DOMAIN_TERM_REFERENCE
+=
+roly alebo odkazy použité v konkrétnom odvodzovacom úkone
 ```
 
 ```text
 QUESTION_DERIVATION
 =
-konkrétny metodický odvodzovací úkon
+konkrétny historicky zachytiteľný metodický úkon
 ```
 
 ```text
@@ -89,16 +113,21 @@ DERIVATION_TRACE
 výstupy odvodzovacieho úkonu
 ```
 
+```text
+QUESTION_DERIVATION_RECORD
+=
+technický záznam úkonu, nie úkon samotný
+```
+
 ---
 
 # 3. Zdrojová univerzálna otázka
 
-## 3.1 Ontologický druh
-
-Zdrojová univerzálna otázka je existujúca identita `QUESTION`, nie text vložený do formulára bez pôvodu.
+Zdrojová otázka nie je nový ontologický druh otázky. Je existujúcou identitou `QUESTION`, ktorá v konkrétnom odvodzovaní hrá rolu zdroja.
 
 ```text
-QUESTION_SOURCE ⊂ QUESTION
+SOURCE_QUESTION_REFERENCE
+→ odkazuje na QUESTION
 ```
 
 Musí byť možné spätne určiť najmenej:
@@ -114,9 +143,7 @@ PRINCIPLE_Y
 SOURCE_DOCUMENT alebo iný autoritatívny pôvod
 ```
 
-## 3.2 Záväzná podmienka
-
-Text otázky a univerzálna podmienka nie sú totožné údaje.
+Text otázky a univerzálna podmienka nie sú totožné údaje:
 
 ```text
 QUESTION_TEXT
@@ -126,22 +153,16 @@ UNIVERSAL_CONDITION
 
 Gramatická forma sa môže pri špecifikácii zmeniť. Univerzálna skúmaná podmienka sa zmeniť nesmie.
 
-## 3.3 Identita zdrojovej otázky
-
-Algoritmus sa nesmie opierať iba o aktuálne znenie bez určenia, z ktorej otázky a z akého významového stavu vychádza.
-
 ```text
-neidentifikovaný text otázky
+neidentifikovaná otázka alebo neurčený významový stav
 → STOP SOURCE_QUESTION_NOT_IDENTIFIED
 ```
 
 ---
 
-# 4. SUBJECT
+# 4. DERIVATION_SUBJECT
 
-## 4.1 Ontologický druh
-
-`SUBJECT` je samostatná identita predmetu skúmania. Nie je iba podstatné meno dosadené do vety.
+`DERIVATION_SUBJECT` je rola existujúceho `SUBJECT-u` v odvodzovacom úkone. Nie je iba podstatné meno dosadené do vety.
 
 Musí byť určené najmenej:
 
@@ -154,30 +175,31 @@ aký rozsah SUBJECT-u vstupuje do odvodzovania
 čo musí zostať zachované, aby išlo stále o ten istý SUBJECT
 ```
 
-## 4.2 SUBJECT a prejav SUBJECT-u
-
-Algoritmus neodvodzuje otázku automaticky na celý SUBJECT. Najprv hľadá prejav SUBJECT-u, ktorý zodpovedá univerzálnej podmienke.
+Algoritmus neodvodzuje otázku automaticky na celý SUBJECT. Najprv hľadá prejav SUBJECT-u, ktorý zodpovedá univerzálnej podmienke:
 
 ```text
-SUBJECT
+DERIVATION_SUBJECT
 → mapovanie univerzálnej podmienky
 → SUBJECT_MANIFESTATION
 ```
 
-`SUBJECT_MANIFESTATION` nie je automaticky novou identitou SUBJECT-u. Môže byť:
+`SUBJECT_MANIFESTATION` nie je automaticky novou identitou SUBJECT-u. Môže byť časťou, vlastnosťou, stavom, procesom, vzťahom alebo udalosťou patriacou SUBJECT-u. Ak má mať vlastnú identitu, musí prejsť samostatným logickým zdôvodnením SUBJECT-u.
+
+Treba zachovať rozlíšenie:
 
 ```text
-- časťou SUBJECT-u,
-- vlastnosťou SUBJECT-u,
-- stavom SUBJECT-u,
-- procesom SUBJECT-u,
-- vzťahom SUBJECT-u,
-- udalosťou patriacou SUBJECT-u.
+DERIVATION_SUBJECT
+=
+predmet, z ktorého významu sa otázka odvodzuje
 ```
 
-Ak má mať prejav vlastnú identitu, musí prejsť samostatným logickým zdôvodnením SUBJECT-u.
+```text
+EVALUATION_SUBJECT
+=
+konkrétny predmet, na ktorý sa prijatá otázka neskôr použije
+```
 
-## 4.3 Zastavenie
+Tieto SUBJECT-y môžu byť totožné, ale totožnosť nie je automatická. Rozsah použiteľnosti kandidáta musí byť osobitne určený pri jeho prijatí.
 
 ```text
 SUBJECT bez určenej identity, hraníc alebo rozsahu
@@ -193,48 +215,21 @@ univerzálnej podmienke nezodpovedá žiadny prejav SUBJECT-u
 
 # 5. Účel odvodzovania
 
-## 5.1 Ontologický druh
-
 `DERIVATION_PURPOSE` je určením konkrétneho odvodzovacieho úkonu. Nie je odpoveďou, výsledkom ani vlastnosťou zdrojovej otázky.
 
 ```text
 DERIVATION_PURPOSE ∈ QUESTION_DERIVATION
 ```
 
-Musí pomenovať, aké poznanie má odvodená otázka umožniť, napríklad:
+Musí pomenovať, aké poznanie má odvodená otázka umožniť, napríklad poznanie aktuálneho stavu, odhalenie príčiny problému, porovnanie variantov, Validáciu funkcie, posúdenie rizika alebo prípravu rozhodnutia.
 
-```text
-poznanie aktuálneho stavu
-odhalenie príčiny problému
-porovnanie variantov
-Validácia funkcie
-posúdenie rizika
-príprava rozhodnutia
-```
-
-## 5.2 Neutralita
-
-Účel nesmie obsahovať želaný výsledok.
+Účel nesmie obsahovať želaný výsledok:
 
 ```text
 účel poznania
 ≠
 predurčenie odpovede
 ```
-
-Neprípustný účel:
-
-```text
-dokázať, že riešenie funguje správne
-```
-
-Prípustný účel:
-
-```text
-zistiť, či určený vstup spúšťa určený proces
-```
-
-## 5.3 Zastavenie
 
 ```text
 neurčený účel
@@ -250,25 +245,42 @@ neurčený účel
 
 # 6. Kontext a rozsah
 
-## 6.1 Ontologický druh
-
-`DERIVATION_CONTEXT` a `DERIVATION_SCOPE` sú určenia jedného konkrétneho odvodzovacieho úkonu. Nemajú sa automaticky premieňať na časť textu otázky.
-
-Musia vedieť oddelene zachytiť relevantný:
+`DERIVATION_CONTEXT` a `DERIVATION_SCOPE` sú samostatné určenia jedného odvodzovacieho úkonu.
 
 ```text
-vecný rozsah
-časový rozsah
-priestorový rozsah
-procesný rozsah
-verziu alebo stav
-vzťah k iným SUBJECT-om
-projektový alebo doménový kontext
+DERIVATION_CONTEXT
+=
+okolnosti a významové vzťahy, v ktorých sa odvodzovanie vykonáva
 ```
 
-## 6.2 Kontext otázky a kontext hodnotenia
+Môže zahŕňať najmä:
 
-Treba zachovať rozlíšenie:
+```text
+projektový alebo doménový kontext
+vzťah k iným SUBJECT-om
+relevantný proces alebo situáciu
+verziu alebo stav ako okolnosť významu
+```
+
+```text
+DERIVATION_SCOPE
+=
+hranice toho, čo odvodzovanie zahŕňa a čo už nezahŕňa
+```
+
+Musí vedieť určiť najmenej:
+
+```text
+vecné hranice
+časové hranice
+priestorové hranice
+procesné hranice
+zahrnuté a vylúčené prejavy SUBJECT-u
+```
+
+Rovnaký údaj nesmie byť bez odôvodnenia evidovaný raz ako kontext a inokedy ako rozsah.
+
+Treba zachovať aj rozlíšenie:
 
 ```text
 REQUIRED_QUESTION_CONTEXT
@@ -282,11 +294,7 @@ EVALUATION_CONTEXT
 kontext konkrétneho budúceho použitia otázky
 ```
 
-Do kandidáta otázky patrí iba kontext, bez ktorého by sa menil alebo strácal význam skúmanej podmienky.
-
-Konkrétny čas pozorovania, dôkaz, odpoveď a stav predmetu pri jednom použití patria až hodnotiacemu záznamu.
-
-## 6.3 Zastavenie
+Do kandidáta otázky patrí iba kontext, bez ktorého by sa menil alebo strácal význam skúmanej podmienky. Konkrétny čas pozorovania, dôkaz, odpoveď a stav predmetu pri jednom použití patria až hodnotiacemu záznamu.
 
 ```text
 rozsah umožňuje preniesť odpoveď na iný predmet alebo inú verziu
@@ -295,13 +303,15 @@ rozsah umožňuje preniesť odpoveď na iný predmet alebo inú verziu
 
 ---
 
-# 7. Doménové pojmy
+# 7. Doménové významy
 
-## 7.1 Ontologický druh
+Definitívna ontologická identita doménového pojmu ešte nie je potvrdená. Preto tento dokument používa pojem:
 
-`DOMAIN_TERM` je opakovateľne použiteľný pojem s určeným významom v konkrétnej doméne alebo projekte.
+```text
+DOMAIN_TERM_REFERENCE
+```
 
-Nie každé slovo použité pri formulácii potrebuje samostatnú identitu. Samostatnú identitu alebo spätne citovateľný odkaz potrebuje pojem, ktorého význam rozhoduje o zachovaní skúmanej podmienky.
+Ide o spätne citovateľný odkaz na určený význam pojmu v konkrétnej doméne alebo projekte.
 
 Musí byť určiteľné najmenej:
 
@@ -313,17 +323,9 @@ SOURCE_OF_DEFINITION
 VALIDITY alebo VERSION, ak sa význam môže meniť
 ```
 
-## 7.2 Doménové dosadenie
+Nie každé slovo použité pri formulácii potrebuje samostatný odkaz. Odkaz potrebuje pojem, ktorého význam rozhoduje o zachovaní skúmanej podmienky.
 
-```text
-univerzálny pojem
-+
-doménovo určený ekvivalent
-→
-doménové dosadenie
-```
-
-Dosadenie nesmie:
+Doménové dosadenie nesmie:
 
 ```text
 - meniť primárny rozmer otázky,
@@ -332,17 +334,7 @@ Dosadenie nesmie:
 - nahradiť neznámy pojem odhadom.
 ```
 
-## 7.3 Väzba na odvodzovanie
-
-Jedno odvodzovanie môže použiť viac doménových pojmov a jeden pojem môže byť použitý vo viacerých odvodzovaniach.
-
-```text
-QUESTION_DERIVATION M : N DOMAIN_TERM
-```
-
-Samotné technické riešenie tejto väzby zatiaľ nie je určené.
-
-## 7.4 Zastavenie
+Jedno odvodzovanie môže použiť viac doménových významov a jeden význam môže byť použitý vo viacerých odvodzovaniach. Technická reprezentácia tejto väzby zatiaľ nie je určená.
 
 ```text
 neznámy alebo viacznačný rozhodujúci pojem
@@ -351,9 +343,56 @@ neznámy alebo viacznačný rozhodujúci pojem
 
 ---
 
-# 8. Odvodzovací úkon
+# 8. ACTOR a kontext Autority
 
-## 8.1 Ontologický druh
+Každý `QUESTION_DERIVATION` musí mať určiteľného `ACTOR-a`.
+
+```text
+ACTOR
+=
+SUBJECT, ktorý vykonáva odvodzovací úkon
+```
+
+Samotné vykonanie úkonu nepotvrdzuje jeho oprávnenosť:
+
+```text
+ACTOR
+≠
+AUTHORITY
+```
+
+Preto musí odvodzovací úkon zachytiť aj:
+
+```text
+AUTHORITY_CONTEXT
+```
+
+Ten určuje najmenej:
+
+```text
+na základe akého tvrdeného alebo potvrdeného oprávnenia ACTOR koná
+na aký úkon a SUBJECT sa oprávnenie vzťahuje
+v akom rozsahu a čase platí
+aký je stav jeho Validácie
+```
+
+Autorita nemusí byť pri začatí úkonu potvrdená. Jej stav však nesmie byť domyslený ani vynechaný. Môže byť napríklad neurčený alebo neValidovaný, kým nebude samostatne posúdený.
+
+```text
+ACTOR nie je určený
+→ STOP ACTOR_NOT_IDENTIFIED
+```
+
+```text
+kontext Autority nie je zachytený
+→ STOP AUTHORITY_CONTEXT_MISSING
+```
+
+Zastavenie neznamená, že ACTOR Autoritu nemá. Znamená, že úkon nemožno bezpečne a spätne preskúmateľne vykonať bez určenia jeho oprávnenostného kontextu.
+
+---
+
+# 9. Odvodzovací úkon
 
 `QUESTION_DERIVATION` je historicky zachytiteľný metodický úkon. Vzniká konkrétnym spojením vstupov v určenom čase a rozsahu.
 
@@ -361,58 +400,56 @@ neznámy alebo viacznačný rozhodujúci pojem
 QUESTION_DERIVATION
 =
 derive(
-    QUESTION_SOURCE,
-    SUBJECT,
+    SOURCE_QUESTION_REFERENCE,
+    DERIVATION_SUBJECT_REFERENCE,
     DERIVATION_PURPOSE,
     DERIVATION_CONTEXT,
     DERIVATION_SCOPE,
-    DOMAIN_TERMS
+    DOMAIN_TERM_REFERENCES,
+    ACTOR_REFERENCE,
+    AUTHORITY_CONTEXT
 )
 ```
 
-Nie je totožný so zdrojovou otázkou ani s výsledným kandidátom.
+Nie je totožný so zdrojovou otázkou ani s výsledným kandidátom:
 
 ```text
-QUESTION_SOURCE
+QUESTION
 ≠ QUESTION_DERIVATION
 ≠ QUESTION_CANDIDATE
 ```
-
-## 8.2 Minimálne určenie úkonu
 
 Odvodzovací úkon musí vedieť zachytiť najmenej:
 
 ```text
 DERIVATION_ID alebo iný jednoznačný záznam úkonu
 SOURCE_QUESTION_REFERENCE
-SUBJECT_REFERENCE
+DERIVATION_SUBJECT_REFERENCE
 PURPOSE
 CONTEXT
 SCOPE
-USED_DOMAIN_TERMS
+USED_DOMAIN_TERM_REFERENCES
 TIME_OF_DERIVATION
-ACTOR
+ACTOR_REFERENCE
+AUTHORITY_CONTEXT
 DERIVATION_STATE
 ```
 
-`ACTOR` úkon vykonáva. Samotné vykonanie úkonu ešte neurčuje jeho Autoritu ani prijateľnosť výstupu.
-
-## 8.3 Kardinality
+Technické uloženie úkonu je iba jeho záznam:
 
 ```text
-QUESTION_SOURCE 1 : N QUESTION_DERIVATION
-SUBJECT         1 : N QUESTION_DERIVATION
-QUESTION_DERIVATION M : N DOMAIN_TERM
-QUESTION_DERIVATION 1 : N QUESTION_CANDIDATE
+QUESTION_DERIVATION_RECORD
+≠
+QUESTION_DERIVATION
 ```
 
 Jedno odvodzovanie môže vytvoriť viac kandidátov, ak univerzálnej podmienke zodpovedá viac samostatných prejavov alebo ak sa zložená podmienka musí rozložiť.
 
 ---
 
-# 9. Výstupy
+# 10. Výstupy
 
-## 9.1 Kandidát otázky
+## 10.1 Kandidát otázky
 
 `QUESTION_CANDIDATE` je kandidát novej identity `QUESTION`.
 
@@ -426,41 +463,50 @@ Musí obsahovať alebo jednoznačne odkazovať najmenej na:
 
 ```text
 question text
-source universal question
+source QUESTION
 source universal condition
-SUBJECT
+DERIVATION_SUBJECT
 SUBJECT_MANIFESTATION
 primary dimension
 specific condition
 meaning of 1
 meaning of 0
 required question context
+intended applicability scope
 derivation trace
 state = CANDIDATE
 ```
 
 Kandidát sa stane prijatou otázkou až samostatným metodickým prijatím a Validáciou podľa pravidiel, ktoré tento dokument neurčuje.
 
-## 9.2 Záznam odvodenia
+## 10.2 DERIVATION_TRACE
 
-`DERIVATION_TRACE` je historický záznam toho, ako kandidát vznikol. Musí umožniť bez domýšľania odpovedať:
+`DERIVATION_TRACE` je provenienčný a auditný záznam toho, ako kandidát vznikol. Nie je `DÔKAZOM` budúcej odpovede na odvodenú otázku.
 
 ```text
-z ktorej otázky kandidát vznikol
+DERIVATION_TRACE
+≠
+EVIDENCE hodnotenia
+```
+
+Musí umožniť bez domýšľania odpovedať:
+
+```text
+z ktorej QUESTION kandidát vznikol
 ktorú univerzálnu podmienku zachoval
-na ktorý SUBJECT sa viaže
+na ktorý DERIVATION_SUBJECT sa viaže
 ktorý prejav SUBJECT-u konkretizoval
-ktoré doménové pojmy použil
+ktoré doménové významy použil
 aký kontext a rozsah boli rozhodujúce
-prečo zostal v rovnakom primárnom rozmere
+kto odvodzovanie vykonal
+v akom kontexte Autority konal
+prečo zostal kandidát v rovnakom primárnom rozmere
 ktoré kontroly prešli alebo neprešli
 ```
 
-`DERIVATION_TRACE` nie je dôkazom budúcej odpovede na otázku. Je dôkazovým záznamom pôvodu kandidáta otázky.
-
 ---
 
-# 10. Čo nie je vstupom odvodzovania
+# 11. Čo nie je vstupom odvodzovania
 
 Do algoritmu odvodzovania špecifickej otázky nepatria ako vstupy budúceho hodnotenia:
 
@@ -477,28 +523,28 @@ Dôvod:
 
 ```text
 otázka sa najprv odvodí a prijme
-→ potom sa použije na SUBJECT
+→ potom sa použije na EVALUATION_SUBJECT
 → až tým vzniká EVALUATION
 → odpoveď, dôkaz a Validácia patria ku konkrétnemu hodnoteniu
 ```
 
-Odvodzovací úkon však môže mať vlastného `ACTOR-a` a neskôr vlastnú Validáciu kandidáta. To sa nesmie zamieňať s dôkazom a Validáciou odpovede pri budúcom použití otázky.
+Odvodzovací úkon má vlastného `ACTOR-a`, vlastný kontext Autority a môže mať vlastnú Validáciu kandidáta. To sa nesmie zamieňať s dôkazom a Validáciou odpovede pri budúcom použití otázky.
 
 ---
 
-# 11. Minimálny vstupný kontrakt
-
-Významový kontrakt algoritmu je:
+# 12. Minimálny vstupný kontrakt
 
 ```text
 DERIVATION_INPUT
 {
-    source_question: QUESTION_SOURCE,
-    subject: SUBJECT,
+    source_question: SOURCE_QUESTION_REFERENCE,
+    derivation_subject: DERIVATION_SUBJECT_REFERENCE,
     purpose: DERIVATION_PURPOSE,
     context: DERIVATION_CONTEXT,
     scope: DERIVATION_SCOPE,
-    domain_terms: set<DOMAIN_TERM>
+    domain_terms: set<DOMAIN_TERM_REFERENCE>,
+    actor: ACTOR_REFERENCE,
+    authority_context: AUTHORITY_CONTEXT
 }
 ```
 
@@ -506,6 +552,7 @@ Každý vstup musí byť buď:
 
 ```text
 - jednoznačne identifikovanou existujúcou identitou,
+- spätne citovateľným odkazom na určený význam,
 - alebo explicitne určenou vlastnosťou konkrétneho odvodzovacieho úkonu.
 ```
 
@@ -513,7 +560,7 @@ Voľný text bez určeného významu môže byť používateľským podkladom na
 
 ---
 
-# 12. Minimálny výstupný kontrakt
+# 13. Minimálny výstupný kontrakt
 
 ```text
 DERIVATION_RESULT
@@ -540,36 +587,43 @@ Tieto označenia sú pracovné a zatiaľ netvoria potvrdený číselník METODIK
 
 ---
 
-# 13. Vzťahový obraz
+# 14. Vzťahový obraz
 
 ```text
-QUESTION_SOURCE ───────┐
-                       │
-SUBJECT ───────────────┤
-                       │
-DERIVATION_PURPOSE ────┤
-                       ├── QUESTION_DERIVATION ───┬── QUESTION_CANDIDATE
-DERIVATION_CONTEXT ────┤                          └── DERIVATION_TRACE
-                       │
-DERIVATION_SCOPE ──────┤
-                       │
-DOMAIN_TERM ───────────↔┘
+QUESTION ──(rola SOURCE)────────────┐
+                                     │
+SUBJECT ──(rola DERIVATION_SUBJECT)──┤
+                                     │
+DERIVATION_PURPOSE ──────────────────┤
+DERIVATION_CONTEXT ──────────────────┤
+DERIVATION_SCOPE ────────────────────┤
+DOMAIN_TERM_REFERENCE ──────────────↔┤
+ACTOR ───────────────────────────────┤
+AUTHORITY_CONTEXT ───────────────────┤
+                                     ├── QUESTION_DERIVATION
+                                     │        ├── QUESTION_CANDIDATE
+                                     │        └── DERIVATION_TRACE
+                                     │
+                                     └── QUESTION_DERIVATION_RECORD
+                                          zaznamenáva úkon,
+                                          ale nie je úkonom samotným
 ```
 
 Kandidát zachováva väzby:
 
 ```text
 QUESTION_CANDIDATE
-→ derived_from QUESTION_SOURCE
-→ applies_to SUBJECT
+→ derived_from QUESTION
+→ derived_for DERIVATION_SUBJECT
 → specializes UNIVERSAL_CONDITION
 → uses SUBJECT_MANIFESTATION
 → constrained_by REQUIRED_QUESTION_CONTEXT
+→ declares INTENDED_APPLICABILITY_SCOPE
 ```
 
 ---
 
-# 14. Hranica dokumentu
+# 15. Hranica dokumentu
 
 Tento dokument zatiaľ neurčuje:
 
@@ -577,12 +631,30 @@ Tento dokument zatiaľ neurčuje:
 - fyzickú databázovú schému,
 - názvy CodeIgniter tried a namespaces,
 - spôsob technického verzovania otázok,
-- definitívnu identitu DOMAIN_TERM,
+- definitívnu identitu doménových pojmov,
 - číselník stavov odvodzovania,
+- spôsob Validácie Autority ACTOR-a,
 - Autoritu prijatia kandidáta,
 - úplnú Validáciu kandidáta,
+- konečné pravidlá rozsahu opakovaného použitia prijatej otázky,
 - výber relevantných univerzálnych otázok,
 - vykonanie hodnotenia a odvodenie odpovede.
 ```
 
-Najbližší technický krok môže vzniknúť až po preskúmaní tejto ontológie a pracovného algoritmu ako jedného významového celku.
+---
+
+# 16. Výsledok pracovnej revízie
+
+Ontológia bola preskúmaná proti autoritatívnym definíciám a pracovným dokumentom METODIKY. Revízia odstránila tieto nedostatky:
+
+```text
+ACTOR a AUTHORITY_CONTEXT chýbali vo vstupnom kontrakte
+CONTEXT a SCOPE nemali oddelené významové hranice
+zdrojová otázka bola nepresne označená ako nový druh identity
+DERIVATION_SUBJECT nebol odlíšený od budúceho EVALUATION_SUBJECT-u
+DOMAIN_TERM bol predčasne vyhlásený za definitívnu identitu
+DERIVATION_TRACE bol nepresne približovaný k DÔKAZU
+metodický úkon nebol odlíšený od jeho technického záznamu
+```
+
+Po tejto revízii zostáva dokument v stave `PRACOVNÝ`. Pred technickou implementáciou sa musí preskúmať spolu s algoritmom `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` ako jeden významový celok.
