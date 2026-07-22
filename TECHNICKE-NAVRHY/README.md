@@ -75,8 +75,10 @@ Význam:
 | Dokument | Stav | Zdroj významu alebo poznámka |
 |---|---|---|
 | `2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md` | PRACOVNÝ | Aktívny technický základ CodeIgnitera 4.7.4. Význam domény preberá z autoritatívnych a Validovaných metodických dokumentov. Nahrádza aktívne použitie historického dokumentu `postupy/2026-07-22_09-38_CodeIgniter.md`. |
-| `2026-07-22_APLIKACNA-SLUZBA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Odvodený technický návrh služby z Validovaného aplikačného kontraktu. Technická Validácia skončila `VALID_WITH_LIMITATIONS`; návrh verne zachováva kontrakt, pred repository a API treba rozhodnúť politiku opakovanej `REQUEST_REFERENCE`. |
-| `2026-07-22_VALIDACIA-APLIKACNEJ-SLUZBY-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Validácia technického návrhu služby. Všetkých pätnásť kritérií je splnených; výsledok `VALID_WITH_LIMITATIONS` sa týka otvorenej technickej politiky opakovanej `REQUEST_REFERENCE`, nie zmeny Validovaného aplikačného kontraktu. |
+| `2026-07-22_APLIKACNA-SLUZBA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Odvodený technický návrh služby z Validovaného aplikačného kontraktu. Pôvodná Validácia skončila `VALID_WITH_LIMITATIONS`; jej jediné obmedzenie bolo odstránené Validovanou politikou opakovanej `REQUEST_REFERENCE`. |
+| `2026-07-22_VALIDACIA-APLIKACNEJ-SLUZBY-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Historická Validácia technického návrhu služby s výsledkom `VALID_WITH_LIMITATIONS`; zachováva vtedy otvorenú politiku opakovanej `REQUEST_REFERENCE`. |
+| `2026-07-22_POLITIKA-OPAKOVANEJ-REQUEST-REFERENCE.md` | PRACOVNÝ | Technická politika `IDEMPOTENT_REPLAY_BY_REQUEST_REFERENCE`: jedna konkrétna požiadavka vytvára najviac jeden `QUESTION_DERIVATION`; replay rovnakého obsahu používa existujúci beh a odlišný obsah vytvára technický konflikt. |
+| `2026-07-22_VALIDACIA-POLITIKY-OPAKOVANEJ-REQUEST-REFERENCE.md` | PRACOVNÝ | Validácia politiky opakovanej `REQUEST_REFERENCE` s výsledkom `VALID`; odstránila jediné technické obmedzenie pôvodnej Validácie služby a umožňuje odvodiť repository kontrakt rezervácie referencie. |
 
 ---
 
