@@ -30,6 +30,7 @@ Význam:
 
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
+| `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
 | `2026-07-21_10-23_DB-METODIKA-MAPMET.md` | PRACOVNÝ | Databázový návrh nesmie predbehnúť potvrdenú metodiku. |
 | `2026-07-21_13-52_LOG-MODEL-METODIC.md` | NEPLATNÝ | V `CHANGELOG.md` bol výslovne označený ako neplatný pracovný návrh určený na revíziu. |
 | `2026-07-21_AKTOR-A-AUTORITA.md` | PRACOVNÝ | Súvisí s `AUTORITA.md`; platí iba to, čo bolo prenesené do autoritatívneho dokumentu. |
