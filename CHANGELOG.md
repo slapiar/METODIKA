@@ -20,7 +20,8 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - zavedený záväzný register stavov pracovných postupov v [`postupy/README.md`](postupy/README.md),
 - zavedený záväzný register stavov pracovných poznámok v [`poznámky/README.md`](poznámky/README.md),
 - každý existujúci dokument v `postupy/` a `poznámky/` dostal explicitný stav,
-- dokument `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md` zostáva označený ako `NEPLATNÝ`; ostatné existujúce metodické postupy zostávajú `PRACOVNÉ`, kým nie sú potvrdené a prenesené do autoritatívnych dokumentov.
+- dokument `postupy/2026-07-21_13-52_LOG-MODEL-METODIC.md` zostáva označený ako `NEPLATNÝ`; ostatné existujúce metodické postupy zostávajú `PRACOVNÉ`, kým nie sú potvrdené a prenesené do autoritatívnych dokumentov,
+- vytvorený potvrdený pracovný postup [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md), ktorý syntetizuje existujúce pravidlá povinnej prípravy pred každou prácou; jeho stav `POTVRDENÝ-NA-PRENESENIE` eviduje [`postupy/README.md`](postupy/README.md).
 
 ### Riadenie zmien
 
