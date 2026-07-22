@@ -15,7 +15,7 @@ final class VerifyDatabaseCapabilities extends BaseCommand
     protected $description = 'Overí verziu servera, InnoDB, utf8mb4_bin a DATETIME(6) bez výpisu tajomstiev.';
     protected $usage = 'metodika:db-capabilities';
 
-    public function run(array $params): void
+    public function run(array $params): int
     {
         try {
             $db = db_connect('default');
@@ -28,10 +28,14 @@ final class VerifyDatabaseCapabilities extends BaseCommand
 
             $checks = [
                 'Spojenie' => true,
-                'Server' => is_string($version['server_version'] ?? null) && $version['server_version'] !== '',
-                'InnoDB' => in_array(strtoupper((string) ($engine['SUPPORT'] ?? '')), ['YES', 'DEFAULT'], true),
-                'utf8mb4_bin' => $collation !== [],
-                'DATETIME(6)' => str_ends_with((string) ($datetime['datetime_6'] ?? ''), '.123456'),
+                'Server' => is_array($version)
+                    && is_string($version['server_version'] ?? null)
+                    && $version['server_version'] !== '',
+                'InnoDB' => is_array($engine)
+                    && in_array(strtoupper((string) ($engine['SUPPORT'] ?? '')), ['YES', 'DEFAULT'], true),
+                'utf8mb4_bin' => is_array($collation) && $collation !== [],
+                'DATETIME(6)' => is_array($datetime)
+                    && str_ends_with((string) ($datetime['datetime_6'] ?? ''), '.123456'),
             ];
 
             CLI::write('Databázový server: ' . (string) ($version['server_version'] ?? 'nezistený'));
@@ -41,12 +45,14 @@ final class VerifyDatabaseCapabilities extends BaseCommand
 
             if (in_array(false, $checks, true)) {
                 CLI::error('Databázový server nespĺňa všetky požadované schopnosti.');
-                return;
+                return EXIT_ERROR;
             }
 
             CLI::write('Všetky požadované schopnosti boli potvrdené.', 'green');
+            return EXIT_SUCCESS;
         } catch (Throwable $exception) {
             CLI::error('Databázové overenie zlyhalo: ' . $exception->getMessage());
+            return EXIT_ERROR;
         }
     }
 }
