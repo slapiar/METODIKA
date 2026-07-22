@@ -103,7 +103,10 @@ METODIKA/
 │   ├── 2026-07-22_DATABAZOVY-NAVRH-A-MIGRACNE-OBMEDZENIA-ODVODZOVANIA-OTAZOK.md
 │   ├── 2026-07-22_VALIDACIA-DATABAZOVEHO-NAVRHU-ODVODZOVANIA-OTAZOK.md
 │   ├── 2026-07-22_BEZPECNA-DATABAZOVA-KONFIGURACIA.md
-│   └── 2026-07-22_VALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md
+│   ├── 2026-07-22_VALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md
+│   ├── 2026-07-22_REVALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md
+│   ├── 2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md
+│   └── 2026-07-22_VALIDACIA-IMPLEMENTACIE-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md
 │
 ├── poznámky/
 │   ├── README.md
@@ -118,6 +121,14 @@ METODIKA/
 └── codei/
     ├── .env.example
     ├── app/
+    │   ├── Commands/
+    │   │   └── VerifyDatabaseCapabilities.php
+    │   ├── Config/
+    │   │   ├── Database.php
+    │   │   └── ExternalEnvironment.php
+    │   └── Database/
+    │       └── Migrations/
+    │           └── M1 až M8 odvodzovania otázok
     ├── public/
     ├── tests/
     └── ďalšie súčasti CodeIgniter 4.7.4
