@@ -55,16 +55,16 @@ This approach is compatible with multi-subdomain setups under one `public_html`.
 2. Keep shim files in `codei/`:
   - `codei/index.php`
   - `codei/.htaccess`
-3. Set base URL to include `/codei/public/`:
-  - `app.baseURL = 'https://domain.tld/codei/public/'`
+3. Set base URL to the shim root and remove `index.php` from generated URLs:
+  - `app.baseURL = 'https://domain.tld/codei/'`
+  - `app.indexPage = ''`
 4. Open test URLs:
   - `https://domain.tld/codei/`
-  - `https://domain.tld/codei/public/`
   - `https://domain.tld/codei/some-route`
 
 Expected behavior:
 
-- `/codei/` and `/codei/some-route` redirect to `/codei/public/...`
+- `/codei/` and `/codei/some-route` are valid public URLs
 - application routes resolve in CodeIgniter
 - no 404 for valid routes
 
