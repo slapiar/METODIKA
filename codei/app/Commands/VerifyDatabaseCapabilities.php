@@ -50,8 +50,8 @@ final class VerifyDatabaseCapabilities extends BaseCommand
 
             CLI::write('Všetky požadované schopnosti boli potvrdené.', 'green');
             return EXIT_SUCCESS;
-        } catch (Throwable $exception) {
-            CLI::error('Databázové overenie zlyhalo: ' . $exception->getMessage());
+        } catch (Throwable) {
+            CLI::error('Databázové overenie zlyhalo. Skontrolujte externú konfiguráciu a dostupnosť servera.');
             return EXIT_ERROR;
         }
     }
