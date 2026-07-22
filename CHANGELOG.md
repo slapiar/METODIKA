@@ -26,12 +26,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ### Algoritmy otázok
 
-- vytvorený prvý pracovný významový algoritmus [`postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md`](postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md), ktorý odvodzuje kandidáta špecifickej otázky z jednej univerzálnej otázky, logicky vymedzeného SUBJECT-u, účelu, kontextu a doménových pojmov,
-- vytvorená pracovná ontológia vstupov [`postupy/2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md`](postupy/2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md), ktorá odlišuje zdrojovú otázku, SUBJECT a doménové pojmy od určení konkrétneho odvodzovacieho úkonu, jeho výstupov a neskoršieho hodnotenia; stav `PRACOVNÝ` eviduje [`postupy/README.md`](postupy/README.md),
-- ontológia vstupov bola po preskúmaní revidovaná: doplnila `ACTOR` a `AUTHORITY_CONTEXT`, oddelila `CONTEXT` od `SCOPE`, zmenila zdrojovú otázku na rolu existujúcej `QUESTION`, odlíšila `DERIVATION_SUBJECT` od budúceho `EVALUATION_SUBJECT-u`, oslabila predčasný status `DOMAIN_TERM`, oddelila `DERIVATION_TRACE` od `DÔKAZU` a metodický úkon od jeho technického záznamu; stav zostáva `PRACOVNÝ`,
-- odvodzovací algoritmus bol zosúladený s revidovanou ontológiou: prevzal úplný vstupný a výstupný kontrakt, `ACTOR_REFERENCE`, `AUTHORITY_CONTEXT`, oddelený kontext a rozsah, roly zdrojovej otázky a SUBJECT-u, nové zastavovacie podmienky, auditnú stopu a odlíšenie kandidáta od prijatej otázky a budúceho hodnotenia; stav zostáva `PRACOVNÝ`,
-- vytvorená spoločná Validácia [`postupy/2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md`](postupy/2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md), ktorá posúdila ontológiu a algoritmus ako jeden významový celok; výsledok `CONDITIONALLY_VALID` zachováva jadro, ale pred reValidáciou vyžaduje doplniť `INTENDED_APPLICABILITY_SCOPE`, založiť historický záznam pokusu pred vstupnými kontrolami a vytvárať jednotný `DERIVATION_RESULT` pri každom zastavení,
-- algoritmus zatiaľ nevykonáva hodnotenie, neodvodzuje odpoveď a neurčuje technickú implementáciu; jeho stav `PRACOVNÝ` eviduje [`postupy/README.md`](postupy/README.md),
+- vytvorený prvý pracovný významový algoritmus [`postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md`](postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md),
+- vytvorená a revidovaná pracovná ontológia vstupov [`postupy/2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md`](postupy/2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md),
+- vytvorená pôvodná spoločná Validácia [`postupy/2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md`](postupy/2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md) s historickým výsledkom `CONDITIONALLY_VALID`,
+- v odvodzovacom algoritme boli opravené tri blokujúce body: doplnený `INTENDED_APPLICABILITY_SCOPE`, pokus o `QUESTION_DERIVATION` sa zaznamenáva pred vstupnými kontrolami a všetky zastavenia používajú jednotný `DERIVATION_RESULT` s auditnou stopou,
+- vytvorená nová spoločná reValidácia [`postupy/2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md`](postupy/2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md) s výsledkom `VALID_WITH_LIMITATIONS`,
+- reValidácia povoľuje odvodiť aplikačný kontrakt; ten musí pred implementáciou výslovne určiť, či je jeden beh algoritmu atómový alebo zachováva čiastočne vytvorené kandidáty,
+- ontológia, algoritmus, pôvodná Validácia aj reValidácia zostávajú `PRACOVNÉ`; ich aktuálny stav eviduje [`postupy/README.md`](postupy/README.md),
+- algoritmus zatiaľ nevykonáva hodnotenie, neodvodzuje odpoveď a neurčuje technickú implementáciu,
 - autoritatívnym východiskom zostávajú pravidlá otázok v [`OTAZKY/README.md`](OTAZKY/README.md), univerzálna matica v [`OTAZKY/UNIVERZALNE/Objektivita-XY.md`](OTAZKY/UNIVERZALNE/Objektivita-XY.md) a platné definície v [`POJMY-A-DEFINICIE.md`](POJMY-A-DEFINICIE.md).
 
 ### Riadenie zmien
