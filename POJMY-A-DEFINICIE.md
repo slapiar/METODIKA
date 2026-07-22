@@ -260,3 +260,193 @@ S = logický vzťah(Z, T)
 ```
 
 Toto rozlíšenie je základom ďalšej tvorby otázok, hodnotenia priorít a budúcej algoritmizácie METODIKY.
+
+---
+
+# SUBJECT
+
+SUBJECT je čokoľvek logicky zdôvodnené ako predmet skúmania.
+
+Nemusí mať fyzickú existenciu. Môže ním byť vec, osoba, jav, udalosť, proces, vzťah, pravidlo, tvrdenie, myšlienka, hypotéza alebo iný identifikovateľný predmet metodického skúmania.
+
+Aby mohol byť predmet prijatý ako SUBJECT, musí byť možné určiť jeho identifikáciu, odlíšenie, účel skúmania, otázkovateľnosť, rozsah a výsledkovú neutralitu.
+
+---
+
+# IDENTITA
+
+IDENTITA je minimálny súbor určujúcich znakov a väzieb, ktoré musia zostať zachované, aby trvala totožnosť SUBJECT-u.
+
+IDENTITA určuje, na základe čoho možno SUBJECT považovať za ten istý aj pri zmene jeho stavu, vlastností alebo prejavu.
+
+IDENTITA nie je identifikátor, stav, udalosť ani výsledok.
+
+---
+
+# AKTOR
+
+AKTOR je SUBJECT, ktorý vykonáva metodický úkon.
+
+Každý metodický úkon musí mať určiteľného AKTORA. Samotné vykonanie úkonu však neznamená, že AKTOR mal Autoritu úkon vykonať alebo že jeho úkon je platný.
+
+---
+
+# AUTORITA
+
+AUTORITA je oprávnenie vykonať, potvrdiť, validovať, zmeniť, zrušiť alebo interpretovať metodický úkon alebo jeho výsledok v určenom rozsahu a kontexte.
+
+AUTORITA neurčuje pravdu. Určuje oprávnenie vykonať konkrétny metodický úkon.
+
+AUTORITA musí byť vždy viazaná na SUBJECT, rozsah, kontext, čas a druh oprávnenia.
+
+---
+
+# ÚKON
+
+ÚKON je historicky zachytiteľná činnosť, ktorá vytvára, mení, potvrdzuje, ruší alebo interpretuje metodické skutočnosti.
+
+Každý ÚKON má AKTORA, čas vykonania, predmet, rozsah a následok. ÚKON nie je totožný so svojím výsledkom ani následkom.
+
+---
+
+# NÁSLEDOK
+
+NÁSLEDOK je stav alebo zmena stavu, ktorá vznikla v príčinnej alebo normatívnej súvislosti s ÚKONOM, udalosťou alebo inou metodicky zachytenou skutočnosťou.
+
+NÁSLEDOK môže byť zamýšľaný alebo nezamýšľaný, bezprostredný alebo oneskorený. Musí byť odlíšený od ÚKONU, ktorý mu predchádzal.
+
+---
+
+# PLATNOSŤ
+
+PLATNOSŤ vyjadruje, či metodická skutočnosť, úkon, rozhodnutie, pravidlo alebo vzťah vznikli a trvajú v súlade s určenými kritériami.
+
+PLATNOSŤ je normatívna vlastnosť. Nie je totožná s existenciou, pravdivosťou, účinnosťou ani trvaním.
+
+---
+
+# ÚČINNOSŤ
+
+ÚČINNOSŤ vyjadruje, či a odkedy platná metodická skutočnosť, úkon, rozhodnutie, pravidlo alebo vzťah vyvolávajú určené následky.
+
+ÚČINNOSŤ nie je totožná s PLATNOSŤOU. Platný úkon nemusí byť ešte účinný a účinnosť môže byť časovo alebo vecne obmedzená.
+
+---
+
+# SKUTOČNOSŤ
+
+SKUTOČNOSŤ je to, čo existuje, nastalo alebo trvá nezávisle od tvrdenia, ktoré o tom bolo vytvorené.
+
+SKUTOČNOSŤ nie je totožná s jej pozorovaním, meraním, výsledkom merania, interpretáciou ani tvrdením o nej.
+
+---
+
+# TVRDENIE
+
+TVRDENIE je významovo určitý výrok o SUBJECT-e, skutočnosti, stave, vzťahu alebo udalosti, ktorý môže byť predmetom overovania a Validácie.
+
+TVRDENIE samo osebe nie je dôkazom ani pravdou. Jeho pravdivosť a preukázanosť sú samostatné otázky.
+
+---
+
+# DÔKAZ
+
+DÔKAZ je overiteľný podklad alebo súbor podkladov použitých na potvrdenie alebo vyvrátenie TVRDENIA podľa určených kritérií.
+
+DÔKAZ nie je totožný s TVRDENÍM ani s PRAVDOU. Platnosť alebo použiteľnosť DÔKAZU musí byť posudzovaná oddelene od Validácie tvrdenia, ktoré má podporovať.
+
+---
+
+# VALIDÁCIA
+
+VALIDÁCIA je posúdenie určeného predmetu podľa určených kritérií, v určenom kontexte a čase.
+
+Každá VALIDÁCIA musí určovať:
+
+```text
+ČO sa validuje
+PODĽA ČOHO sa validuje
+KTO validáciu vykonáva
+NA ZÁKLADE AKEJ AUTORITY
+KEDY sa validácia vykonala
+V AKOM ROZSAHU platí
+S AKÝM VÝSLEDKOM skončila
+```
+
+Výsledok VALIDÁCIE je binárny:
+
+```text
+1 = kritériá sú splnené
+0 = kritériá nie sú splnené
+```
+
+VALIDÁCIA nie je pravda, dôkaz ani samotný predmet Validácie.
+
+---
+
+# METODICKÝ CYKLUS
+
+METODICKÝ CYKLUS je ohraničený sled metodických úkonov vykonaných od určenia predmetu skúmania po vznik určeného výsledku a jeho zachytenie.
+
+Musí mať určiteľný začiatok, priebeh a koniec. Opakovanie skúmania alebo nadviazanie na vzniknutý stav predstavuje nový METODICKÝ CYKLUS, nie nekonečné pokračovanie pôvodného cyklu.
+
+Základný priebeh môže byť zapísaný:
+
+```text
+SUBJECT
+→ IDENTIFIKÁCIA
+→ URČENIE OTÁZKY A KRITÉRIÍ
+→ ZÍSKANIE PODKLADOV
+→ TVRDENIE
+→ DÔKAZ
+→ VALIDÁCIA
+→ VÝSLEDOK
+→ NÁSLEDOK
+→ UKONČENIE CYKLU
+```
+
+---
+
+# ZÁKLADNÉ DISTINKCIE
+
+Základné distinkcie chránia význam pojmov pred ich zamieňaním. Každá strana vzťahu označuje samostatný metodický pojem, ktorý sa nesmie automaticky nahradiť druhým.
+
+```text
+IDENTITA ≠ IDENTIFIKÁTOR
+AKTOR ≠ AUTORITA
+ÚKON ≠ NÁSLEDOK
+SKUTOČNOSŤ ≠ TVRDENIE
+DÔKAZ ≠ PRAVDA
+PLATNOSŤ ≠ ÚČINNOSŤ
+VALIDÁCIA ≠ PRAVDA
+```
+
+## IDENTITA ≠ IDENTIFIKÁTOR
+
+IDENTITA určuje, čím SUBJECT zostáva tým istým. IDENTIFIKÁTOR je označenie, pomocou ktorého sa SUBJECT rozpoznáva alebo vyhľadáva.
+
+## AKTOR ≠ AUTORITA
+
+AKTOR úkon vykonáva. AUTORITA určuje oprávnenie daný úkon vykonať alebo potvrdiť.
+
+## ÚKON ≠ NÁSLEDOK
+
+ÚKON je vykonaná činnosť. NÁSLEDOK je stav alebo zmena stavu, ktorá v súvislosti s touto činnosťou vznikla.
+
+## SKUTOČNOSŤ ≠ TVRDENIE
+
+SKUTOČNOSŤ existuje alebo nastala. TVRDENIE je výrok, ktorý o nej niekto vytvoril.
+
+## DÔKAZ ≠ PRAVDA
+
+DÔKAZ je podklad použitý pri overovaní tvrdenia. PRAVDA nie je vytvorená ani určená samotnou existenciou dôkazu.
+
+## PLATNOSŤ ≠ ÚČINNOSŤ
+
+PLATNOSŤ vyjadruje súlad s kritériami vzniku a trvania. ÚČINNOSŤ vyjadruje schopnosť vyvolávať následky v určenom čase a rozsahu.
+
+## VALIDÁCIA ≠ PRAVDA
+
+VALIDÁCIA je posúdenie podľa kritérií. PRAVDA nie je výsledkom autority Validácie, ale predmetom samostatného skúmania vzťahu tvrdenia ku skutočnosti.
+
+Tieto rozlíšenia tvoria jadro METODIKY a musia byť zachované vo všetkých nadväzujúcich dokumentoch, procesoch a implementáciách.
