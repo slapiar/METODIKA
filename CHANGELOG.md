@@ -40,7 +40,8 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - pre CodeIgniter boli doplnené šablóny Apache + PHP-FPM v [`codei/deploy/apache/README.md`](codei/deploy/apache/README.md) a konfigoch v `codei/deploy/apache/`,
 - pre Hostinger Business (shared hosting) boli doplnené fallback postupy a šablóny v [`codei/deploy/hostinger/README.md`](codei/deploy/hostinger/README.md),
 - pre nasadenie bez zmeny website root boli pridané shim súbory [`codei/index.php`](codei/index.php) a [`codei/.htaccess`](codei/.htaccess), ktoré smerujú požiadavky do `public/`,
-- base URL pre tento režim bola zosúladená na [`codei/app/Config/App.php`](codei/app/Config/App.php) s hodnotou `https://dremont.in/codei/public/`.
+- base URL pre tento režim bola zosúladená na [`codei/app/Config/App.php`](codei/app/Config/App.php) s hodnotou `https://dremont.in/codei/public/`,
+- vytvorený pracovný architektonický záznam [`postupy/2026-07-22_09-38_CodeIgniter.md`](postupy/2026-07-22_09-38_CodeIgniter.md), ktorý oddeľuje technickú logiku CodeIgniter 4.7.4 od významovej domény METODIKY; jeho stav `PRACOVNÝ` eviduje [`postupy/README.md`](postupy/README.md).
 
 ### Skripty spustenia a release
 
