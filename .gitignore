@@ -5,6 +5,7 @@
 # Lokálne prostredie
 /.env
 /.env.*
+/.env.example
 
 # Prevádzkové logy
 *.log
