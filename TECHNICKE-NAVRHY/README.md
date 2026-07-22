@@ -82,7 +82,9 @@ Význam:
 | `2026-07-22_REPOSITORY-KONTRAKT-REQUEST-REFERENCE.md` | PRACOVNÝ | Repository kontrakt atómovej rezervácie, vyhľadania a korelácie `REQUEST_REFERENCE`; neurčuje SQL schému ani adaptér. Spoločná Validácia skončila `VALID`. |
 | `2026-07-22_VALIDACIA-REPOSITORY-KONTRAKTU-REQUEST-REFERENCE.md` | PRACOVNÝ | Spoločná Validácia aktualizovanej služby a repository kontraktu. Výsledok `VALID`; umožnila odvodiť technický model uloženia. |
 | `2026-07-22_TECHNICKY-MODEL-ULOZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Technický model oddeleného uloženia rezervácie, behu, vetiev, závislostí, kandidátov, finálneho výsledku a auditnej stopy. Validácia skončila `VALID`; neurčuje SQL schému ani migrácie. |
-| `2026-07-22_VALIDACIA-TECHNICKEHO-MODELU-ULOZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Validácia technického modelu uloženia. Všetkých pätnásť kritérií je splnených; možno odvodiť databázový návrh a migračné obmedzenia. |
+| `2026-07-22_VALIDACIA-TECHNICKEHO-MODELU-ULOZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Validácia technického modelu uloženia. Všetkých pätnásť kritérií je splnených; umožnila odvodiť databázový návrh a migračné obmedzenia. |
+| `2026-07-22_DATABAZOVY-NAVRH-A-MIGRACNE-OBMEDZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Fyzický návrh ôsmich tabuliek pre MySQLi/InnoDB, rozdelenie databázových a aplikačných invariantov a migračné poradie M1 až M8. Validácia skončila `VALID`; konkrétny server treba pred migráciami prakticky overiť. |
+| `2026-07-22_VALIDACIA-DATABAZOVEHO-NAVRHU-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Validácia databázového návrhu a migračných obmedzení. Všetkých pätnásť kritérií je splnených; po overení servera možno vytvoriť CodeIgniter migrácie. |
 
 ---
 
