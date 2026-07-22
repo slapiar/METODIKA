@@ -52,8 +52,11 @@ Metodické súbory:
  - HODNOTENIA/README.md
  - postupy/Inicializácia práce.md
  - postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md
- - postupy/2026-07-22_09-38_CodeIgniter.md
-Poznámky: Autoritatívny projektový koreň univerzálnej metodiky. CodeIgniter je technický nosič, nie zdroj významových definícií.
+Technické súbory:
+ - TECHNICKE-NAVRHY/README.md
+ - TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md
+ - TECHNICKE-NAVRHY/2026-07-22_APLIKACNA-SLUZBA-ODVODZOVANIA-OTAZOK.md
+Poznámky: Autoritatívny projektový koreň univerzálnej metodiky. CodeIgniter je technický nosič, nie zdroj významových definícií. Technické návrhy sa vedú oddelene v /TECHNICKE-NAVRHY.
 ```
 
 ---
