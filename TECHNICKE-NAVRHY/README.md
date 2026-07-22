@@ -85,8 +85,11 @@ Význam:
 | `2026-07-22_VALIDACIA-TECHNICKEHO-MODELU-ULOZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Validácia technického modelu uloženia. Všetkých pätnásť kritérií je splnených; umožnila odvodiť databázový návrh a migračné obmedzenia. |
 | `2026-07-22_DATABAZOVY-NAVRH-A-MIGRACNE-OBMEDZENIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Fyzický návrh ôsmich tabuliek pre MySQLi/InnoDB, rozdelenie databázových a aplikačných invariantov a migračné poradie M1 až M8. Validácia skončila `VALID`; konkrétny server treba pred migráciami prakticky overiť. |
 | `2026-07-22_VALIDACIA-DATABAZOVEHO-NAVRHU-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Validácia databázového návrhu a migračných obmedzení. Všetkých pätnásť kritérií je splnených; po overení servera možno vytvoriť CodeIgniter migrácie. |
-| `2026-07-22_BEZPECNA-DATABAZOVA-KONFIGURACIA.md` | PRACOVNÝ | Konfiguračný kontrakt bez tajomstiev v sledovanom kóde; aktuálna vetva používa lokálny `codei/.env` a verejnú `.env.example`. Rotácia kompromitovaného hesla a prípadné očistenie histórie zostávajú otvorené. |
-| `2026-07-22_VALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md` | PRACOVNÝ | Validácia sanitizácie aktuálnej vetvy s výsledkom `VALID_WITH_LIMITATIONS`; obmedzenia tvoria nevykonaná externá rotácia a historické commity. |
+| `2026-07-22_BEZPECNA-DATABAZOVA-KONFIGURACIA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Aktuálny kontrakt používa externý súrodenecký `private/metodika.env`, loader pred webovým aj CLI bootstrapom a sledovaný kód bez tajomstiev. Heslo bolo podľa potvrdenia používateľa zrotované. |
+| `2026-07-22_VALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md` | PRACOVNÝ | Historická Validácia sanitizácie aktuálnej vetvy s výsledkom `VALID_WITH_LIMITATIONS`; zachováva stav pred potvrdenou rotáciou a externým private env. |
+| `2026-07-22_REVALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md` | PRACOVNÝ | ReValidácia po rotácii a presunutí konfigurácie mimo `/codei`; výsledok `VALID_WITH_LIMITATIONS`, pretože serverové pripojenie a práva externého súboru ešte neboli prakticky overené. |
+| `2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Implementovaný externý env loader, bezpečná diagnostika a migrácie M1 až M8. Migrácie zatiaľ neboli spustené. |
+| `2026-07-22_VALIDACIA-IMPLEMENTACIE-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md` | PRACOVNÝ | Statická Validácia implementácie s výsledkom `VALID_WITH_LIMITATIONS`; praktické schopnosti servera a vykonaná schéma zostávajú nepotvrdené. |
 
 ---
 
