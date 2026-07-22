@@ -33,7 +33,8 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - vytvorená nová spoločná reValidácia [`postupy/2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md`](postupy/2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md) s výsledkom `VALID_WITH_LIMITATIONS`,
 - vytvorený prvý aplikačný kontrakt [`postupy/2026-07-22_APLIKACNY-KONTRAKT-ODVODZOVANIA-OTAZOK.md`](postupy/2026-07-22_APLIKACNY-KONTRAKT-ODVODZOVANIA-OTAZOK.md), ktorý určuje topológiu odozvy `PARTIAL_RUN_WITH_ATOMIC_GATE`: spoločné vstupy tvoria atómovú bránu, nezávislé kandidátske vetvy pokračujú samostatne a každý vetvový aj nadradený výsledok sa vracia zdroju s auditnou stopou,
 - kontrakt odlišuje metodickú transakčnú hranicu od databázovej transakcie a zakazuje vymazať už ukončené nezávislé vetvy pre zlyhanie neskoršej vetvy,
-- aplikačný kontrakt zostáva `PRACOVNÝ` a čaká na Validáciu pred návrhom služby, repository, migrácií, controllera a API odpovede; stav eviduje [`postupy/README.md`](postupy/README.md),
+- vytvorená Validácia [`postupy/2026-07-22_VALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md`](postupy/2026-07-22_VALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md) s výsledkom `CONDITIONALLY_VALID`; potvrdila atómovú vstupnú bránu a izoláciu vetiev, ale pred technickým návrhom služby vyžaduje doplniť koreláciu zdroja a výsledku, významový model vetvovej závislosti a deterministickú agregáciu nadradeného `run_state`,
+- aplikačný kontrakt aj jeho Validácia zostávajú `PRACOVNÉ`; stav eviduje [`postupy/README.md`](postupy/README.md),
 - algoritmus zatiaľ nevykonáva hodnotenie, neodvodzuje odpoveď a neurčuje technickú implementáciu,
 - autoritatívnym východiskom zostávajú pravidlá otázok v [`OTAZKY/README.md`](OTAZKY/README.md), univerzálna matica v [`OTAZKY/UNIVERZALNE/Objektivita-XY.md`](OTAZKY/UNIVERZALNE/Objektivita-XY.md) a platné definície v [`POJMY-A-DEFINICIE.md`](POJMY-A-DEFINICIE.md).
 
