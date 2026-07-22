@@ -16,6 +16,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ### Štruktúra a stav dokumentov
 
+- projekt METODIKA bol doplnený do centrálneho registra [`PROJEKTY/ZoznamProjektov.md`](PROJEKTY/ZoznamProjektov.md) s autoritatívnym repozitárom, vetvou, aktuálnym stavom, významovými oblasťami a technickým prostredím,
 - strom v [`README.md`](README.md) bol zosúladený s aktuálne evidovaným obsahom vetvy `main`,
 - zavedený záväzný register stavov pracovných postupov v [`postupy/README.md`](postupy/README.md),
 - zavedený záväzný register stavov pracovných poznámok v [`poznámky/README.md`](poznámky/README.md),
