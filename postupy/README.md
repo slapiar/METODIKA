@@ -33,6 +33,7 @@ Význam:
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
 | `2026-07-22_09-38_CodeIgniter.md` | PRACOVNÝ | Pracovné architektonické pochopenie CodeIgniter 4.7.4 ako technického nosiča METODIKY. Čaká na preskúmanie a potvrdenie pred implementáciou aplikačnej štruktúry. |
 | `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Prvý minimálny významový algoritmus od univerzálnej otázky ku kandidátovi špecifickej otázky. Čaká na metodické preskúmanie a potvrdenie. |
+| `2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Pracovné ontologické rozlíšenie vstupných identít, určení odvodzovacieho úkonu, výstupov a zastavovacích podmienok algoritmu odvodzovania špecifických otázok. |
 | `2026-07-21_10-23_DB-METODIKA-MAPMET.md` | PRACOVNÝ | Databázový návrh nesmie predbehnúť potvrdenú metodiku. |
 | `2026-07-21_13-52_LOG-MODEL-METODIC.md` | NEPLATNÝ | V `CHANGELOG.md` bol výslovne označený ako neplatný pracovný návrh určený na revíziu. |
 | `2026-07-21_AKTOR-A-AUTORITA.md` | PRACOVNÝ | Súvisí s `AUTORITA.md`; platí iba to, čo bolo prenesené do autoritatívneho dokumentu. |
