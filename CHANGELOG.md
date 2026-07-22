@@ -27,6 +27,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 ### Algoritmy otázok
 
 - vytvorený prvý pracovný významový algoritmus [`postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md`](postupy/2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md), ktorý odvodzuje kandidáta špecifickej otázky z jednej univerzálnej otázky, logicky vymedzeného SUBJECT-u, účelu, kontextu a doménových pojmov,
+- vytvorená pracovná ontológia vstupov [`postupy/2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md`](postupy/2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md), ktorá odlišuje zdrojovú otázku, SUBJECT a doménové pojmy od určení konkrétneho odvodzovacieho úkonu, jeho výstupov a neskoršieho hodnotenia; stav `PRACOVNÝ` eviduje [`postupy/README.md`](postupy/README.md),
 - algoritmus zatiaľ nevykonáva hodnotenie, neodvodzuje odpoveď a neurčuje technickú implementáciu; jeho stav `PRACOVNÝ` eviduje [`postupy/README.md`](postupy/README.md),
 - autoritatívnym východiskom zostávajú pravidlá otázok v [`OTAZKY/README.md`](OTAZKY/README.md), univerzálna matica v [`OTAZKY/UNIVERZALNE/Objektivita-XY.md`](OTAZKY/UNIVERZALNE/Objektivita-XY.md) a platné definície v [`POJMY-A-DEFINICIE.md`](POJMY-A-DEFINICIE.md).
 
