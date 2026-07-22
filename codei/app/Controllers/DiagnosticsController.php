@@ -61,7 +61,7 @@ final class DiagnosticsController extends BaseController
         $session->set(self::AUTH_SESSION_KEY, true);
         $session->set(self::AUTH_TIME_SESSION_KEY, time());
 
-        return redirect()->to('/diagnostics/database');
+        return redirect()->to(site_url('diagnostics/database'));
     }
 
     public function run(): ResponseInterface
@@ -70,7 +70,7 @@ final class DiagnosticsController extends BaseController
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
 
-        return redirect()->to('/diagnostics/database');
+        return redirect()->to(site_url('diagnostics/database'));
     }
 
     public function logout(): ResponseInterface
@@ -84,7 +84,7 @@ final class DiagnosticsController extends BaseController
         $session->remove(self::AUTH_TIME_SESSION_KEY);
         $session->regenerate(true);
 
-        return redirect()->to('/diagnostics/database');
+        return redirect()->to(site_url('diagnostics/database'));
     }
 
     private function inspector(): DatabaseCapabilityInspector

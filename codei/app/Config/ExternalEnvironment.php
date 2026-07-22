@@ -13,11 +13,25 @@ final class ExternalEnvironment
     public static function load(): void
     {
         $configuredPath = getenv('METODIKA_ENV_FILE');
-        $path = is_string($configuredPath) && $configuredPath !== ''
-            ? $configuredPath
-            : dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env';
+        $path = null;
 
-        if (!is_file($path)) {
+        if (is_string($configuredPath) && $configuredPath !== '') {
+            $path = $configuredPath;
+        } else {
+            $candidatePaths = [
+                dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env',
+                dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env',
+            ];
+
+            foreach ($candidatePaths as $candidatePath) {
+                if (is_file($candidatePath)) {
+                    $path = $candidatePath;
+                    break;
+                }
+            }
+        }
+
+        if (!is_string($path) || $path === '' || !is_file($path)) {
             self::$loaded = false;
             return;
         }

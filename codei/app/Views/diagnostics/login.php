@@ -18,7 +18,7 @@
     <div class="panel">
         <h1>Diagnostika databázy METODIKA</h1>
         <p>Prístup je povolený iba po serverovom overení diagnostického tokenu.</p>
-        <form method="post" action="/diagnostics/database/login" autocomplete="off">
+        <form method="post" action="<?= site_url('diagnostics/database/login') ?>" autocomplete="off">
             <?= csrf_field() ?>
             <label for="diagnostics_token">Diagnostický token</label>
             <input id="diagnostics_token" name="diagnostics_token" type="password" required>

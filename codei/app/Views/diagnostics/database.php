@@ -57,11 +57,11 @@
         </table>
 
         <div class="actions">
-            <form method="post" action="/diagnostics/database/run">
+            <form method="post" action="<?= site_url('diagnostics/database/run') ?>">
                 <?= csrf_field() ?>
                 <button type="submit">Spustiť znovu</button>
             </form>
-            <form method="post" action="/diagnostics/database/logout">
+            <form method="post" action="<?= site_url('diagnostics/database/logout') ?>">
                 <?= csrf_field() ?>
                 <button type="submit">Odhlásiť diagnostiku</button>
             </form>
