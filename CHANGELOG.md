@@ -79,7 +79,11 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 - pôvodná release logika bola presunutá do nového skriptu [`release.sh`](release.sh),
 - skript [`startApp.sh`](startApp.sh) bol zmenený na lokálny launcher CodeIgniter servera,
-- do hostinger dokumentácie boli doplnené voliteľné no-redirect šablóny.
+- do hostinger dokumentácie boli doplnené voliteľné no-redirect šablóny,
+- doplnená explicitná Codespaces konfigurácia [`.devcontainer/devcontainer.json`](.devcontainer/devcontainer.json) s `postCreateCommand` na technické zabezpečenie PHP runtime,
+- vytvorený idempotentný skript [`.devcontainer/setup-php-extensions.sh`](.devcontainer/setup-php-extensions.sh), ktorý pre aktívny `/usr/local/php` rebuildne rovnakú verziu PHP s `intl` a `mysqli` a prepne symlink `current` bez prechodu na systémové `/usr/bin/php`,
+- technický záznam je v [`TECHNICKE-NAVRHY/2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`](TECHNICKE-NAVRHY/2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md),
+- Validácia výsledku je v [`TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`](TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md).
 
 ---
 

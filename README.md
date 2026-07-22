@@ -198,6 +198,30 @@ Hodnota `0` sama osebe neznamená absolútnu neexistenciu. Môže znamenať nepr
 
 ---
 
+# Codespaces PHP runtime
+
+Pre tento repozitár je doplnená explicitná konfigurácia vývojového kontajnera:
+
+- `.devcontainer/devcontainer.json`
+- `.devcontainer/setup-php-extensions.sh`
+
+Konfigurácia nemení významové ani doménové pravidlá. Jej cieľom je technická reprodukovateľnosť prostredia po rebuilde.
+
+Praktický výsledok po vykonaní `postCreateCommand`:
+
+```text
+aktívny CLI runtime zostáva v /usr/local/php/
+PHP verzia zostáva 8.4.15
+načítané rozšírenia zahŕňajú minimálne intl a mysqli
+```
+
+Podrobnosti a Validácia sú v:
+
+- `TECHNICKE-NAVRHY/2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`
+- `TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`
+
+---
+
 # Rozmery života
 
 ```text

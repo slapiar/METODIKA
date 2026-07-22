@@ -1,0 +1,6 @@
+{
+  "name": "METODIKA Codespaces",
+  "image": "mcr.microsoft.com/vscode/devcontainers/universal:latest",
+  "remoteUser": "codespace",
+  "postCreateCommand": "bash .devcontainer/setup-php-extensions.sh"
+}

@@ -75,6 +75,8 @@ Význam:
 | Dokument | Stav | Zdroj významu alebo poznámka |
 |---|---|---|
 | `2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md` | PRACOVNÝ | Aktívny technický základ CodeIgnitera 4.7.4. Význam domény preberá z autoritatívnych a Validovaných metodických dokumentov. Nahrádza aktívne použitie historického dokumentu `postupy/2026-07-22_09-38_CodeIgniter.md`. |
+| `2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Trvalá konfigurácia vývojového kontajnera cez `.devcontainer/` s idempotentným rebuildom aktívneho PHP 8.4.15 na variant s `intl` a `mysqli` bez prechodu na systémové `/usr/bin/php`. |
+| `2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md` | PRACOVNÝ | Validácia výsledku konfigurácie Codespaces runtime; aktívny CLI PHP po zásahu načíta `intl` a `mysqli`, diagnostický príkaz DB je dostupný, no v tomto kroku bez externého env zlyhal na bezpečnej chybe pripojenia. |
 | `2026-07-22_APLIKACNA-SLUZBA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Aktualizovaný návrh služby. Validovaná replay politika je premietnutá cez `RequestReplayGuard`; spoločná Validácia s repository kontraktom skončila `VALID`. |
 | `2026-07-22_VALIDACIA-APLIKACNEJ-SLUZBY-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Historická Validácia pôvodného technického návrhu služby s výsledkom `VALID_WITH_LIMITATIONS`; zachováva vtedy otvorenú replay politiku. |
 | `2026-07-22_POLITIKA-OPAKOVANEJ-REQUEST-REFERENCE.md` | PRACOVNÝ | Technická politika `IDEMPOTENT_REPLAY_BY_REQUEST_REFERENCE`: jedna konkrétna požiadavka vytvára najviac jeden `QUESTION_DERIVATION`; replay používa existujúci beh a odlišný obsah vytvára technický konflikt. |
