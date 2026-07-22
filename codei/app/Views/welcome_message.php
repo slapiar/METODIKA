@@ -217,6 +217,7 @@
             <li class="menu-item hidden"><a href="https://codeigniter.com/user_guide/" target="_blank">Docs</a>
             </li>
             <li class="menu-item hidden"><a href="https://forum.codeigniter.com/" target="_blank">Community</a></li>
+                <li class="menu-item hidden"><a href="/diagnostics/database">Diagnostics</a></li>
             <li class="menu-item hidden"><a
                     href="https://codeigniter.com/contribute" target="_blank">Contribute</a>
             </li>
@@ -315,14 +316,13 @@
 <!-- SCRIPTS -->
 
 <script {csp-script-nonce}>
-    document.getElementById("menuToggle").addEventListener('click', toggleMenu);
-    function toggleMenu() {
-        var menuItems = document.getElementsByClassName('menu-item');
-        for (var i = 0; i < menuItems.length; i++) {
-            var menuItem = menuItems[i];
-            menuItem.classList.toggle("hidden");
-        }
-    }
+    const menuToggle = document.getElementById('menuToggle');
+    menuToggle?.addEventListener('click', () => {
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach((menuItem) => {
+            menuItem.classList.toggle('hidden');
+        });
+    });
 </script>
 
 <!-- -->
