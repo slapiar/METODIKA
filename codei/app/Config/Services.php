@@ -34,6 +34,9 @@ class Services extends BaseService
             return static::getSharedInstance('diagnosticsConcurrencyRunStore');
         }
 
-        return new \App\Services\DiagnosticsConcurrencyRunStore();
+        return new \App\Services\DiagnosticsConcurrencyRunStore(
+            null,
+            new \App\Services\DiagnosticsConcurrencyRunDocumentValidator(),
+        );
     }
 }

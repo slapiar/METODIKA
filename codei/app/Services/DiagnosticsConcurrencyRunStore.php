@@ -13,9 +13,15 @@ final class DiagnosticsConcurrencyRunStore
 
     private string $baseDirectory;
 
-    public function __construct(?string $baseDirectory = null)
+    private DiagnosticsConcurrencyRunDocumentValidator $validator;
+
+    public function __construct(
+        ?string $baseDirectory = null,
+        ?DiagnosticsConcurrencyRunDocumentValidator $validator = null,
+    )
     {
         $this->baseDirectory = rtrim($baseDirectory ?? (WRITEPATH . 'diagnostics/concurrency'), DIRECTORY_SEPARATOR);
+        $this->validator = $validator ?? new DiagnosticsConcurrencyRunDocumentValidator();
     }
 
     /**
@@ -24,25 +30,14 @@ final class DiagnosticsConcurrencyRunStore
     public function load(string $runId): ?array
     {
         return $this->withLock($runId, LOCK_SH, function (string $jsonPath): ?array {
-            if (! is_file($jsonPath)) {
+            $document = $this->readDocument($jsonPath);
+            if ($document === null) {
                 return null;
             }
 
-            $raw = @file_get_contents($jsonPath);
-            if (! is_string($raw)) {
-                throw new RuntimeException('Run dokument sa nepodarilo nacitat.');
-            }
+            $this->validator->validate($document);
 
-            if ($raw === '') {
-                throw new RuntimeException('Run dokument je prazdny alebo neplatny.');
-            }
-
-            $decoded = json_decode($raw, true);
-            if (! is_array($decoded)) {
-                throw new RuntimeException('Run dokument nie je validny JSON objekt.');
-            }
-
-            return $decoded;
+            return $document;
         });
     }
 
@@ -52,6 +47,11 @@ final class DiagnosticsConcurrencyRunStore
     public function save(string $runId, array $document): void
     {
         $this->withLock($runId, LOCK_EX, function (string $jsonPath) use ($document): void {
+            $current = $this->readDocument($jsonPath);
+
+            $this->validator->validate($document);
+            $this->validator->validateTransition($current, $document);
+
             $this->writeJsonAtomically($jsonPath, $document);
         });
     }
@@ -63,26 +63,18 @@ final class DiagnosticsConcurrencyRunStore
     public function mutate(string $runId, callable $mutator): array
     {
         return $this->withLock($runId, LOCK_EX, function (string $jsonPath) use ($mutator): array {
-            $current = null;
-
-            if (is_file($jsonPath)) {
-                $raw = @file_get_contents($jsonPath);
-                if (! is_string($raw) || $raw === '') {
-                    throw new RuntimeException('Run dokument sa nepodarilo nacitat pre modifikaciu.');
-                }
-
-                $decoded = json_decode($raw, true);
-                if (! is_array($decoded)) {
-                    throw new RuntimeException('Run dokument nie je validny JSON objekt.');
-                }
-
-                $current = $decoded;
+            $current = $this->readDocument($jsonPath);
+            if (is_array($current)) {
+                $this->validator->validate($current);
             }
 
             $next = $mutator($current);
             if (! is_array($next)) {
                 throw new RuntimeException('Mutator musi vratit JSON objekt ako asociativne pole.');
             }
+
+            $this->validator->validate($next);
+            $this->validator->validateTransition($current, $next);
 
             $this->writeJsonAtomically($jsonPath, $next);
 
@@ -222,6 +214,28 @@ final class DiagnosticsConcurrencyRunStore
             $this->deleteIfExists($tempPath);
             throw new RuntimeException('Run dokument sa nepodarilo atomicky nahradit.');
         }
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function readDocument(string $jsonPath): ?array
+    {
+        if (! is_file($jsonPath)) {
+            return null;
+        }
+
+        $raw = @file_get_contents($jsonPath);
+        if (! is_string($raw) || $raw === '') {
+            throw new RuntimeException('Run dokument sa nepodarilo nacitat.');
+        }
+
+        $decoded = json_decode($raw, true);
+        if (! is_array($decoded)) {
+            throw new RuntimeException('Run dokument nie je validny JSON objekt.');
+        }
+
+        return $decoded;
     }
 
     /** @return list<string> */

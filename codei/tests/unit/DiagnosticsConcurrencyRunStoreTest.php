@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Services\DiagnosticsConcurrencyRunStore;
+use App\Services\DiagnosticsConcurrencyRunState;
 use CodeIgniter\Test\CIUnitTestCase;
 
 /**
@@ -32,12 +33,12 @@ final class DiagnosticsConcurrencyRunStoreTest extends CIUnitTestCase
     {
         $runId = 'runid-0001';
 
-        $this->store->save($runId, ['state' => 'CREATED', 'value' => 1]);
+        $this->store->save($runId, $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED));
         $loaded = $this->store->load($runId);
 
         $this->assertIsArray($loaded);
-        $this->assertSame('CREATED', $loaded['state']);
-        $this->assertSame(1, $loaded['value']);
+        $this->assertSame(DiagnosticsConcurrencyRunState::CREATED, $loaded['state']);
+        $this->assertSame($runId, $loaded['runId']);
         $this->assertFileExists($this->baseDirectory . '/' . $runId . '.lock');
         $this->assertFileExists($this->baseDirectory . '/' . $runId . '.json');
     }
@@ -45,17 +46,16 @@ final class DiagnosticsConcurrencyRunStoreTest extends CIUnitTestCase
     public function testMutatePerformsAtomicReadModifyWrite(): void
     {
         $runId = 'runid-0002';
-        $this->store->save($runId, ['count' => 1]);
+        $this->store->save($runId, $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED));
 
         $result = $this->store->mutate($runId, static function (?array $current): array {
-            $count = (int) ($current['count'] ?? 0);
-            $current['count'] = $count + 1;
-            $current['state'] = 'WAITING_FOR_PARTNER';
+            $current['state'] = DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER;
+            $current['participants']['a']['readyAt'] = '2026-07-23T12:01:00Z';
             return $current;
         });
 
-        $this->assertSame(2, $result['count']);
-        $this->assertSame('WAITING_FOR_PARTNER', $result['state']);
+        $this->assertSame(DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER, $result['state']);
+        $this->assertSame('2026-07-23T12:01:00Z', $result['participants']['a']['readyAt']);
         $this->assertSame($result, $this->store->load($runId));
 
         $tempFiles = glob($this->baseDirectory . '/' . $runId . '.json.tmp.*');
@@ -69,7 +69,7 @@ final class DiagnosticsConcurrencyRunStoreTest extends CIUnitTestCase
         $jsonPath = $this->baseDirectory . '/' . $runId . '.json';
         $lockPath = $this->baseDirectory . '/' . $runId . '.lock';
 
-        $this->store->save($runId, ['version' => 1]);
+        $this->store->save($runId, $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED));
 
         $lockStatBefore = @stat($lockPath);
         $jsonStatBefore = @stat($jsonPath);
@@ -77,7 +77,7 @@ final class DiagnosticsConcurrencyRunStoreTest extends CIUnitTestCase
         $this->assertIsArray($lockStatBefore);
         $this->assertIsArray($jsonStatBefore);
 
-        $this->store->save($runId, ['version' => 2]);
+        $this->store->save($runId, $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED));
 
         $lockStatAfter = @stat($lockPath);
         $jsonStatAfter = @stat($jsonPath);
@@ -93,19 +93,113 @@ final class DiagnosticsConcurrencyRunStoreTest extends CIUnitTestCase
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Neplatny runId format.');
 
-        $this->store->save('../bad', ['state' => 'CREATED']);
+        $this->store->save('../bad', $this->makeDocument('runid-aaaa', DiagnosticsConcurrencyRunState::CREATED));
     }
 
     public function testCleanupIsIdempotent(): void
     {
         $runId = 'runid-0004';
-        $this->store->save($runId, ['state' => 'COMPLETED_FAILED']);
+        $this->store->save($runId, $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED));
 
         $this->store->cleanup($runId);
         $this->store->cleanup($runId);
 
         $this->assertFileDoesNotExist($this->baseDirectory . '/' . $runId . '.json');
         $this->assertFileDoesNotExist($this->baseDirectory . '/' . $runId . '.lock');
+    }
+
+    public function testSaveRejectsInvalidDocumentState(): void
+    {
+        $runId = 'runid-0005';
+        $document = $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED);
+        $document['state'] = 'BROKEN_STATE';
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Run dokument nie je validny.');
+
+        $this->store->save($runId, $document);
+    }
+
+    public function testMutateRejectsInvalidTransition(): void
+    {
+        $runId = 'runid-0006';
+        $this->store->save($runId, $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Run dokument nie je validny.');
+
+        $this->store->mutate($runId, static function (?array $current): array {
+            $current['state'] = DiagnosticsConcurrencyRunState::RESULTS_READY;
+            return $current;
+        });
+    }
+
+    public function testLoadRejectsUnknownStoredState(): void
+    {
+        $runId = 'runid-0007';
+        $this->store->save($runId, $this->makeDocument($runId, DiagnosticsConcurrencyRunState::CREATED));
+
+        $jsonPath = $this->baseDirectory . '/' . $runId . '.json';
+        $raw = file_get_contents($jsonPath);
+        $this->assertIsString($raw);
+
+        $doc = json_decode($raw, true);
+        $this->assertIsArray($doc);
+        $doc['state'] = 'NOT_ALLOWED';
+        $written = file_put_contents($jsonPath, json_encode($doc, JSON_THROW_ON_ERROR));
+        $this->assertNotFalse($written);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Run dokument nie je validny.');
+
+        $this->store->load($runId);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function makeDocument(string $runId, string $state): array
+    {
+        $participant = [
+            'tokenHash' => str_repeat('a', 64),
+            'consumedAt' => null,
+            'readyAt' => null,
+            'startedAt' => null,
+            'finishedAt' => null,
+            'outcome' => null,
+            'errorCode' => null,
+        ];
+
+        return [
+            'version' => 1,
+            'runId' => $runId,
+            'state' => $state,
+            'createdAt' => '2026-07-23T12:00:00Z',
+            'expiresAt' => '2026-07-23T12:10:00Z',
+            'participants' => [
+                'a' => $participant,
+                'b' => $participant,
+            ],
+            'barrier' => [
+                'openedAt' => null,
+                'waitTimeoutMs' => 2500,
+            ],
+            'finalization' => [
+                'claimedAt' => null,
+                'claimedBy' => null,
+                'finishedAt' => null,
+            ],
+            'cleanup' => [
+                'cleanupConfirmed' => false,
+                'cleanupErrorCode' => null,
+            ],
+            'assertions' => [
+                'dbUniquenessConfirmed' => null,
+                'appReplayConfirmed' => null,
+                'cleanupConfirmed' => null,
+                'overallSuccess' => null,
+            ],
+        ];
     }
 
     private function deleteTree(string $path): void
