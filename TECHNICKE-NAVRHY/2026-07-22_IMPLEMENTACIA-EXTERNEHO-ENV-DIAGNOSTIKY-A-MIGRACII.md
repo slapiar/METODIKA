@@ -11,14 +11,15 @@ Implementované:
 ```text
 externý env loader pred bootstrapom webu aj CLI,
 diagnostický príkaz databázových schopností,
-migrácie M1 až M8 podľa Validovaného databázového návrhu.
+migrácie M1 až M8 podľa Validovaného databázového návrhu,
+praktická diagnostika databázy na Hostingeri,
+vykonanie migrácií M1 až M8 v skupine default a batchi 1.
 ```
 
 Nevykonané:
 
 ```text
-praktická diagnostika na Hostingeri,
-spustenie migrácií,
+samostatné overenie fyzických cudzích kľúčov cez INFORMATION_SCHEMA,
 repository adaptéry,
 integračné testy nad skutočnou databázou.
 ```
@@ -42,15 +43,29 @@ M8 traces
 
 Používajú InnoDB, `utf8mb4_bin`, `DATETIME(6)`, reštriktívne cudzie kľúče a unikátne korelačné obmedzenia. Nepoužívajú kaskádové mazanie, triggery ani produkčné seed údaje.
 
-Bezpečné poradie:
+## Prakticky potvrdený stav
+
+Dňa 2026-07-23 boli migrácie vykonané z Hostinger CLI príkazom:
 
 ```text
-diagnostika servera
-→ pri úplnom úspechu spustenie migrácií
-→ kontrola stavu migrácií a fyzických väzieb
-→ repository adaptéry
-→ integračné testy
-→ Validácia implementovaného stavu
+php spark migrate
 ```
 
-Ak diagnostika zlyhá, migrácie sa nesmú spustiť.
+CodeIgniter potvrdil dokončenie všetkých ôsmich migrácií bez chyby. Následný príkaz `php spark migrate:status` evidoval všetkých osem migrácií:
+
+```text
+Group       = default
+Migrated On = 2026-07-23 08:36:20 UTC
+Batch       = 1
+```
+
+Podrobný záznam a reValidácia sú v [`2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md).
+
+Bezpečné poradie pokračovania:
+
+```text
+overenie fyzických tabuliek a cudzích kľúčov
+→ repository adaptéry
+→ integračné testy
+→ reValidácia implementovaného stavu
+```
