@@ -182,5 +182,6 @@ label {
   background: var(--surface);
   padding: 1rem 0;
   color: var(--ink-soft);
-  font-size: 0.45rem;
+  font-size: 0.45rem;!important
+  
 }
