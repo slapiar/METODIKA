@@ -236,6 +236,8 @@ while IFS= read -r source_path; do
   cp -p "$ROOT_DIR/$source_path" "$STAGE_DIR/codei/$relative_path"
 done < "$SOURCE_LIST"
 
+cp -p "$VERSION_FILE" "$STAGE_DIR/codei/RELEASE_VERSION"
+
 mkdir -p "$STAGE_DIR/codei/deploy"
 printf '%s\n' "$VERSION" > "$STAGE_DIR/codei/deploy/RELEASE_VERSION.txt"
 
@@ -279,6 +281,7 @@ fi
 REQUIRED_ARCHIVE_FILES=(
   "codei/index.php"
   "codei/.htaccess"
+  "codei/RELEASE_VERSION"
   "codei/public/index.php"
   "codei/public/.htaccess"
   "codei/app/Config/App.php"
@@ -307,12 +310,19 @@ if [[ "$ARCHIVED_VERSION" != "$VERSION" ]]; then
   exit 1
 fi
 
+ARCHIVED_ROOT_VERSION="$(unzip -p "$OUT_FILE" codei/RELEASE_VERSION | tr -d '[:space:]')"
+if [[ "$ARCHIVED_ROOT_VERSION" != "$VERSION" ]]; then
+  rm -f "$OUT_FILE"
+  echo "Error: archived root version '$ARCHIVED_ROOT_VERSION' does not match requested version '$VERSION'." >&2
+  exit 1
+fi
+
 echo "Release created: $OUT_FILE"
 echo "Contents: $(wc -l < "$ARCHIVE_LIST") files from codei/"
 echo "Deployment: extract ZIP into public_html to create/overwrite public_html/codei"
 echo "Verified: archive root is codei/ and includes index.php shim + public front controller"
 echo "Verified: archive excludes .env/local-config and runtime writable payload files"
-echo "Verified release marker: $ARCHIVED_VERSION"
+echo "Verified release markers: codei/RELEASE_VERSION=$ARCHIVED_ROOT_VERSION, codei/deploy/RELEASE_VERSION.txt=$ARCHIVED_VERSION"
 
 if [[ "$AUTO_COMMIT" == true ]]; then
   if [[ -z "$COMMIT_MESSAGE" ]]; then

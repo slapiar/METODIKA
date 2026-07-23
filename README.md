@@ -230,7 +230,7 @@ webová diagnostika s explicitným gate modelom.
 URL bez tokenu:
 
 ```text
-https://dremont.in/codei/diagnostics/database
+https://codei.dremont.in/diagnostics/database
 ```
 
 Zapnutie iba dočasne:

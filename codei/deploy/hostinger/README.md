@@ -42,14 +42,14 @@ Note: This keeps the URL path with `/codei/public/...` and is less clean than cu
 2. Use root shim files:
   - `codei/index.php`
   - `codei/.htaccess`
-3. The shim redirects requests to `/public/...` using HTTP 307.
+3. Root shim bootstraps `codei/public/index.php` internally and static files are served from `codei/public/` without exposing `/public` in URL.
 4. In `codei/.env` set:
   - `CI_ENVIRONMENT = production`
-  - `app.baseURL = 'https://your-subdomain.tld/public/'`
+  - `app.baseURL = 'https://your-subdomain.tld/'`
 
 This approach is compatible with multi-subdomain setups under one `public_html`.
 
-### B1c. Domain path setup `https://domain.tld/codei/` (your current value)
+### B1c. Domain path setup `https://domain.tld/codei/` (legacy alternative)
 
 1. Keep website root unchanged (`public_html`) and deploy app under `public_html/codei`.
 2. Keep shim files in `codei/`:
@@ -69,9 +69,9 @@ Expected behavior:
 - application routes resolve in CodeIgniter
 - no 404 for valid routes
 
-### B1d. Optional no-redirect variant
+### B1d. Optional explicit no-redirect templates
 
-Use this only if you want cleaner runtime behavior without HTTP redirect on each request.
+Use this only if you need to restore the no-redirect shim files from templates.
 
 1. Replace `codei/index.php` with template `codei-index-internal-bootstrap.php`.
 2. Replace `codei/.htaccess` with template `codei-htaccess-no-redirect.template`.

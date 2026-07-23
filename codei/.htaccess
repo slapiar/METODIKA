@@ -7,6 +7,12 @@ Options -Indexes
     RewriteCond %{REQUEST_URI} /public(/|$) [NC]
     RewriteRule ^ - [L]
 
+    # Serve real files/directories from /public without exposing /public in URL.
+    RewriteCond %{REQUEST_URI} !^/public/ [NC]
+    RewriteCond public/$1 -f [OR]
+    RewriteCond public/$1 -d
+    RewriteRule ^(.+)$ public/$1 [L]
+
     # Send all requests through root index.php shim.
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
