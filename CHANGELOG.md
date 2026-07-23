@@ -43,6 +43,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - po oboch scenároch nezostali v databáze žiadne testovacie riadky,
 - výsledok `MYSQL_TRANSACTION_ATOMICITY_VALIDATED` a otvorené obmedzenie súbežného testu sú v [`TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md).
 
+### Súbežné overenie prvého prijatia
+
+- vytvorený Spark príkaz [`codei/app/Commands/VerifyConcurrentFirstAcceptance.php`](codei/app/Commands/VerifyConcurrentFirstAcceptance.php),
+- príkaz používa dve nesdielané MySQLi spojenia s rozdielnymi databázovými `thread_id`,
+- spojenie A vytvorí celé prvé prijatie v otvorenej vonkajšej transakcii a spojenie B súbežne odošle asynchrónny `INSERT` rovnakej `REQUEST_REFERENCE`,
+- po commite spojenia A musí spojenie B dostať unikátnu kolíziu `1062` a následné volanie služby musí vrátiť `ALREADY_EXISTS` s `derivation_reference` toku A,
+- test kontroluje výsledné počty `1 rezervácia + 1 beh + 2 doménové väzby` a po cielenom čistení `0 + 0 + 0`,
+- praktické runtime overenie ešte nebolo vykonané; stav a hranice testu sú v [`TECHNICKE-NAVRHY/2026-07-23_SUBEZNE-OVERENIE-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_SUBEZNE-OVERENIE-PRVEHO-PRIJATIA.md).
+
 ---
 
 ## 2026-07-22
