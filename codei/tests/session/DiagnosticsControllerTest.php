@@ -206,7 +206,7 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->deleteTree($storeDirectory);
     }
 
-    public function testConcurrencyHitFlowSetsReadyAndOpensBarrier(): void
+    public function testConcurrencyHitFlowOpensBarrierWhenPartnerIsAlreadyReady(): void
     {
         $this->setDiagnosticsEnv('1', 'secret-token');
         $this->setConcurrencyFlag('1');
@@ -218,7 +218,9 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $runId = 'run-aaaaaaaaaaaaaaaaaaaaaaaa';
         $tokenA = 'token-a-plain';
         $tokenB = 'token-b-plain';
-        $store->save($runId, $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED'));
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $document['participants']['b']['readyAt'] = gmdate('c', time() - 1);
+        $store->save($runId, $document);
 
         $session = [
             'metodika_diagnostics_auth' => true,
@@ -233,33 +235,62 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $responseA->assertStatus(200);
         $payloadA = json_decode(html_entity_decode(strip_tags((string) $responseA->getBody())), true);
         $this->assertIsArray($payloadA);
-        $this->assertSame('WAITING_FOR_PARTNER', $payloadA['state']);
-        $this->assertFalse((bool) $payloadA['barrierOpened']);
+        $this->assertSame('BARRIER_OPEN', $payloadA['state']);
+        $this->assertTrue((bool) $payloadA['barrierOpened']);
+        $this->assertFalse((bool) $payloadA['timeoutReached']);
 
         $afterA = $store->load($runId);
         $this->assertIsArray($afterA);
-        $this->assertSame('WAITING_FOR_PARTNER', $afterA['state']);
+        $this->assertSame('BARRIER_OPEN', $afterA['state']);
         $this->assertNotNull($afterA['participants']['a']['consumedAt']);
         $this->assertNotNull($afterA['participants']['a']['readyAt']);
-        $this->assertNull($afterA['participants']['b']['readyAt']);
+        $this->assertNotNull($afterA['participants']['b']['readyAt']);
+        $this->assertNotNull($afterA['barrier']['openedAt']);
 
-        $responseB = $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyHitTimesOutAndClaimsFinalization(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-timeout-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+
+        $runId = 'run-dddddddddddddddddddddddd';
+        $tokenA = 'token-a-timeout';
+        $tokenB = 'token-b-timeout';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $document['barrier']['waitTimeoutMs'] = 10;
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
             'runId' => $runId,
-            'participantToken' => $tokenB,
+            'participantToken' => $tokenA,
         ]);
 
-        $responseB->assertStatus(200);
-        $payloadB = json_decode(html_entity_decode(strip_tags((string) $responseB->getBody())), true);
-        $this->assertIsArray($payloadB);
-        $this->assertSame('BARRIER_OPEN', $payloadB['state']);
-        $this->assertTrue((bool) $payloadB['barrierOpened']);
+        $response->assertStatus(200);
+        $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
+        $this->assertIsArray($payload);
+        $this->assertSame('FINALIZATION_CLAIMED', $payload['state']);
+        $this->assertFalse((bool) $payload['barrierOpened']);
+        $this->assertTrue((bool) $payload['timeoutReached']);
 
-        $afterB = $store->load($runId);
-        $this->assertIsArray($afterB);
-        $this->assertSame('BARRIER_OPEN', $afterB['state']);
-        $this->assertNotNull($afterB['participants']['b']['consumedAt']);
-        $this->assertNotNull($afterB['participants']['b']['readyAt']);
-        $this->assertNotNull($afterB['barrier']['openedAt']);
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('FINALIZATION_CLAIMED', $stored['state']);
+        $this->assertSame('a', $stored['finalization']['claimedBy']);
+        $this->assertNotNull($stored['finalization']['claimedAt']);
+        $this->assertSame('PARTNER_TIMEOUT', $stored['participants']['a']['errorCode']);
+        $this->assertSame('TIMEOUT', $stored['participants']['a']['outcome']);
+        $this->assertNotNull($stored['participants']['a']['finishedAt']);
 
         $this->deleteTree($storeDirectory);
     }

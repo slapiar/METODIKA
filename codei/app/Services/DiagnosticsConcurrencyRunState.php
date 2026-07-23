@@ -77,10 +77,10 @@ final class DiagnosticsConcurrencyRunState
     private static function allowedTransitions(): array
     {
         return [
-            self::CREATED => [self::WAITING_FOR_PARTNER, self::BARRIER_OPEN, self::EXPIRED],
-            self::WAITING_FOR_PARTNER => [self::BARRIER_OPEN, self::EXPIRED],
-            self::BARRIER_OPEN => [self::EXECUTING, self::EXPIRED],
-            self::EXECUTING => [self::RESULTS_READY, self::EXPIRED],
+            self::CREATED => [self::WAITING_FOR_PARTNER, self::BARRIER_OPEN, self::EXPIRED, self::FINALIZATION_CLAIMED],
+            self::WAITING_FOR_PARTNER => [self::BARRIER_OPEN, self::EXPIRED, self::FINALIZATION_CLAIMED],
+            self::BARRIER_OPEN => [self::EXECUTING, self::EXPIRED, self::FINALIZATION_CLAIMED],
+            self::EXECUTING => [self::RESULTS_READY, self::EXPIRED, self::FINALIZATION_CLAIMED],
             self::RESULTS_READY => [self::FINALIZATION_CLAIMED],
             self::FINALIZATION_CLAIMED => [self::CLEANUP_PENDING, self::COMPLETED_FAILED, self::COMPLETED_FAILED_CLEANUP],
             self::CLEANUP_PENDING => [self::COMPLETED_SUCCESS, self::COMPLETED_FAILED, self::COMPLETED_FAILED_CLEANUP],

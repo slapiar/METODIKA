@@ -25,6 +25,7 @@ final class DiagnosticsController extends BaseController
         DiagnosticsConcurrencyRunState::CREATED,
         DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER,
     ];
+    private const HIT_POLL_SLEEP_US = 20_000;
 
     public function database(): ResponseInterface
     {
@@ -391,14 +392,84 @@ final class DiagnosticsController extends BaseController
             return $this->diagnosticsFallbackNotFound();
         }
 
+        $updated = $this->awaitBarrierOrTimeout(trim($runId), $participant, $updated);
+
         $barrierOpenedAt = $updated['barrier']['openedAt'] ?? null;
+        $participantSlot = $updated['participants'][$participant] ?? [];
+        $timeoutReached = ($participantSlot['errorCode'] ?? null) === 'PARTNER_TIMEOUT';
 
         return $this->secureJsonResponse([
             'runId' => $updated['runId'] ?? trim($runId),
             'participant' => $participant,
             'state' => $updated['state'] ?? null,
             'barrierOpened' => is_string($barrierOpenedAt) && $barrierOpenedAt !== '',
+            'timeoutReached' => $timeoutReached,
         ]);
+    }
+
+    /**
+     * @param array<string, mixed> $current
+     * @return array<string, mixed>
+     */
+    private function awaitBarrierOrTimeout(string $runId, string $participant, array $current): array
+    {
+        $state = $current['state'] ?? null;
+        if (! is_string($state) || $state !== DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER) {
+            return $current;
+        }
+
+        $timeoutMs = $current['barrier']['waitTimeoutMs'] ?? self::BARRIER_WAIT_TIMEOUT_MS;
+        if (! is_int($timeoutMs) || $timeoutMs < 1) {
+            $timeoutMs = self::BARRIER_WAIT_TIMEOUT_MS;
+        }
+
+        $deadline = microtime(true) + ($timeoutMs / 1000);
+
+        while (microtime(true) < $deadline) {
+            $latest = $this->runStore()->load($runId);
+            if (! is_array($latest)) {
+                return $current;
+            }
+
+            $latestState = $latest['state'] ?? null;
+            if ($latestState === DiagnosticsConcurrencyRunState::BARRIER_OPEN) {
+                return $latest;
+            }
+
+            usleep(self::HIT_POLL_SLEEP_US);
+        }
+
+        return $this->claimFinalizationForTimeout($runId, $participant);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function claimFinalizationForTimeout(string $runId, string $participant): array
+    {
+        return $this->runStore()->mutate($runId, function (?array $current) use ($participant): array {
+            if (! is_array($current)) {
+                throw new RuntimeException('Run nenajdeny.');
+            }
+
+            $state = $current['state'] ?? null;
+            if ($state === DiagnosticsConcurrencyRunState::BARRIER_OPEN) {
+                return $current;
+            }
+
+            $claimedAt = $current['finalization']['claimedAt'] ?? null;
+            if (! is_string($claimedAt) || $claimedAt === '') {
+                $nowIso = gmdate('c');
+                $current['finalization']['claimedAt'] = $nowIso;
+                $current['finalization']['claimedBy'] = $participant;
+                $current['participants'][$participant]['errorCode'] = 'PARTNER_TIMEOUT';
+                $current['participants'][$participant]['outcome'] = 'TIMEOUT';
+                $current['participants'][$participant]['finishedAt'] = $nowIso;
+                $current['state'] = DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED;
+            }
+
+            return $current;
+        });
     }
 
     private function secureHtmlResponse(string $html, int $statusCode = 200): ResponseInterface
