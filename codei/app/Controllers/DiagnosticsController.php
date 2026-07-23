@@ -64,6 +64,19 @@ final class DiagnosticsController extends BaseController
         return redirect()->to(site_url('diagnostics/database'));
     }
 
+    public function loginForm(): ResponseInterface
+    {
+        if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null) {
+            return $this->diagnosticsFallbackNotFound();
+        }
+
+        if ($this->isAuthorized()) {
+            return redirect()->to(site_url('diagnostics/database'));
+        }
+
+        return $this->secureHtmlResponse(view('diagnostics/login'));
+    }
+
     public function run(): ResponseInterface
     {
         if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null || ! $this->isAuthorized()) {

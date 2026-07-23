@@ -32,12 +32,24 @@
             margin-top: 0.8rem;
             color: #4b5c75;
         }
+
+        a {
+            color: #0b5cab;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover,
+        a:focus {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <main class="wrap">
         <h1>404</h1>
         <p>Pozadovany zdroj nebol najdeny.</p>
+        <p><a href="<?= esc(site_url('diagnostics/database/login')) ?>">Prihlasit sa do diagnostiky</a></p>
     </main>
 </body>
 </html>

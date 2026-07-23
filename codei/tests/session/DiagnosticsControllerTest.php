@@ -58,7 +58,18 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->get('/diagnostics/database')
             ->assertStatus(404)
             ->assertSee('404', false)
+            ->assertSee('/diagnostics/database/login', false)
             ->assertDontSee('Diagnostika databazy METODIKA', false);
+    }
+
+    public function testLoginFormIsAvailableAtDedicatedRoute(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+
+        $this->get('/diagnostics/database/login')
+            ->assertStatus(200)
+            ->assertSee('Diagnostika databazy METODIKA', false)
+            ->assertSee('diagnostics_token', false);
     }
 
     public function testCorrectTokenAllowsDiagnosticsPage(): void
