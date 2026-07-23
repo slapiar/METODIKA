@@ -28,6 +28,7 @@ final class VerifyConcurrentFirstAcceptance extends BaseCommand
     {
         $dbA = null;
         $dbB = null;
+        $baseDb = null;
         $requestReference = null;
 
         try {
@@ -35,8 +36,12 @@ final class VerifyConcurrentFirstAcceptance extends BaseCommand
                 throw new RuntimeException('Aktuálny MySQLi runtime nepodporuje MYSQLI_ASYNC.');
             }
 
-            $dbA = Database::connect(null, false);
-            $dbB = Database::connect(null, false);
+            $baseDb = Database::connect('default');
+            $baseDb->initialize();
+
+            $effectiveConfig = $this->effectiveMySQLiConfigFromConnection($baseDb);
+            $dbA = Database::connect($effectiveConfig, false);
+            $dbB = Database::connect($effectiveConfig, false);
             $this->assertIndependentMySQLiConnections($dbA, $dbB);
 
             $token = bin2hex(random_bytes(8));
@@ -126,6 +131,39 @@ final class VerifyConcurrentFirstAcceptance extends BaseCommand
         if ($dbA->mysqli === $dbB->mysqli || $dbA->mysqli->thread_id === $dbB->mysqli->thread_id) {
             throw new RuntimeException('Databázové spojenia A a B nie sú nezávislé.');
         }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function effectiveMySQLiConfigFromConnection(BaseConnection $db): array
+    {
+        if (! $db instanceof Connection) {
+            throw new RuntimeException('Overenie vyžaduje MySQLi default pripojenie.');
+        }
+
+        return [
+            'DSN'          => (string) $db->DSN,
+            'hostname'     => (string) $db->hostname,
+            'username'     => (string) $db->username,
+            'password'     => (string) $db->password,
+            'database'     => (string) $db->database,
+            'DBDriver'     => (string) $db->DBDriver,
+            'DBPrefix'     => (string) $db->DBPrefix,
+            'pConnect'     => false,
+            'DBDebug'      => (bool) $db->DBDebug,
+            'charset'      => (string) $db->charset,
+            'DBCollat'     => (string) $db->DBCollat,
+            'swapPre'      => (string) $db->swapPre,
+            'encrypt'      => $db->encrypt,
+            'compress'     => (bool) $db->compress,
+            'strictOn'     => $db->strictOn,
+            'failover'     => $db->failover,
+            'port'         => (int) $db->port,
+            'numberNative' => (bool) $db->numberNative,
+            'foundRows'    => (bool) $db->foundRows,
+            'dateFormat'   => $db->dateFormat,
+        ];
     }
 
     private function startCompetingInsert(Connection $db, string $payloadFingerprint, InitialDerivationRun $run): bool
