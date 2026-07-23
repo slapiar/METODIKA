@@ -31,7 +31,7 @@ Význam:
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
-| `2026-07-23_12-27_Copilot-checklist a testovacia matica.md` | PRACOVNÝ | Aktívny implementačný podklad pre krátko-žijúci webový diagnostický scenár súbežného prvého prijatia. Obsahuje uzavreté hranice, checklist krokov, testovaciu maticu, feature flag, bezpečnostné pravidlá a akceptačné kritérium. |
+| `2026-07-23_12-27_Copilot-checklist a testovacia matica.md` | PRACOVNÝ | Aktívny implementačný podklad pre krátko-žijúci webový diagnostický scenár súbežného prvého prijatia. Kroky 1 az 13 su implementacne pokryte, otvoreny zostava krok 14 (prakticke produkcne overenie). |
 | `2026-07-23_14-21_IMPLEMENTACNY-CHECKLIST-A-TESTOVACIA-MATICA-WEBOVEHO-SUBEZNEHO-OVERENIA.md` | PREKONANÝ | Nahradený dokumentom `2026-07-23_12-27_Copilot-checklist a testovacia matica.md`, ktorý je vedený ako jediná aktívna pracovná verzia checklistu a testovacej matice webového súbežného overenia. |
 | `2026-07-22_09-38_CodeIgniter.md` | PREKONANÝ | Historický technický podklad. Aktívne technické pravidlá boli oddelené do `TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md`; technické návrhy sa už nemajú ukladať medzi metodické postupy. Zmena 2026-07-22. |
 | `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Tri blokujúce body boli opravené: doplnený `INTENDED_APPLICABILITY_SCOPE`, historický záznam pokusu vzniká pred kontrolami a každé zastavenie vracia jednotný `DERIVATION_RESULT`. Spoločná reValidácia skončila `VALID_WITH_LIMITATIONS`. |

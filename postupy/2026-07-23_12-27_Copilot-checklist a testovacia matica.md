@@ -7,6 +7,15 @@
 - Autoritativny postup nacitany: `postupy/Inicializácia práce.md`
 - Ucel: pripravit implementacny podklad pre bezpecnu webovu koordinaciu dvoch samostatnych HTTP poziadaviek pre diagnosticky scenar subeznosti
 
+## Stav realizacie (2026-07-23)
+
+- Kroky 1 az 9: implementovane a overene v kode a testoch.
+- Krok 10 (Tombstone, result, sweep): implementovany, overeny feature testami.
+- Krok 11 (UI): implementovany na diagnostickej stranke, vratane paralelneho hit A/B toku a result pollingu.
+- Krok 12 (Unit testy): doplnene unit testy pre stavovy model a validator dokumentu.
+- Krok 13 (Integracny webovy test): doplneny end-to-end webovy test START -> HIT -> RESULT v session suite.
+- Krok 14 (Produkcne diagnosticke overenie): otvorene, caka na prakticke spustenie v produkcnom prostredi.
+
 ---
 
 ## Zavazne hranice specifikacie

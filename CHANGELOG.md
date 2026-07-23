@@ -60,6 +60,16 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - do testovacej matice boli doplnené scenáre pre stabilný `.lock` pri atomickom `rename`, nepovolené HIT stavy, expiráciu cez finalization claim, manuálny cleanup bez falošného `COMPLETED_SUCCESS`, redakciu tombstone, pád participantu počas `accept()`, autorizáciu všetkých nových endpointov a testovanie feature flagu,
 - register [`postupy/README.md`](postupy/README.md) bol zosúladený tak, že dokument `2026-07-23_14-21_IMPLEMENTACNY-CHECKLIST-A-TESTOVACIA-MATICA-WEBOVEHO-SUBEZNEHO-OVERENIA.md` je označený ako `PREKONANÝ` a jediná aktívna verzia zostáva dokument z `2026-07-23_12-27`.
 
+### Webové súbežné overenie - implementácia krokov 10 az 13
+
+- v kontroleri [`codei/app/Controllers/DiagnosticsController.php`](codei/app/Controllers/DiagnosticsController.php) bola doplnená result vetva, tombstone redukcia, sweep po `deleteAfter` a CSP nonce podpora pre diagnostics UI script,
+- routes boli rozšírené o GET result endpoint v [`codei/app/Config/Routes.php`](codei/app/Config/Routes.php),
+- diagnostics UI na stránke [`codei/app/Views/diagnostics/database.php`](codei/app/Views/diagnostics/database.php) bolo doplnené o `Start`, paralelne hit A/B fetch volania, polling resultu a zobrazenie troch osi + overall,
+- validator tombstone/completed pravidiel bol rozšírený v [`codei/app/Services/DiagnosticsConcurrencyRunDocumentValidator.php`](codei/app/Services/DiagnosticsConcurrencyRunDocumentValidator.php),
+- session testy boli rozšírené o UI a integračný webový scenár v [`codei/tests/session/DiagnosticsControllerTest.php`](codei/tests/session/DiagnosticsControllerTest.php),
+- unit testy boli rozšírené o stavový model a validator v [`codei/tests/unit/DiagnosticsConcurrencyRunStateTest.php`](codei/tests/unit/DiagnosticsConcurrencyRunStateTest.php) a [`codei/tests/unit/DiagnosticsConcurrencyRunDocumentValidatorTest.php`](codei/tests/unit/DiagnosticsConcurrencyRunDocumentValidatorTest.php),
+- behy `vendor/bin/phpunit --filter DiagnosticsControllerTest` a `vendor/bin/phpunit tests/unit` prešli; neblokujúce upozornenie ostáva iba `No code coverage driver available`.
+
 ---
 
 ## 2026-07-22
