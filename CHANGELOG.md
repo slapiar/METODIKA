@@ -14,8 +14,10 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - CodeIgniter CLI rozpoznal všetkých osem nevykonaných migrácií M1 až M8,
 - príkaz `php spark migrate` vykonal všetkých osem migrácií bez chyby,
 - následný `php spark migrate:status` potvrdil všetkých osem migrácií v skupine `default`, s časom `2026-07-23 08:36:20 UTC` a v batchi `1`,
+- v release `1.0.9` bol nasadený čítací príkaz [`codei/app/Commands/VerifyQuestionDerivationSchema.php`](codei/app/Commands/VerifyQuestionDerivationSchema.php),
+- príkaz `php spark metodika:verify-question-schema` potvrdil 8 z 8 tabuliek s InnoDB a `utf8mb4_bin` a 10 z 10 cudzích kľúčov s `DELETE RESTRICT` a `UPDATE RESTRICT`,
 - implementačný stav bol aktualizovaný v [`TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md`](TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md),
-- praktická reValidácia je v [`TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md) s výsledkom `VALID_WITH_LIMITATIONS`; otvorené zostáva samostatné overenie fyzických cudzích kľúčov, repository adaptéry a integračné testy.
+- praktická reValidácia je v [`TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md) s výsledkom `VALID_WITH_LIMITATIONS`; otvorené zostávajú repository adaptéry a integračné testy.
 
 ---
 
