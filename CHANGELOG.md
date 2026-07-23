@@ -19,6 +19,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - implementačný stav bol aktualizovaný v [`TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md`](TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md),
 - praktická reValidácia je v [`TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md) s výsledkom `VALID_WITH_LIMITATIONS`; otvorené zostávajú repository adaptéry a integračné testy.
 
+### Repository adaptéry
+
+- vytvorený port [`codei/app/Application/QuestionDerivation/Contracts/RequestReferenceRepositoryPort.php`](codei/app/Application/QuestionDerivation/Contracts/RequestReferenceRepositoryPort.php),
+- vytvorené dátové objekty rezervácie a výsledku rezervácie v [`codei/app/Application/QuestionDerivation/Data/`](codei/app/Application/QuestionDerivation/Data),
+- implementovaný MySQLi adaptér [`codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php`](codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php),
+- adaptér zabezpečuje rezerváciu, vyhľadanie, technické stavy a korelované načítanie ukončeného výsledku; sám neotvára ani nepotvrdzuje transakciu prvého prijatia,
+- implementačný stav a otvorené obmedzenia sú v [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md); runtime testy, história behu a transakčná hranica ešte chýbajú.
+
 ---
 
 ## 2026-07-22
