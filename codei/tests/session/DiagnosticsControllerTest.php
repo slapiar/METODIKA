@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Services\DatabaseCapabilityInspector;
 use App\Services\DiagnosticsConcurrencyAcceptanceRunner;
+use App\Services\DiagnosticsConcurrencyPersistenceService;
 use App\Services\DiagnosticsConcurrencyRunStore;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\FeatureTestTrait;
@@ -268,6 +269,13 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $storeDirectory = WRITEPATH . 'tests/concurrency-hit-timeout-' . bin2hex(random_bytes(4));
         $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
         Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyPersistenceService',
+            $this->makePersistenceMock([
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+                ['reservations' => 0, 'runs' => 0, 'domainTerms' => 0],
+            ]),
+        );
 
         $runId = 'run-dddddddddddddddddddddddd';
         $tokenA = 'token-a-timeout';
@@ -289,18 +297,23 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $response->assertStatus(200);
         $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
         $this->assertIsArray($payload);
-        $this->assertSame('FINALIZATION_CLAIMED', $payload['state']);
+        $this->assertSame('COMPLETED_FAILED', $payload['state']);
         $this->assertFalse((bool) $payload['barrierOpened']);
         $this->assertTrue((bool) $payload['timeoutReached']);
 
         $stored = $store->load($runId);
         $this->assertIsArray($stored);
-        $this->assertSame('FINALIZATION_CLAIMED', $stored['state']);
+        $this->assertSame('COMPLETED_FAILED', $stored['state']);
         $this->assertSame('a', $stored['finalization']['claimedBy']);
         $this->assertNotNull($stored['finalization']['claimedAt']);
+        $this->assertNotNull($stored['finalization']['finishedAt']);
         $this->assertSame('PARTNER_TIMEOUT', $stored['participants']['a']['errorCode']);
         $this->assertSame('TIMEOUT', $stored['participants']['a']['outcome']);
         $this->assertNotNull($stored['participants']['a']['finishedAt']);
+        $this->assertTrue((bool) $stored['assertions']['dbUniquenessConfirmed']);
+        $this->assertFalse((bool) $stored['assertions']['appReplayConfirmed']);
+        $this->assertTrue((bool) $stored['assertions']['cleanupConfirmed']);
+        $this->assertFalse((bool) $stored['assertions']['overallSuccess']);
 
         $this->deleteTree($storeDirectory);
     }
@@ -399,6 +412,13 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
             'diagnosticsConcurrencyAcceptanceRunner',
             new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'ALREADY_EXISTS'),
         );
+        Services::injectMock(
+            'diagnosticsConcurrencyPersistenceService',
+            $this->makePersistenceMock([
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+                ['reservations' => 0, 'runs' => 0, 'domainTerms' => 0],
+            ]),
+        );
 
         $runId = 'run-ffffffffffffffffffffffff';
         $tokenA = 'token-a-ready';
@@ -425,17 +445,22 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $response->assertStatus(200);
         $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
         $this->assertIsArray($payload);
-        $this->assertSame('FINALIZATION_CLAIMED', $payload['state']);
+        $this->assertSame('COMPLETED_SUCCESS', $payload['state']);
         $this->assertFalse((bool) $payload['waiterMode']);
 
         $stored = $store->load($runId);
         $this->assertIsArray($stored);
-        $this->assertSame('FINALIZATION_CLAIMED', $stored['state']);
+        $this->assertSame('COMPLETED_SUCCESS', $stored['state']);
         $this->assertSame('b', $stored['finalization']['claimedBy']);
         $this->assertNotNull($stored['finalization']['claimedAt']);
+        $this->assertNotNull($stored['finalization']['finishedAt']);
         $this->assertSame('ALREADY_EXISTS', $stored['participants']['b']['outcome']);
         $this->assertNotNull($stored['participants']['b']['startedAt']);
         $this->assertNotNull($stored['participants']['b']['finishedAt']);
+        $this->assertTrue((bool) $stored['assertions']['dbUniquenessConfirmed']);
+        $this->assertTrue((bool) $stored['assertions']['appReplayConfirmed']);
+        $this->assertTrue((bool) $stored['assertions']['cleanupConfirmed']);
+        $this->assertTrue((bool) $stored['assertions']['overallSuccess']);
 
         $this->deleteTree($storeDirectory);
     }
@@ -481,6 +506,63 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->assertArrayHasKey('waiters', $stored['finalization']);
         $this->assertIsArray($stored['finalization']['waiters']);
         $this->assertArrayHasKey('a', $stored['finalization']['waiters']);
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyFinalizationMarksFailedCleanupWhenCleanupThrows(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-cleanup-fail-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'ALREADY_EXISTS'),
+        );
+        Services::injectMock(
+            'diagnosticsConcurrencyPersistenceService',
+            $this->makePersistenceMock([
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+            ], true),
+        );
+
+        $runId = 'run-777777777777777777777777';
+        $tokenA = 'token-a-cleanup-fail';
+        $tokenB = 'token-b-cleanup-fail';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $doneAt = gmdate('c', time() - 1);
+        $document['participants']['a']['consumedAt'] = $doneAt;
+        $document['participants']['a']['readyAt'] = $doneAt;
+        $document['participants']['a']['startedAt'] = $doneAt;
+        $document['participants']['a']['finishedAt'] = $doneAt;
+        $document['participants']['a']['outcome'] = 'CREATED';
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+            'runId' => $runId,
+            'participantToken' => $tokenB,
+        ]);
+
+        $response->assertStatus(200);
+        $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
+        $this->assertIsArray($payload);
+        $this->assertSame('COMPLETED_FAILED_CLEANUP', $payload['state']);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('COMPLETED_FAILED_CLEANUP', $stored['state']);
+        $this->assertFalse((bool) $stored['cleanup']['cleanupConfirmed']);
+        $this->assertSame('CLEANUP_FAILED', $stored['cleanup']['cleanupErrorCode']);
+        $this->assertFalse((bool) $stored['assertions']['overallSuccess']);
 
         $this->deleteTree($storeDirectory);
     }
@@ -635,6 +717,42 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         }
 
         @rmdir($path);
+    }
+
+    /**
+     * @param list<array{reservations:int, runs:int, domainTerms:int}> $counts
+     */
+    private function makePersistenceMock(array $counts, bool $throwOnCleanup = false): DiagnosticsConcurrencyPersistenceService
+    {
+        $index = 0;
+
+        return new DiagnosticsConcurrencyPersistenceService(
+            static function (string $requestReference) use (&$index, $counts): array {
+                if ($requestReference === '') {
+                    throw new RuntimeException('missing request reference');
+                }
+
+                $selected = $counts[$index] ?? end($counts);
+                if ($index < (count($counts) - 1)) {
+                    $index++;
+                }
+
+                return [
+                    'reservations' => (int) $selected['reservations'],
+                    'runs' => (int) $selected['runs'],
+                    'domainTerms' => (int) $selected['domainTerms'],
+                ];
+            },
+            static function (string $requestReference) use ($throwOnCleanup): void {
+                if ($requestReference === '') {
+                    throw new RuntimeException('missing request reference');
+                }
+
+                if ($throwOnCleanup) {
+                    throw new RuntimeException('cleanup failed');
+                }
+            },
+        );
     }
 
     /**

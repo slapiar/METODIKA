@@ -48,4 +48,13 @@ class Services extends BaseService
 
         return new \App\Services\DiagnosticsConcurrencyAcceptanceRunner();
     }
+
+    public static function diagnosticsConcurrencyPersistenceService(bool $getShared = true): \App\Services\DiagnosticsConcurrencyPersistenceService
+    {
+        if ($getShared) {
+            return static::getSharedInstance('diagnosticsConcurrencyPersistenceService');
+        }
+
+        return new \App\Services\DiagnosticsConcurrencyPersistenceService();
+    }
 }

@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Application\QuestionDerivation\Data\InitialDerivationRun;
 use App\Services\DiagnosticsConcurrencyAcceptanceRunner;
+use App\Services\DiagnosticsConcurrencyPersistenceService;
 use App\Services\DiagnosticsConcurrencyRunStore;
 use App\Services\DiagnosticsConcurrencyRunState;
 use App\Services\DatabaseCapabilityInspector;
@@ -398,6 +399,7 @@ final class DiagnosticsController extends BaseController
         $updated = $this->awaitBarrierOrTimeout(trim($runId), $participant, $updated);
         $updated = $this->executeAcceptIfReady(trim($runId), $participant, $updated);
         $updated = $this->tryFinalizationClaim(trim($runId), $participant, $updated);
+        $updated = $this->runFinalizationInvariantAndCleanup(trim($runId), $participant, $updated);
 
         $barrierOpenedAt = $updated['barrier']['openedAt'] ?? null;
         $participantSlot = $updated['participants'][$participant] ?? [];
@@ -540,6 +542,95 @@ final class DiagnosticsController extends BaseController
      * @param array<string, mixed> $current
      * @return array<string, mixed>
      */
+    private function runFinalizationInvariantAndCleanup(string $runId, string $participant, array $current): array
+    {
+        $state = $current['state'] ?? null;
+        if ($state !== DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED) {
+            return $current;
+        }
+
+        $claimedBy = $current['finalization']['claimedBy'] ?? null;
+        if (! is_string($claimedBy) || $claimedBy !== $participant) {
+            return $current;
+        }
+
+        $requestReference = $this->requestReferenceFromDocument($current);
+        $appReplayConfirmed = $this->isReplayOutcomePairValid($current);
+
+        $dbUniquenessConfirmed = false;
+        $cleanupConfirmed = false;
+        $cleanupErrorCode = null;
+
+        try {
+            $before = $this->persistenceService()->countByRequestReference($requestReference);
+            $dbUniquenessConfirmed = $before['reservations'] === 1;
+
+            $this->runStore()->mutate($runId, function (?array $latest) use ($dbUniquenessConfirmed, $appReplayConfirmed): array {
+                if (! is_array($latest)) {
+                    throw new RuntimeException('Run nenajdeny.');
+                }
+
+                $latest['assertions']['dbUniquenessConfirmed'] = $dbUniquenessConfirmed;
+                $latest['assertions']['appReplayConfirmed'] = $appReplayConfirmed;
+                $latest['assertions']['cleanupConfirmed'] = null;
+                $latest['assertions']['overallSuccess'] = null;
+                $latest['state'] = DiagnosticsConcurrencyRunState::CLEANUP_PENDING;
+
+                return $latest;
+            });
+
+            $this->persistenceService()->cleanupByRequestReference($requestReference);
+            $after = $this->persistenceService()->countByRequestReference($requestReference);
+
+            $cleanupConfirmed = $after['reservations'] === 0
+                && $after['runs'] === 0
+                && $after['domainTerms'] === 0;
+
+            if (! $cleanupConfirmed) {
+                $cleanupErrorCode = 'CLEANUP_POSTCHECK_FAILED';
+            }
+        } catch (Throwable) {
+            $cleanupErrorCode = 'CLEANUP_FAILED';
+        }
+
+        $overallSuccess = $dbUniquenessConfirmed && $appReplayConfirmed && $cleanupConfirmed;
+        $completedState = $overallSuccess
+            ? DiagnosticsConcurrencyRunState::COMPLETED_SUCCESS
+            : ($cleanupConfirmed ? DiagnosticsConcurrencyRunState::COMPLETED_FAILED : DiagnosticsConcurrencyRunState::COMPLETED_FAILED_CLEANUP);
+
+        return $this->runStore()->mutate($runId, function (?array $latest) use (
+            $dbUniquenessConfirmed,
+            $appReplayConfirmed,
+            $cleanupConfirmed,
+            $cleanupErrorCode,
+            $overallSuccess,
+            $completedState,
+            $participant,
+        ): array {
+            if (! is_array($latest)) {
+                throw new RuntimeException('Run nenajdeny.');
+            }
+
+            $latest['assertions']['dbUniquenessConfirmed'] = $dbUniquenessConfirmed;
+            $latest['assertions']['appReplayConfirmed'] = $appReplayConfirmed;
+            $latest['assertions']['cleanupConfirmed'] = $cleanupConfirmed;
+            $latest['assertions']['overallSuccess'] = $overallSuccess;
+
+            $latest['cleanup']['cleanupConfirmed'] = $cleanupConfirmed;
+            $latest['cleanup']['cleanupErrorCode'] = $cleanupErrorCode;
+
+            $latest['finalization']['finishedAt'] = gmdate('c');
+            $latest['finalization']['claimedBy'] = $participant;
+            $latest['state'] = $completedState;
+
+            return $latest;
+        });
+    }
+
+    /**
+     * @param array<string, mixed> $current
+     * @return array<string, mixed>
+     */
     private function executeAcceptIfReady(string $runId, string $participant, array $current): array
     {
         $state = $current['state'] ?? null;
@@ -633,6 +724,13 @@ final class DiagnosticsController extends BaseController
         return $runner;
     }
 
+    private function persistenceService(): DiagnosticsConcurrencyPersistenceService
+    {
+        /** @var DiagnosticsConcurrencyPersistenceService $service */
+        $service = Services::diagnosticsConcurrencyPersistenceService();
+        return $service;
+    }
+
     /**
      * @param array<string, mixed> $document
      */
@@ -696,6 +794,47 @@ final class DiagnosticsController extends BaseController
         }
 
         return trim($value);
+    }
+
+    /**
+     * @param array<string, mixed> $document
+     */
+    private function requestReferenceFromDocument(array $document): string
+    {
+        $input = $document['input'] ?? null;
+        if (! is_array($input)) {
+            throw new RuntimeException('Run input chyba.');
+        }
+
+        return $this->requiredDocumentString($input, 'requestReference');
+    }
+
+    /**
+     * @param array<string, mixed> $document
+     */
+    private function isReplayOutcomePairValid(array $document): bool
+    {
+        $participants = $document['participants'] ?? null;
+        if (! is_array($participants)) {
+            return false;
+        }
+
+        $slotA = $participants['a'] ?? null;
+        $slotB = $participants['b'] ?? null;
+        if (! is_array($slotA) || ! is_array($slotB)) {
+            return false;
+        }
+
+        $outcomeA = $slotA['outcome'] ?? null;
+        $outcomeB = $slotB['outcome'] ?? null;
+        if (! is_string($outcomeA) || ! is_string($outcomeB)) {
+            return false;
+        }
+
+        $pair = [$outcomeA, $outcomeB];
+        sort($pair);
+
+        return $pair === ['ALREADY_EXISTS', 'CREATED'];
     }
 
     private function secureHtmlResponse(string $html, int $statusCode = 200): ResponseInterface
