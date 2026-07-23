@@ -13,13 +13,14 @@ externý env loader pred bootstrapom webu aj CLI,
 diagnostický príkaz databázových schopností,
 migrácie M1 až M8 podľa Validovaného databázového návrhu,
 praktická diagnostika databázy na Hostingeri,
-vykonanie migrácií M1 až M8 v skupine default a batchi 1.
+vykonanie migrácií M1 až M8 v skupine default a batchi 1,
+čítací príkaz fyzického overenia schémy cez INFORMATION_SCHEMA,
+praktické potvrdenie 8 tabuliek a 10 reštriktívnych cudzích kľúčov.
 ```
 
 Nevykonané:
 
 ```text
-samostatné overenie fyzických cudzích kľúčov cez INFORMATION_SCHEMA,
 repository adaptéry,
 integračné testy nad skutočnou databázou.
 ```
@@ -59,13 +60,28 @@ Migrated On = 2026-07-23 08:36:20 UTC
 Batch       = 1
 ```
 
+Po nasadení release `1.0.9` bol spustený príkaz:
+
+```text
+php spark metodika:verify-question-schema
+```
+
+Čítaním `INFORMATION_SCHEMA` potvrdil:
+
+```text
+8 z 8 tabuliek existuje,
+všetky používajú InnoDB,
+všetky používajú utf8mb4_bin,
+10 z 10 cudzích kľúčov existuje,
+všetky používajú DELETE RESTRICT a UPDATE RESTRICT.
+```
+
 Podrobný záznam a reValidácia sú v [`2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md).
 
 Bezpečné poradie pokračovania:
 
 ```text
-overenie fyzických tabuliek a cudzích kľúčov
-→ repository adaptéry
+repository adaptéry
 → integračné testy
 → reValidácia implementovaného stavu
 ```
