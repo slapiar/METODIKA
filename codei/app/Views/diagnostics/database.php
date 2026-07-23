@@ -73,6 +73,13 @@ $showFooter = false;
 
             <p id="diag-concurrency-status" class="diag-status" role="status" aria-live="polite">Pripravene.</p>
 
+            <dl class="diag-http" id="diag-http" hidden>
+                <div><dt>START</dt><dd id="diag-http-start">NEODOSLANE</dd></div>
+                <div><dt>HIT A</dt><dd id="diag-http-hit-a">NEODOSLANE</dd></div>
+                <div><dt>HIT B</dt><dd id="diag-http-hit-b">NEODOSLANE</dd></div>
+                <div><dt>RESULT</dt><dd id="diag-http-result">NEODOSLANE</dd></div>
+            </dl>
+
             <dl class="diag-axes" id="diag-axes" hidden>
                 <div>
                     <dt>DB unikatnost</dt>
@@ -119,6 +126,7 @@ $showFooter = false;
             font-weight: 600;
         }
 
+        .diag-http,
         .diag-axes {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -127,6 +135,7 @@ $showFooter = false;
             padding: 0;
         }
 
+        .diag-http div,
         .diag-axes div {
             border: 1px solid #d8e0ec;
             border-radius: 0.5rem;
@@ -134,12 +143,14 @@ $showFooter = false;
             padding: 0.7rem;
         }
 
+        .diag-http dt,
         .diag-axes dt {
             font-size: 0.82rem;
             color: #4b5c75;
             margin: 0;
         }
 
+        .diag-http dd,
         .diag-axes dd {
             margin: 0.25rem 0 0;
             font-size: 0.95rem;
@@ -152,6 +163,10 @@ $showFooter = false;
 
         .diag-fail {
             color: #991b1b;
+        }
+
+        .diag-pending {
+            color: #4b5c75;
         }
 
         .diag-participants {
@@ -167,6 +182,11 @@ $showFooter = false;
         (function () {
             const startButton = document.getElementById('diag-concurrency-start');
             const statusNode = document.getElementById('diag-concurrency-status');
+            const httpDiagnostics = document.getElementById('diag-http');
+            const httpStart = document.getElementById('diag-http-start');
+            const httpHitA = document.getElementById('diag-http-hit-a');
+            const httpHitB = document.getElementById('diag-http-hit-b');
+            const httpResult = document.getElementById('diag-http-result');
             const axes = document.getElementById('diag-axes');
             const axisDb = document.getElementById('diag-axis-db');
             const axisReplay = document.getElementById('diag-axis-replay');
@@ -176,7 +196,7 @@ $showFooter = false;
             const participantA = document.getElementById('diag-participant-a');
             const participantB = document.getElementById('diag-participant-b');
 
-            if (!startButton || !statusNode || !axes || !axisDb || !axisReplay || !axisCleanup || !axisOverall || !participants || !participantA || !participantB) {
+            if (!startButton || !statusNode || !httpDiagnostics || !httpStart || !httpHitA || !httpHitB || !httpResult || !axes || !axisDb || !axisReplay || !axisCleanup || !axisOverall || !participants || !participantA || !participantB) {
                 return;
             }
 
@@ -186,6 +206,11 @@ $showFooter = false;
             const hitAUrl = <?= json_encode(site_url('diagnostics/concurrency/hit/a'), JSON_UNESCAPED_SLASHES) ?>;
             const hitBUrl = <?= json_encode(site_url('diagnostics/concurrency/hit/b'), JSON_UNESCAPED_SLASHES) ?>;
             const resultBaseUrl = <?= json_encode(site_url('diagnostics/concurrency/result'), JSON_UNESCAPED_SLASHES) ?>;
+
+            const setHttp = (node, text, ok = null) => {
+                node.textContent = text;
+                node.className = ok === true ? 'diag-pass' : (ok === false ? 'diag-fail' : 'diag-pending');
+            };
 
             const setAxis = (node, value) => {
                 if (value === true) {
@@ -221,11 +246,20 @@ $showFooter = false;
 
             const fetchResult = async (runId) => {
                 for (let i = 0; i < 24; i++) {
-                    const response = await fetch(resultBaseUrl + '/' + encodeURIComponent(runId), {
-                        method: 'GET',
-                        credentials: 'same-origin',
-                        cache: 'no-store',
-                    });
+                    let response;
+
+                    try {
+                        response = await fetch(resultBaseUrl + '/' + encodeURIComponent(runId), {
+                            method: 'GET',
+                            credentials: 'same-origin',
+                            cache: 'no-store',
+                        });
+                    } catch (error) {
+                        setHttp(httpResult, 'SIEŤOVÁ CHYBA', false);
+                        throw new Error('result-network');
+                    }
+
+                    setHttp(httpResult, 'HTTP ' + response.status, response.status === 200 ? true : null);
 
                     if (response.status === 200) {
                         return await parseJson(response);
@@ -234,27 +268,42 @@ $showFooter = false;
                     await new Promise((resolve) => window.setTimeout(resolve, 300));
                 }
 
+                setHttp(httpResult, 'TIMEOUT', false);
                 throw new Error('result-timeout');
             };
 
             startButton.addEventListener('click', async () => {
                 startButton.disabled = true;
+                httpDiagnostics.hidden = false;
                 axes.hidden = true;
                 participants.hidden = true;
                 statusNode.textContent = 'Spustam run...';
+                setHttp(httpStart, 'ČAKÁM');
+                setHttp(httpHitA, 'NEODOSLANE');
+                setHttp(httpHitB, 'NEODOSLANE');
+                setHttp(httpResult, 'NEODOSLANE');
 
                 try {
                     const startData = new URLSearchParams();
                     startData.set(csrfName, csrfHash);
 
-                    const startResponse = await fetch(startUrl, {
-                        method: 'POST',
-                        credentials: 'same-origin',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                        },
-                        body: startData.toString(),
-                    });
+                    let startResponse;
+
+                    try {
+                        startResponse = await fetch(startUrl, {
+                            method: 'POST',
+                            credentials: 'same-origin',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                            },
+                            body: startData.toString(),
+                        });
+                    } catch (error) {
+                        setHttp(httpStart, 'SIEŤOVÁ CHYBA', false);
+                        throw new Error('start-network');
+                    }
+
+                    setHttp(httpStart, 'HTTP ' + startResponse.status, startResponse.status === 200);
 
                     if (startResponse.status !== 200) {
                         throw new Error('start-failed');
@@ -262,29 +311,40 @@ $showFooter = false;
 
                     const started = await parseJson(startResponse);
                     if (!started || typeof started.runId !== 'string' || typeof started.participantTokenA !== 'string' || typeof started.participantTokenB !== 'string') {
+                        setHttp(httpStart, 'HTTP 200 / NEPLATNÝ JSON', false);
                         throw new Error('start-invalid');
                     }
 
                     statusNode.textContent = 'Odosielam paralelne HIT A/B...';
+                    setHttp(httpHitA, 'ČAKÁM');
+                    setHttp(httpHitB, 'ČAKÁM');
 
-                    const hitRequest = (path, token) => {
+                    const hitRequest = async (path, token, node) => {
                         const body = new URLSearchParams();
                         body.set('runId', started.runId);
                         body.set('participantToken', token);
 
-                        return fetch(path, {
-                            method: 'POST',
-                            credentials: 'same-origin',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-                            },
-                            body: body.toString(),
-                        });
+                        try {
+                            const response = await fetch(path, {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                                },
+                                body: body.toString(),
+                            });
+
+                            setHttp(node, 'HTTP ' + response.status, response.status === 200);
+                            return response;
+                        } catch (error) {
+                            setHttp(node, 'SIEŤOVÁ CHYBA', false);
+                            throw error;
+                        }
                     };
 
                     const hitResults = await Promise.all([
-                        hitRequest(hitAUrl, started.participantTokenA),
-                        hitRequest(hitBUrl, started.participantTokenB),
+                        hitRequest(hitAUrl, started.participantTokenA, httpHitA),
+                        hitRequest(hitBUrl, started.participantTokenB, httpHitB),
                     ]);
 
                     if (hitResults[0].status !== 200 || hitResults[1].status !== 200) {
@@ -292,6 +352,7 @@ $showFooter = false;
                     }
 
                     statusNode.textContent = 'Nacitavam vysledok...';
+                    setHttp(httpResult, 'ČAKÁM');
 
                     const result = await fetchResult(started.runId);
                     const assertions = result && typeof result === 'object' ? result.assertions : null;
@@ -308,7 +369,7 @@ $showFooter = false;
                     participants.hidden = false;
                     statusNode.textContent = 'Hotovo. Stav runu: ' + (typeof result.state === 'string' ? result.state : 'UNKNOWN');
                 } catch (error) {
-                    statusNode.textContent = 'Beh zlyhal alebo vyprsal. Skus Start znovu.';
+                    statusNode.textContent = 'Beh zlyhal alebo vyprsal. Stav HTTP krokov je uvedeny nizsie.';
                     axes.hidden = true;
                     participants.hidden = true;
                 } finally {
