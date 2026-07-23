@@ -6,6 +6,7 @@ namespace App\Commands;
 
 use App\Application\QuestionDerivation\Contracts\DerivationHistoryPort;
 use App\Application\QuestionDerivation\Data\InitialDerivationRun;
+use App\Application\QuestionDerivation\Data\ReservationResult;
 use App\Application\QuestionDerivation\FirstAcceptanceService;
 use App\Infrastructure\Persistence\QuestionDerivation\DatabaseTransactionBoundary;
 use App\Infrastructure\Persistence\QuestionDerivation\DerivationHistoryRepository;
@@ -75,7 +76,7 @@ final class VerifyFirstAcceptanceTransaction extends BaseCommand
                 $run,
             );
 
-            if ($result->outcome !== $result::CREATED) {
+            if ($result->outcome !== ReservationResult::CREATED) {
                 throw new RuntimeException('Prvé prijatie nevytvorilo novú rezerváciu.');
             }
 
@@ -190,9 +191,10 @@ final class VerifyFirstAcceptanceTransaction extends BaseCommand
     private function emergencyCleanup(BaseConnection $db, array $requestReferences): void
     {
         try {
-            while ($db->transDepth > 0) {
-                $db->transRollback();
-            }
+            // Maximálna hĺbka tohto príkazu je dve. Pri nulovej hĺbke transRollback() iba vráti false.
+            $db->transRollback();
+            $db->transRollback();
+            $db->resetTransStatus();
 
             $runRows = $db->table('question_derivation_runs')
                 ->select('id')
