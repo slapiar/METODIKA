@@ -13,6 +13,6 @@ $routes->post('diagnostics/database/login', 'DiagnosticsController::login', ['fi
 $routes->post('diagnostics/database/run', 'DiagnosticsController::run', ['filter' => 'csrf']);
 $routes->post('diagnostics/database/logout', 'DiagnosticsController::logout', ['filter' => 'csrf']);
 $routes->post('diagnostics/concurrency/start', 'DiagnosticsConcurrencyStartController::start', ['filter' => 'csrf']);
-$routes->post('diagnostics/concurrency/hit/a', 'DiagnosticsController::hitConcurrencyA');
-$routes->post('diagnostics/concurrency/hit/b', 'DiagnosticsController::hitConcurrencyB');
+$routes->post('diagnostics/concurrency/hit/a', 'DiagnosticsController::hitConcurrencyA', ['filter' => 'diagnosticsSessionRelease']);
+$routes->post('diagnostics/concurrency/hit/b', 'DiagnosticsController::hitConcurrencyB', ['filter' => 'diagnosticsSessionRelease']);
 $routes->get('diagnostics/concurrency/result/(:segment)', 'DiagnosticsController::concurrencyResult/$1');
