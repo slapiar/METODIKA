@@ -397,10 +397,13 @@ final class DiagnosticsController extends BaseController
 
         $updated = $this->awaitBarrierOrTimeout(trim($runId), $participant, $updated);
         $updated = $this->executeAcceptIfReady(trim($runId), $participant, $updated);
+        $updated = $this->tryFinalizationClaim(trim($runId), $participant, $updated);
 
         $barrierOpenedAt = $updated['barrier']['openedAt'] ?? null;
         $participantSlot = $updated['participants'][$participant] ?? [];
         $timeoutReached = ($participantSlot['errorCode'] ?? null) === 'PARTNER_TIMEOUT';
+        $claimedBy = $updated['finalization']['claimedBy'] ?? null;
+        $waiterMode = is_string($claimedBy) && $claimedBy !== '' && $claimedBy !== $participant;
 
         return $this->secureJsonResponse([
             'runId' => $updated['runId'] ?? trim($runId),
@@ -408,6 +411,7 @@ final class DiagnosticsController extends BaseController
             'state' => $updated['state'] ?? null,
             'barrierOpened' => is_string($barrierOpenedAt) && $barrierOpenedAt !== '',
             'timeoutReached' => $timeoutReached,
+            'waiterMode' => $waiterMode,
         ]);
     }
 
@@ -470,9 +474,65 @@ final class DiagnosticsController extends BaseController
                 $current['participants'][$participant]['outcome'] = 'TIMEOUT';
                 $current['participants'][$participant]['finishedAt'] = $nowIso;
                 $current['state'] = DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED;
+            } else {
+                $waiters = $current['finalization']['waiters'] ?? [];
+                if (! is_array($waiters)) {
+                    $waiters = [];
+                }
+
+                $waiters[$participant] = gmdate('c');
+                $current['finalization']['waiters'] = $waiters;
+                $current['state'] = DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED;
             }
 
             return $current;
+        });
+    }
+
+    /**
+     * @param array<string, mixed> $current
+     * @return array<string, mixed>
+     */
+    private function tryFinalizationClaim(string $runId, string $participant, array $current): array
+    {
+        $state = $current['state'] ?? null;
+        if (! in_array($state, [DiagnosticsConcurrencyRunState::RESULTS_READY, DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED], true)) {
+            return $current;
+        }
+
+        return $this->runStore()->mutate($runId, function (?array $latest) use ($participant): array {
+            if (! is_array($latest)) {
+                throw new RuntimeException('Run nenajdeny.');
+            }
+
+            $latestState = $latest['state'] ?? null;
+            if (! in_array($latestState, [DiagnosticsConcurrencyRunState::RESULTS_READY, DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED], true)) {
+                return $latest;
+            }
+
+            $claimedAt = $latest['finalization']['claimedAt'] ?? null;
+            $claimedBy = $latest['finalization']['claimedBy'] ?? null;
+
+            if (! is_string($claimedAt) || $claimedAt === '' || ! is_string($claimedBy) || $claimedBy === '') {
+                $latest['finalization']['claimedAt'] = gmdate('c');
+                $latest['finalization']['claimedBy'] = $participant;
+                $latest['state'] = DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED;
+
+                return $latest;
+            }
+
+            if ($claimedBy !== $participant) {
+                $waiters = $latest['finalization']['waiters'] ?? [];
+                if (! is_array($waiters)) {
+                    $waiters = [];
+                }
+
+                $waiters[$participant] = gmdate('c');
+                $latest['finalization']['waiters'] = $waiters;
+                $latest['state'] = DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED;
+            }
+
+            return $latest;
         });
     }
 

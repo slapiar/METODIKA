@@ -425,14 +425,62 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $response->assertStatus(200);
         $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
         $this->assertIsArray($payload);
-        $this->assertSame('RESULTS_READY', $payload['state']);
+        $this->assertSame('FINALIZATION_CLAIMED', $payload['state']);
+        $this->assertFalse((bool) $payload['waiterMode']);
 
         $stored = $store->load($runId);
         $this->assertIsArray($stored);
-        $this->assertSame('RESULTS_READY', $stored['state']);
+        $this->assertSame('FINALIZATION_CLAIMED', $stored['state']);
+        $this->assertSame('b', $stored['finalization']['claimedBy']);
+        $this->assertNotNull($stored['finalization']['claimedAt']);
         $this->assertSame('ALREADY_EXISTS', $stored['participants']['b']['outcome']);
         $this->assertNotNull($stored['participants']['b']['startedAt']);
         $this->assertNotNull($stored['participants']['b']['finishedAt']);
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyHitTimeoutUsesWaiterModeWhenFinalizationAlreadyClaimed(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-waiter-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+
+        $runId = 'run-999999999999999999999999';
+        $tokenA = 'token-a-waiter';
+        $tokenB = 'token-b-waiter';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $document['barrier']['waitTimeoutMs'] = 10;
+        $document['finalization']['claimedAt'] = gmdate('c', time() - 1);
+        $document['finalization']['claimedBy'] = 'b';
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => $tokenA,
+        ]);
+
+        $response->assertStatus(200);
+        $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
+        $this->assertIsArray($payload);
+        $this->assertSame('FINALIZATION_CLAIMED', $payload['state']);
+        $this->assertTrue((bool) $payload['waiterMode']);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('FINALIZATION_CLAIMED', $stored['state']);
+        $this->assertSame('b', $stored['finalization']['claimedBy']);
+        $this->assertArrayHasKey('waiters', $stored['finalization']);
+        $this->assertIsArray($stored['finalization']['waiters']);
+        $this->assertArrayHasKey('a', $stored['finalization']['waiters']);
 
         $this->deleteTree($storeDirectory);
     }
