@@ -722,6 +722,100 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->deleteTree($storeDirectory);
     }
 
+    public function testConcurrencyWebIntegrationStartHitResultEndToEnd(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-e2e-web-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'ALREADY_EXISTS'),
+        );
+        Services::injectMock(
+            'diagnosticsConcurrencyPersistenceService',
+            $this->makePersistenceMock([
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+                ['reservations' => 0, 'runs' => 0, 'domainTerms' => 0],
+            ]),
+        );
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $postData = $this->csrfPostData();
+        $postData['requestReference'] = 'req-e2e-1';
+        $postData['derivationApplicationInput'] = '{"integration":"web"}';
+
+        $startResponse = $this->withSession($session)
+            ->post('/diagnostics/concurrency/start', $postData);
+
+        $startResponse->assertStatus(200);
+        $startPayload = json_decode(html_entity_decode(strip_tags((string) $startResponse->getBody())), true);
+        $this->assertIsArray($startPayload);
+
+        $runId = (string) ($startPayload['runId'] ?? '');
+        $tokenA = (string) ($startPayload['participantTokenA'] ?? '');
+        $tokenB = (string) ($startPayload['participantTokenB'] ?? '');
+
+        $this->assertNotSame('', $runId);
+        $this->assertNotSame('', $tokenA);
+        $this->assertNotSame('', $tokenB);
+
+        // Feature tests are single-threaded; pre-arm participant A to simulate that the partner request reached barrier in parallel.
+        $store->mutate($runId, static function (?array $current): array {
+            $nowIso = gmdate('c', time() - 1);
+            $current['participants']['a']['consumedAt'] = $nowIso;
+            $current['participants']['a']['readyAt'] = $nowIso;
+            $current['participants']['a']['startedAt'] = $nowIso;
+            $current['participants']['a']['finishedAt'] = $nowIso;
+            $current['participants']['a']['outcome'] = 'CREATED';
+            return $current;
+        });
+
+        $hitBResponse = $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+            'runId' => $runId,
+            'participantToken' => $tokenB,
+        ]);
+
+        $hitBResponse->assertStatus(200);
+        $hitBPayload = json_decode(html_entity_decode(strip_tags((string) $hitBResponse->getBody())), true);
+        $this->assertIsArray($hitBPayload);
+        $this->assertSame('COMPLETED_SUCCESS', $hitBPayload['state']);
+        $this->assertFalse((bool) $hitBPayload['waiterMode']);
+
+        $resultResponse = $this->withSession($session)
+            ->get('/diagnostics/concurrency/result/' . $runId);
+
+        $resultResponse->assertStatus(200);
+        $resultPayload = json_decode(html_entity_decode(strip_tags((string) $resultResponse->getBody())), true);
+        $this->assertIsArray($resultPayload);
+
+        $this->assertSame($runId, $resultPayload['runId']);
+        $this->assertSame('COMPLETED_SUCCESS', $resultPayload['state']);
+        $this->assertTrue((bool) ($resultPayload['assertions']['dbUniquenessConfirmed'] ?? false));
+        $this->assertTrue((bool) ($resultPayload['assertions']['appReplayConfirmed'] ?? false));
+        $this->assertTrue((bool) ($resultPayload['assertions']['cleanupConfirmed'] ?? false));
+        $this->assertTrue((bool) ($resultPayload['assertions']['overallSuccess'] ?? false));
+        $this->assertArrayNotHasKey('input', $resultPayload);
+        $this->assertArrayNotHasKey('tokenHash', $resultPayload['participants']['a']);
+        $this->assertArrayNotHasKey('tokenHash', $resultPayload['participants']['b']);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('COMPLETED_SUCCESS', $stored['state']);
+        $this->assertNotNull($stored['readOnceConsumedAt']);
+        $this->assertArrayNotHasKey('input', $stored);
+        $this->assertNull($stored['participants']['a']['tokenHash']);
+        $this->assertNull($stored['participants']['b']['tokenHash']);
+
+        $this->deleteTree($storeDirectory);
+    }
+
     public function testConcurrencyHitRejectsDisallowedStateWithoutRunChange(): void
     {
         $this->setDiagnosticsEnv('1', 'secret-token');
