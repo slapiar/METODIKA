@@ -6,7 +6,7 @@
     <meta name="description" content="<?= esc($metaDescription ?? 'METODIKA') ?>">
     <?= $this->renderSection('meta') ?>
     <title><?= esc($title ?? 'METODIKA') ?></title>
-    <link rel="stylesheet" href="<?= base_url('assets/css/app.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('public/assets/css/app.css') ?>">
     <?= $this->renderSection('styles') ?>
 </head>
 <body class="<?= esc($pageClass ?? '') ?>">
