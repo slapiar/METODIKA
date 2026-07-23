@@ -19,7 +19,9 @@ final class ExternalEnvironment
             $path = $configuredPath;
         } else {
             $candidatePaths = [
+                dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . '.env',
                 dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env',
+                dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . '.env',
                 dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env',
             ];
 
