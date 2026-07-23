@@ -24,8 +24,13 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - vytvorený port [`codei/app/Application/QuestionDerivation/Contracts/RequestReferenceRepositoryPort.php`](codei/app/Application/QuestionDerivation/Contracts/RequestReferenceRepositoryPort.php),
 - vytvorené dátové objekty rezervácie a výsledku rezervácie v [`codei/app/Application/QuestionDerivation/Data/`](codei/app/Application/QuestionDerivation/Data),
 - implementovaný MySQLi adaptér [`codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php`](codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php),
-- adaptér zabezpečuje rezerváciu, vyhľadanie, technické stavy a korelované načítanie ukončeného výsledku; sám neotvára ani nepotvrdzuje transakciu prvého prijatia,
-- implementačný stav a otvorené obmedzenia sú v [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md); runtime testy, história behu a transakčná hranica ešte chýbajú.
+- doplnené `DerivationHistoryPort`, `TransactionBoundaryPort`, ich databázové adaptéry a `FirstAcceptanceService`,
+- továreň prvého prijatia zostavuje všetky databázové komponenty nad jednou `BaseConnection`,
+- syntaktická kontrola všetkých súborov atómového prvého prijatia prešla bez chyby,
+- unit test [`codei/tests/unit/FirstAcceptanceServiceTest.php`](codei/tests/unit/FirstAcceptanceServiceTest.php) bol spustený v Codespaces nad PHP `8.4.15` a skončil `2/2`, so 4 assertions,
+- scenár `RESERVATION_CREATED` založil historický beh v tej istej transakčnej hranici a `ALREADY_EXISTS` ďalší historický beh nezaložil,
+- `codei/composer.lock` uzamyká vývojové závislosti a `codei/build/` je ignorovaný ako lokálny PHPUnit cache a výstupný adresár,
+- aktuálny stav a otvorené integračné obmedzenia sú v [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md) a [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md).
 
 ---
 
