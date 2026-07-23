@@ -39,4 +39,13 @@ class Services extends BaseService
             new \App\Services\DiagnosticsConcurrencyRunDocumentValidator(),
         );
     }
+
+    public static function diagnosticsConcurrencyAcceptanceRunner(bool $getShared = true): \App\Services\DiagnosticsConcurrencyAcceptanceRunner
+    {
+        if ($getShared) {
+            return static::getSharedInstance('diagnosticsConcurrencyAcceptanceRunner');
+        }
+
+        return new \App\Services\DiagnosticsConcurrencyAcceptanceRunner();
+    }
 }

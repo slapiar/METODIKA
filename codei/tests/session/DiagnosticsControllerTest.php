@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Services\DatabaseCapabilityInspector;
+use App\Services\DiagnosticsConcurrencyAcceptanceRunner;
 use App\Services\DiagnosticsConcurrencyRunStore;
 use CodeIgniter\Test\CIUnitTestCase;
 use CodeIgniter\Test\FeatureTestTrait;
@@ -218,6 +219,11 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $runId = 'run-aaaaaaaaaaaaaaaaaaaaaaaa';
         $tokenA = 'token-a-plain';
         $tokenB = 'token-b-plain';
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'CREATED'),
+        );
+
         $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
         $document['participants']['b']['readyAt'] = gmdate('c', time() - 1);
         $store->save($runId, $document);
@@ -235,15 +241,19 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $responseA->assertStatus(200);
         $payloadA = json_decode(html_entity_decode(strip_tags((string) $responseA->getBody())), true);
         $this->assertIsArray($payloadA);
-        $this->assertSame('BARRIER_OPEN', $payloadA['state']);
+        $this->assertSame('EXECUTING', $payloadA['state']);
         $this->assertTrue((bool) $payloadA['barrierOpened']);
         $this->assertFalse((bool) $payloadA['timeoutReached']);
 
         $afterA = $store->load($runId);
         $this->assertIsArray($afterA);
-        $this->assertSame('BARRIER_OPEN', $afterA['state']);
+        $this->assertSame('EXECUTING', $afterA['state']);
         $this->assertNotNull($afterA['participants']['a']['consumedAt']);
         $this->assertNotNull($afterA['participants']['a']['readyAt']);
+        $this->assertNotNull($afterA['participants']['a']['startedAt']);
+        $this->assertNotNull($afterA['participants']['a']['finishedAt']);
+        $this->assertSame('CREATED', $afterA['participants']['a']['outcome']);
+        $this->assertNull($afterA['participants']['a']['errorCode']);
         $this->assertNotNull($afterA['participants']['b']['readyAt']);
         $this->assertNotNull($afterA['barrier']['openedAt']);
 
@@ -324,6 +334,105 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
 
         $after = $store->load($runId);
         $this->assertSame($before, $after);
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyHitAcceptFailureStoresSafeErrorCode(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-accept-fail-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static function (): string {
+                throw new RuntimeException('raw db exception details');
+            }),
+        );
+
+        $runId = 'run-eeeeeeeeeeeeeeeeeeeeeeee';
+        $tokenA = 'token-a-fail';
+        $tokenB = 'token-b-fail';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $document['participants']['a']['readyAt'] = gmdate('c', time() - 1);
+        $document['participants']['a']['consumedAt'] = gmdate('c', time() - 1);
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+            'runId' => $runId,
+            'participantToken' => $tokenB,
+        ]);
+
+        $response->assertStatus(200);
+        $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
+        $this->assertIsArray($payload);
+        $this->assertSame('EXECUTING', $payload['state']);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('EXECUTING', $stored['state']);
+        $this->assertNotNull($stored['participants']['b']['startedAt']);
+        $this->assertNotNull($stored['participants']['b']['finishedAt']);
+        $this->assertSame('FAILED', $stored['participants']['b']['outcome']);
+        $this->assertSame('ACCEPT_RUNTIME_ERROR', $stored['participants']['b']['errorCode']);
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyHitSetsResultsReadyWhenBothParticipantsFinished(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-results-ready-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'ALREADY_EXISTS'),
+        );
+
+        $runId = 'run-ffffffffffffffffffffffff';
+        $tokenA = 'token-a-ready';
+        $tokenB = 'token-b-ready';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $doneAt = gmdate('c', time() - 1);
+        $document['participants']['a']['consumedAt'] = $doneAt;
+        $document['participants']['a']['readyAt'] = $doneAt;
+        $document['participants']['a']['startedAt'] = $doneAt;
+        $document['participants']['a']['finishedAt'] = $doneAt;
+        $document['participants']['a']['outcome'] = 'CREATED';
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+            'runId' => $runId,
+            'participantToken' => $tokenB,
+        ]);
+
+        $response->assertStatus(200);
+        $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
+        $this->assertIsArray($payload);
+        $this->assertSame('RESULTS_READY', $payload['state']);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('RESULTS_READY', $stored['state']);
+        $this->assertSame('ALREADY_EXISTS', $stored['participants']['b']['outcome']);
+        $this->assertNotNull($stored['participants']['b']['startedAt']);
+        $this->assertNotNull($stored['participants']['b']['finishedAt']);
 
         $this->deleteTree($storeDirectory);
     }

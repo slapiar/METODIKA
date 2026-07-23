@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
+use App\Application\QuestionDerivation\Data\InitialDerivationRun;
+use App\Services\DiagnosticsConcurrencyAcceptanceRunner;
 use App\Services\DiagnosticsConcurrencyRunStore;
 use App\Services\DiagnosticsConcurrencyRunState;
 use App\Services\DatabaseCapabilityInspector;
@@ -11,6 +13,7 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Session\Session;
 use Config\ExternalEnvironment;
 use Config\Services;
+use DateTimeImmutable;
 use RuntimeException;
 use Throwable;
 
@@ -393,6 +396,7 @@ final class DiagnosticsController extends BaseController
         }
 
         $updated = $this->awaitBarrierOrTimeout(trim($runId), $participant, $updated);
+        $updated = $this->executeAcceptIfReady(trim($runId), $participant, $updated);
 
         $barrierOpenedAt = $updated['barrier']['openedAt'] ?? null;
         $participantSlot = $updated['participants'][$participant] ?? [];
@@ -470,6 +474,168 @@ final class DiagnosticsController extends BaseController
 
             return $current;
         });
+    }
+
+    /**
+     * @param array<string, mixed> $current
+     * @return array<string, mixed>
+     */
+    private function executeAcceptIfReady(string $runId, string $participant, array $current): array
+    {
+        $state = $current['state'] ?? null;
+        if (! in_array($state, [DiagnosticsConcurrencyRunState::BARRIER_OPEN, DiagnosticsConcurrencyRunState::EXECUTING], true)) {
+            return $current;
+        }
+
+        $marked = $this->runStore()->mutate($runId, function (?array $latest) use ($participant): array {
+            if (! is_array($latest)) {
+                throw new RuntimeException('Run nenajdeny.');
+            }
+
+            $slot = $latest['participants'][$participant] ?? null;
+            if (! is_array($slot)) {
+                throw new RuntimeException('Neplatny participant slot.');
+            }
+
+            if (is_string($slot['finishedAt'] ?? null) && trim((string) $slot['finishedAt']) !== '') {
+                return $latest;
+            }
+
+            if (! is_string($slot['startedAt'] ?? null) || trim((string) $slot['startedAt']) === '') {
+                $latest['participants'][$participant]['startedAt'] = gmdate('c');
+            }
+
+            $latest['state'] = DiagnosticsConcurrencyRunState::EXECUTING;
+
+            return $latest;
+        });
+
+        $slot = $marked['participants'][$participant] ?? [];
+        if (is_string($slot['finishedAt'] ?? null) && trim((string) $slot['finishedAt']) !== '') {
+            return $marked;
+        }
+
+        $outcome = 'FAILED';
+        $errorCode = null;
+
+        try {
+            $run = $this->buildInitialRunFromDocument($marked, $participant);
+            $payloadFingerprint = $this->payloadFingerprintFromDocument($marked);
+            $outcome = $this->acceptanceRunner()->accept($payloadFingerprint, $run);
+        } catch (Throwable) {
+            $errorCode = 'ACCEPT_RUNTIME_ERROR';
+        }
+
+        $completedAt = gmdate('c');
+
+        return $this->runStore()->mutate($runId, function (?array $latest) use ($participant, $outcome, $errorCode, $completedAt): array {
+            if (! is_array($latest)) {
+                throw new RuntimeException('Run nenajdeny.');
+            }
+
+            $slot = $latest['participants'][$participant] ?? null;
+            if (! is_array($slot)) {
+                throw new RuntimeException('Neplatny participant slot.');
+            }
+
+            if (is_string($slot['finishedAt'] ?? null) && trim((string) $slot['finishedAt']) !== '') {
+                return $latest;
+            }
+
+            $latest['participants'][$participant]['finishedAt'] = $completedAt;
+            $latest['participants'][$participant]['outcome'] = $outcome;
+            $latest['participants'][$participant]['errorCode'] = $errorCode;
+
+            $otherParticipant = $participant === 'a' ? 'b' : 'a';
+            $otherSlot = $latest['participants'][$otherParticipant] ?? null;
+
+            $otherFinished = is_array($otherSlot)
+                && is_string($otherSlot['finishedAt'] ?? null)
+                && trim((string) $otherSlot['finishedAt']) !== '';
+            $otherOutcome = is_array($otherSlot)
+                && is_string($otherSlot['outcome'] ?? null)
+                && trim((string) $otherSlot['outcome']) !== '';
+
+            if ($otherFinished && $otherOutcome) {
+                $latest['state'] = DiagnosticsConcurrencyRunState::RESULTS_READY;
+            } else {
+                $latest['state'] = DiagnosticsConcurrencyRunState::EXECUTING;
+            }
+
+            return $latest;
+        });
+    }
+
+    private function acceptanceRunner(): DiagnosticsConcurrencyAcceptanceRunner
+    {
+        /** @var DiagnosticsConcurrencyAcceptanceRunner $runner */
+        $runner = Services::diagnosticsConcurrencyAcceptanceRunner();
+        return $runner;
+    }
+
+    /**
+     * @param array<string, mixed> $document
+     */
+    private function payloadFingerprintFromDocument(array $document): string
+    {
+        $input = $document['input'] ?? null;
+        if (! is_array($input)) {
+            throw new RuntimeException('Run input chyba.');
+        }
+
+        $payloadFingerprint = $input['payloadFingerprint'] ?? null;
+        if (! is_string($payloadFingerprint) || trim($payloadFingerprint) === '') {
+            throw new RuntimeException('payloadFingerprint chyba.');
+        }
+
+        return $payloadFingerprint;
+    }
+
+    /**
+     * @param array<string, mixed> $document
+     */
+    private function buildInitialRunFromDocument(array $document, string $participant): InitialDerivationRun
+    {
+        $input = $document['input'] ?? null;
+        if (! is_array($input)) {
+            throw new RuntimeException('Run input chyba.');
+        }
+
+        $requestReference = $this->requiredDocumentString($input, 'requestReference');
+        $applicationInput = $this->requiredDocumentString($input, 'derivationApplicationInput');
+
+        $derivationReferenceKey = $participant === 'a' ? 'derivationReferenceA' : 'derivationReferenceB';
+        $derivationReference = $this->requiredDocumentString($input, $derivationReferenceKey);
+
+        return new InitialDerivationRun(
+            derivationReference: $derivationReference,
+            requestReference: $requestReference,
+            responseTargetReference: 'diagnostics-concurrency-response',
+            requestSourceSnapshot: $applicationInput,
+            sourceQuestionReference: 'diagnostics-concurrency-question',
+            derivationSubjectReference: 'diagnostics-concurrency-subject',
+            purposeSnapshot: $applicationInput,
+            contextSnapshot: $applicationInput,
+            scopeSnapshot: $applicationInput,
+            domainTermReferences: ['diagnostics-concurrency-term-a', 'diagnostics-concurrency-term-b'],
+            actorReference: 'diagnostics-concurrency-actor',
+            authorityContextSnapshot: 'diagnostics-concurrency-authority',
+            runMode: 'PARTIAL_RUN_WITH_ATOMIC_GATE',
+            startedAt: new DateTimeImmutable('now'),
+        );
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function requiredDocumentString(array $data, string $key): string
+    {
+        $value = $data[$key] ?? null;
+        if (! is_string($value) || trim($value) === '') {
+            throw new RuntimeException('Run dokument neobsahuje pole ' . $key . '.');
+        }
+
+        return trim($value);
     }
 
     private function secureHtmlResponse(string $html, int $statusCode = 200): ResponseInterface
