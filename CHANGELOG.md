@@ -52,6 +52,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - test kontroluje výsledné počty `1 rezervácia + 1 beh + 2 doménové väzby` a po cielenom čistení `0 + 0 + 0`,
 - praktické runtime overenie ešte nebolo vykonané; stav a hranice testu sú v [`TECHNICKE-NAVRHY/2026-07-23_SUBEZNE-OVERENIE-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_SUBEZNE-OVERENIE-PRVEHO-PRIJATIA.md).
 
+### Webové súbežné overenie - checklist a matica
+
+- bol aktualizovaný aktívny pracovný dokument [`postupy/2026-07-23_12-27_Copilot-checklist a testovacia matica.md`](postupy/2026-07-23_12-27_Copilot-checklist%20a%20testovacia%20matica.md),
+- v dokumente bola vetva zosúladená na `main`,
+- do checklistu bol doplnený samostatný krok pre feature flag `METODIKA_CONCURRENCY_WEB_ENABLED` vrátane testovania,
+- do testovacej matice boli doplnené scenáre pre stabilný `.lock` pri atomickom `rename`, nepovolené HIT stavy, expiráciu cez finalization claim, manuálny cleanup bez falošného `COMPLETED_SUCCESS`, redakciu tombstone, pád participantu počas `accept()`, autorizáciu všetkých nových endpointov a testovanie feature flagu,
+- register [`postupy/README.md`](postupy/README.md) bol zosúladený tak, že dokument `2026-07-23_14-21_IMPLEMENTACNY-CHECKLIST-A-TESTOVACIA-MATICA-WEBOVEHO-SUBEZNEHO-OVERENIA.md` je označený ako `PREKONANÝ` a jediná aktívna verzia zostáva dokument z `2026-07-23_12-27`.
+
 ---
 
 ## 2026-07-22

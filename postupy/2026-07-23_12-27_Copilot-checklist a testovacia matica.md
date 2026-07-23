@@ -3,7 +3,7 @@
 ## Kontekst
 
 - Projekt: METODIKA
-- Vetva: joyee-priority
+- Vetva: main
 - Autoritativny postup nacitany: `postupy/Inicializácia práce.md`
 - Ucel: pripravit implementacny podklad pre bezpecnu webovu koordinaciu dvoch samostatnych HTTP poziadaviek pre diagnosticky scenar subeznosti
 
@@ -36,7 +36,12 @@
 - Zaviesť enum stavov: `CREATED`, `WAITING_FOR_PARTNER`, `BARRIER_OPEN`, `EXECUTING`, `RESULTS_READY`, `FINALIZATION_CLAIMED`, `CLEANUP_PENDING`, `COMPLETED_SUCCESS`, `COMPLETED_FAILED`, `COMPLETED_FAILED_CLEANUP`, `EXPIRED`.
 - Zaviesť validator pre povolene prechody a povinne polia dokumentu.
 
-3. START endpoint
+3. Feature flag a jeho testovanie
+- Zaviesť samostatny feature flag `METODIKA_CONCURRENCY_WEB_ENABLED` pre celu webovu vetvu subezneho diagnostickeho overenia.
+- Ak flag nie je aktivny, endpointy tejto vetvy vratia fallback `404`.
+- Doplniť testy pre zapnuty aj vypnuty flag.
+
+4. START endpoint
 - Pridat endpoint na zalozenie runu.
 - Server ulozi nemenny testovaci vstup:
   - `requestReference`
@@ -46,57 +51,61 @@
   - `derivationApplicationInput`
 - Vygenerovat participant tokeny A/B, ulozit len hash, plain token vratit iba raz.
 
-4. HIT bez `accept()`
+5. HIT bez `accept()`
 - Pridat `hit/a` a `hit/b` s inputom iba `runId` + `participantToken`.
 - Po auth volat `session_write_close()` pred bariérou.
 - Overit token hash, consumed flag, TTL, participant rolu.
 - Zapisat `readyAt` pre participant slot.
+- HIT v nepovolenom stave (`BARRIER_OPEN`, `EXECUTING`, `RESULTS_READY`, `FINALIZATION_CLAIMED`, `CLEANUP_PENDING`, `COMPLETED_*`, `EXPIRED`) vrati fallback `404` a run dokument sa nezmeni.
 
-5. Bariera a timeout
+6. Bariera a timeout
 - Otvorit barieru nastavovanim `barrierOpenedAt` iba raz pod lockom, ked su ready obe strany.
 - Wait loop bez drzania locku.
 - Timeout vetvu napojit na atomicky finalization claim.
+- Expiracia runu ide cez rovnaky finalization claim a cleanup tok ako timeout vetva.
 
-6. `accept()` a zapis vysledkov
+7. `accept()` a zapis vysledkov
 - Po otvoreni bariery obidva procesy opustia lock a vykonaju `accept()` nezavisle.
 - Vstupy pre `accept()` nacitat iba z run dokumentu.
 - Zapisat participant outcome a bezpecny `errorCode`.
+- Pad jedneho participantu pocas `accept()` musi viest k bezpecnemu `errorCode` a naslednemu cleanup toku.
 
-7. Finalization claim
+8. Finalization claim
 - Zaviesť atomicke pole:
   - `finalization.claimedAt`
   - `finalization.claimedBy`
 - Claim moze uspesne vykonat iba jeden participant.
 - Druhy ide do waiter rezimu.
 
-8. Invarianty a cleanup
+9. Invarianty a cleanup
 - Finalizer overi tri osi:
   - DB unikátnosť
   - replay policy (`CREATED + ALREADY_EXISTS`)
   - cleanup potvrdeny
 - Cleanup vykonava iba claimant.
 - Pri zlyhani cleanupu nikdy neoznacit run ako uspesny.
+- Manualny cleanup po neuspesnom teste nesmie vytvorit `COMPLETED_SUCCESS`.
 
-9. Tombstone, result a sweep
+10. Tombstone, result a sweep
 - Po dokonceni odstranit token hashy a pracovné citlive medzistavy.
 - Ponechat tombstone (`completedAt`, `deleteAfter`, assertions, cleanup status).
 - Pri prvom citani nastavit `readOnceConsumedAt`, ale subor nemazat.
 - Fyzicke mazanie len sweepom po `deleteAfter`.
 
-10. UI
+11. UI
 - Pridat diagnostics UI pre:
   - start runu
   - spustenie paralelnych hit A/B
   - polling resultu
   - zobrazenie 3 osí vysledku
 
-11. Unit testy
+12. Unit testy
 - Run store, lock protokol, stavove prechody, finalization claim, timeout vetva, error sanitacia.
 
-12. Integracny webovy test
+13. Integracny webovy test
 - End-to-end scenar `START -> HIT A/B -> bariera -> accept -> finalization -> cleanup -> tombstone`.
 
-13. Produkcne diagnosticke overenie
+14. Produkcne diagnosticke overenie
 - Kratkodobe zapnutie diagnostickej vetvy.
 - Overit tri osi vysledku.
 - Overit sweep a odstranenie run suboru po TTL.
@@ -125,6 +134,14 @@
 | M16 | Security | CSRF hranice | START bez/so CSRF, HIT bez CSRF | START vyzaduje CSRF, HIT endpointy pod explicitnou vynimkou |
 | M17 | Concurrency | Session lock hranica | paralelny HIT A/B | `session_write_close()` pred cakanim, requesty sa neserializuju session lockom |
 | M18 | Regression | Diagnostika DB flow | login/database/logout | bez regresie existujucich diagnostics testov |
+| M19 | Unit | Stabilny lock pri atomickom rename JSON | zapis run dokumentu cez `temp+rename` pod `.lock` | lock ostava stabilny na `{runId}.lock` a nevznika race pri zmene inode `{runId}.json` |
+| M20 | Security | HIT v nepovolenom stave | valid token, ale stav mimo `CREATED/WAITING_FOR_PARTNER` | fallback 404 a run dokument bezo zmeny |
+| M21 | Integration HTTP | Expiracia runu | run expirovany pocas cakania alebo pred hit | expiracia prejde cez finalization claim a cleanup vetvu |
+| M22 | Integration HTTP | Manualny cleanup po neuspesnom teste | run v `COMPLETED_FAILED` | `cleanupConfirmed=true`, ale stav neprejde na `COMPLETED_SUCCESS` |
+| M23 | Unit | Tombstone redakcia | finalizacia runu | participant token hashy a nepotrebne pracovné udaje su odstranene |
+| M24 | Integration HTTP | Pad participantu pocas `accept()` | vynutena chyba v jednej vetve | bezpecny `errorCode`, finalization claim a cleanup sa vykonaju |
+| M25 | Security | Autorizacia vsetkych novych endpointov | neautorizovane volania `start/hit/result/cleanup` | kazdy endpoint vracia fallback 404 |
+| M26 | Security | Feature flag `METODIKA_CONCURRENCY_WEB_ENABLED` | flag vypnuty/zapnuty | pri vypnutom flagu fallback 404, pri zapnutom normalny beh vetvy |
 
 ---
 
