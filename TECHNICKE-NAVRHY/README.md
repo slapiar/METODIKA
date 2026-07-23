@@ -97,6 +97,7 @@ Význam:
 | `2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md` | PRACOVNÝ | Praktická reValidácia vykonania migrácií a fyzickej schémy na Hostingeri. Výsledok `VALID_WITH_LIMITATIONS`; 8 tabuliek a 10 reštriktívnych cudzích kľúčov je potvrdených, repository adaptéry a integračné testy ešte chýbajú. |
 | `2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Implementovaný port a MySQLi adaptér rezervácie, vyhľadania, stavov a načítania výsledku. Atómová koordinácia prvého prijatia bola unit-validovaná: 2 testy, 4 assertions. Otvorené zostávajú databázové integračné, rollback a súbežné testy. |
 | `2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Implementovaná rezervácia, počiatočný historický beh, doménové väzby a spoločná transakčná hranica nad jednou `BaseConnection`. Syntaktická kontrola prešla a unit test v Codespaces skončil 2/2; integračné overenie nad MySQL/MariaDB ešte chýba. |
+| `2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Implementovaný Spark príkaz pre reálne MySQLi overenie úspešného zápisu a rollbacku po úmyselnej chybe. Používa jedinečné testovacie referencie, nadradený rollback a núdzové cielené čistenie; praktické spustenie nad databázou ešte chýba. |
 
 ---
 
