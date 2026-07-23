@@ -9,3 +9,6 @@
 
 # Prevádzkové logy
 *.log
+
+# PHPUnit cache a testovacie výstupy
+/codei/build/
