@@ -18,12 +18,16 @@ final class ExternalEnvironment
         if (is_string($configuredPath) && $configuredPath !== '') {
             $path = $configuredPath;
         } else {
-            $candidatePaths = [
-                dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . '.env',
-                dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env',
-                dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . '.env',
-                dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . 'metodika.env',
-            ];
+            $candidatePaths = [];
+            $envFilenames = ['.env', 'metodika.env'];
+
+            // Try common shared-hosting layouts where `private` can be above public_html.
+            for ($level = 2; $level <= 6; $level++) {
+                $baseDir = dirname(__DIR__, $level);
+                foreach ($envFilenames as $filename) {
+                    $candidatePaths[] = $baseDir . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . $filename;
+                }
+            }
 
             foreach ($candidatePaths as $candidatePath) {
                 if (is_file($candidatePath)) {
