@@ -51,6 +51,16 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->post('/diagnostics/database/login', $postData)->assertStatus(404);
     }
 
+    public function testUnauthorizedGetReturnsFallback404Page(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+
+        $this->get('/diagnostics/database')
+            ->assertStatus(404)
+            ->assertSee('404', false)
+            ->assertDontSee('Diagnostika databazy METODIKA', false);
+    }
+
     public function testCorrectTokenAllowsDiagnosticsPage(): void
     {
         $this->setDiagnosticsEnv('1', 'secret-token');

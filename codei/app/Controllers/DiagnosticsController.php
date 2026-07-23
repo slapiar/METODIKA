@@ -19,15 +19,15 @@ final class DiagnosticsController extends BaseController
     public function database(): ResponseInterface
     {
         if (! $this->isDiagnosticsEnabled()) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->diagnosticsFallbackNotFound();
         }
 
         if ($this->expectedToken() === null) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->diagnosticsFallbackNotFound();
         }
 
         if (! $this->isAuthorized()) {
-            return $this->secureHtmlResponse(view('diagnostics/login'));
+            return $this->diagnosticsFallbackNotFound();
         }
 
         $inspection = $this->inspector()->inspect();
@@ -46,14 +46,14 @@ final class DiagnosticsController extends BaseController
     public function login(): ResponseInterface
     {
         if (! $this->isDiagnosticsEnabled()) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->diagnosticsFallbackNotFound();
         }
 
         $expectedToken = $this->expectedToken();
         $submittedToken = $this->request->getPost('diagnostics_token');
 
         if ($expectedToken === null || ! is_string($submittedToken) || ! hash_equals($expectedToken, $submittedToken)) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->diagnosticsFallbackNotFound();
         }
 
         $session = $this->session();
@@ -67,7 +67,7 @@ final class DiagnosticsController extends BaseController
     public function run(): ResponseInterface
     {
         if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null || ! $this->isAuthorized()) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+            return $this->diagnosticsFallbackNotFound();
         }
 
         return redirect()->to(site_url('diagnostics/database'));
@@ -75,8 +75,8 @@ final class DiagnosticsController extends BaseController
 
     public function logout(): ResponseInterface
     {
-        if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null) {
-            throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
+        if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null || ! $this->isAuthorized()) {
+            return $this->diagnosticsFallbackNotFound();
         }
 
         $session = $this->session();
@@ -146,10 +146,15 @@ final class DiagnosticsController extends BaseController
         return $session;
     }
 
-    private function secureHtmlResponse(string $html): ResponseInterface
+    private function diagnosticsFallbackNotFound(): ResponseInterface
+    {
+        return $this->secureHtmlResponse(view('errors/html/diagnostics_fallback_404'), 404);
+    }
+
+    private function secureHtmlResponse(string $html, int $statusCode = 200): ResponseInterface
     {
         return $this->response
-            ->setStatusCode(200)
+            ->setStatusCode($statusCode)
             ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
             ->setHeader('Pragma', 'no-cache')
             ->setHeader('X-Content-Type-Options', 'nosniff')
