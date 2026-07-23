@@ -19,7 +19,7 @@ final class FirstAcceptanceServiceTest extends CIUnitTestCase
     public function testCreatedReservationAlsoCreatesHistoricalRunInsideBoundary(): void
     {
         $run = $this->runData();
-        $events = [];
+        $events = new ArrayObject();
         $reservation = $this->reservation();
 
         $repository = $this->repositoryReturning(
@@ -27,25 +27,25 @@ final class FirstAcceptanceServiceTest extends CIUnitTestCase
             $events,
         );
         $history = new class($events) implements DerivationHistoryPort {
-            public function __construct(private array &$events)
+            public function __construct(private readonly ArrayObject $events)
             {
             }
 
             public function createInitialRun(InitialDerivationRun $run): void
             {
-                $this->events[] = 'history:' . $run->derivationReference;
+                $this->events->append('history:' . $run->derivationReference);
             }
         };
         $transactions = new class($events) implements TransactionBoundaryPort {
-            public function __construct(private array &$events)
+            public function __construct(private readonly ArrayObject $events)
             {
             }
 
             public function run(callable $operation): mixed
             {
-                $this->events[] = 'transaction:begin';
+                $this->events->append('transaction:begin');
                 $result = $operation();
-                $this->events[] = 'transaction:commit';
+                $this->events->append('transaction:commit');
                 return $result;
             }
         };
@@ -59,38 +59,38 @@ final class FirstAcceptanceServiceTest extends CIUnitTestCase
             'reserve:request-1',
             'history:derivation-1',
             'transaction:commit',
-        ], $events);
+        ], $events->getArrayCopy());
     }
 
     public function testExistingReservationDoesNotCreateAnotherHistoricalRun(): void
     {
         $run = $this->runData();
-        $events = [];
+        $events = new ArrayObject();
 
         $repository = $this->repositoryReturning(
             new ReservationResult(ReservationResult::ALREADY_EXISTS, $this->reservation()),
             $events,
         );
         $history = new class($events) implements DerivationHistoryPort {
-            public function __construct(private array &$events)
+            public function __construct(private readonly ArrayObject $events)
             {
             }
 
             public function createInitialRun(InitialDerivationRun $run): void
             {
-                $this->events[] = 'history';
+                $this->events->append('history');
             }
         };
         $transactions = new class($events) implements TransactionBoundaryPort {
-            public function __construct(private array &$events)
+            public function __construct(private readonly ArrayObject $events)
             {
             }
 
             public function run(callable $operation): mixed
             {
-                $this->events[] = 'transaction:begin';
+                $this->events->append('transaction:begin');
                 $result = $operation();
-                $this->events[] = 'transaction:commit';
+                $this->events->append('transaction:commit');
                 return $result;
             }
         };
@@ -103,15 +103,17 @@ final class FirstAcceptanceServiceTest extends CIUnitTestCase
             'transaction:begin',
             'reserve:request-1',
             'transaction:commit',
-        ], $events);
+        ], $events->getArrayCopy());
     }
 
-    private function repositoryReturning(ReservationResult $result, array &$events): RequestReferenceRepositoryPort
-    {
+    private function repositoryReturning(
+        ReservationResult $result,
+        ArrayObject $events,
+    ): RequestReferenceRepositoryPort {
         return new class($result, $events) implements RequestReferenceRepositoryPort {
             public function __construct(
                 private readonly ReservationResult $result,
-                private array &$events,
+                private readonly ArrayObject $events,
             ) {
             }
 
@@ -121,7 +123,7 @@ final class FirstAcceptanceServiceTest extends CIUnitTestCase
                 string $derivationReference,
                 DateTimeImmutable $reservedAt,
             ): ReservationResult {
-                $this->events[] = 'reserve:' . $requestReference;
+                $this->events->append('reserve:' . $requestReference);
                 return $this->result;
             }
 
