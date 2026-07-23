@@ -6,6 +6,19 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ---
 
+## 2026-07-23
+
+### Databázová implementácia
+
+- na Hostingeri bola úspešne vykonaná praktická diagnostika produkčnej databázy,
+- CodeIgniter CLI rozpoznal všetkých osem nevykonaných migrácií M1 až M8,
+- príkaz `php spark migrate` vykonal všetkých osem migrácií bez chyby,
+- následný `php spark migrate:status` potvrdil všetkých osem migrácií v skupine `default`, s časom `2026-07-23 08:36:20 UTC` a v batchi `1`,
+- implementačný stav bol aktualizovaný v [`TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md`](TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md),
+- praktická reValidácia je v [`TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md) s výsledkom `VALID_WITH_LIMITATIONS`; otvorené zostáva samostatné overenie fyzických cudzích kľúčov, repository adaptéry a integračné testy.
+
+---
+
 ## 2026-07-22
 
 ### Bezpečnosť a prevádzka
