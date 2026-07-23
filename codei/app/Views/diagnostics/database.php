@@ -182,6 +182,10 @@ $showFooter = false;
 
             const csrfName = <?= json_encode(csrf_token(), JSON_UNESCAPED_SLASHES) ?>;
             const csrfHash = <?= json_encode(csrf_hash(), JSON_UNESCAPED_SLASHES) ?>;
+            const startUrl = <?= json_encode(site_url('diagnostics/concurrency/start'), JSON_UNESCAPED_SLASHES) ?>;
+            const hitAUrl = <?= json_encode(site_url('diagnostics/concurrency/hit/a'), JSON_UNESCAPED_SLASHES) ?>;
+            const hitBUrl = <?= json_encode(site_url('diagnostics/concurrency/hit/b'), JSON_UNESCAPED_SLASHES) ?>;
+            const resultBaseUrl = <?= json_encode(site_url('diagnostics/concurrency/result'), JSON_UNESCAPED_SLASHES) ?>;
 
             const setAxis = (node, value) => {
                 if (value === true) {
@@ -217,7 +221,7 @@ $showFooter = false;
 
             const fetchResult = async (runId) => {
                 for (let i = 0; i < 24; i++) {
-                    const response = await fetch('/diagnostics/concurrency/result/' + encodeURIComponent(runId), {
+                    const response = await fetch(resultBaseUrl + '/' + encodeURIComponent(runId), {
                         method: 'GET',
                         credentials: 'same-origin',
                         cache: 'no-store',
@@ -243,7 +247,7 @@ $showFooter = false;
                     const startData = new URLSearchParams();
                     startData.set(csrfName, csrfHash);
 
-                    const startResponse = await fetch('/diagnostics/concurrency/start', {
+                    const startResponse = await fetch(startUrl, {
                         method: 'POST',
                         credentials: 'same-origin',
                         headers: {
@@ -279,8 +283,8 @@ $showFooter = false;
                     };
 
                     const hitResults = await Promise.all([
-                        hitRequest('/diagnostics/concurrency/hit/a', started.participantTokenA),
-                        hitRequest('/diagnostics/concurrency/hit/b', started.participantTokenB),
+                        hitRequest(hitAUrl, started.participantTokenA),
+                        hitRequest(hitBUrl, started.participantTokenB),
                     ]);
 
                     if (hitResults[0].status !== 200 || hitResults[1].status !== 200) {
