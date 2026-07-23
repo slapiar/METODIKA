@@ -31,6 +31,7 @@ codei/app/Infrastructure/Persistence/QuestionDerivation/DerivationHistoryReposit
 codei/app/Infrastructure/Persistence/QuestionDerivation/DatabaseTransactionBoundary.php
 codei/app/Infrastructure/Persistence/QuestionDerivation/FirstAcceptanceServiceFactory.php
 codei/tests/unit/FirstAcceptanceServiceTest.php
+codei/app/Commands/VerifyFirstAcceptanceTransaction.php
 ```
 
 ## Zachované invarianty
@@ -53,13 +54,7 @@ Interné `reservation_id` zostáva v infraštruktúrnej vrstve. Aplikačný dát
 
 V Codespaces nad PHP `8.4.15` prešla syntaktická kontrola všetkých implementovaných súborov bez chyby.
 
-Príkaz:
-
-```text
-vendor/bin/phpunit tests/unit/FirstAcceptanceServiceTest.php
-```
-
-vrátil:
+Unit test:
 
 ```text
 Tests: 2
@@ -67,7 +62,7 @@ Assertions: 4
 2 / 2 = 100 %
 ```
 
-Overené scenáre:
+Overené unit scenáre:
 
 ```text
 RESERVATION_CREATED
@@ -81,12 +76,34 @@ Varovanie `No code coverage driver available` neovplyvnilo výsledok testu; znam
 
 Composer vytvoril reprodukovateľný `codei/composer.lock`. Lokálny adresár `codei/build/`, ktorý PHPUnit používa na cache a výstupy, je ignorovaný v `.gitignore`.
 
+## Praktické MySQL integračné overenie
+
+V release `1.0.11` bol na Hostinger MySQLi/InnoDB databáze spustený príkaz:
+
+```bash
+php spark metodika:verify-first-acceptance-transaction
+```
+
+Potvrdené boli oba scenáre:
+
+```text
+Scenár A
+→ rezervácia, beh a dve doménové väzby vznikli spolu,
+→ nadradený rollback odstránil všetky testovacie zápisy,
+
+Scenár B
+→ úmyselná chyba vznikla po založení historického behu,
+→ aplikačná transakcia vrátila späť rezerváciu, beh aj doménové väzby.
+```
+
+Po oboch scenároch zostali počty testovacích dát `0 + 0 + 0`.
+
+Podrobný záznam je v `2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md`.
+
 ## Otvorené obmedzenia
 
 ```text
-integračný test nad MySQL/MariaDB,
-rollback test pri zlyhaní založenia behu alebo doménovej väzby,
-súbežný test dvoch prvých prijatí,
+súbežný test dvoch prvých prijatí cez samostatné databázové spojenia,
 RequestReplayGuard,
 ďalšie operácie DerivationHistoryPort pre bránu, vetvy, výsledok a trace,
 meranie code coverage v Codespaces runtime.
@@ -97,14 +114,14 @@ meranie code coverage v Codespaces runtime.
 ```text
 IMPLEMENTATION_RESULT
 =
-UNIT_VALIDATED_WITH_INTEGRATION_LIMITATIONS
+MYSQL_TRANSACTION_VALIDATED_WITH_CONCURRENCY_LIMITATION
 ```
 
 ## Nasledujúci krok
 
 ```text
-doplniť bezpečný integračný test s dočasnými transakčnými dátami
-→ overiť rollback a súbežnosť
-→ reValidovať prvé prijatie
+pripraviť súbežný test dvoch prvých prijatí
+→ overiť kolíziu REQUEST_REFERENCE
+→ reValidovať replay hranicu
 → až potom pripojiť RequestReplayGuard
 ```

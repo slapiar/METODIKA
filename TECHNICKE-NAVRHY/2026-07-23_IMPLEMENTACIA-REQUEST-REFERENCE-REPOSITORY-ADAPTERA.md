@@ -91,13 +91,25 @@ Assertions: 4
 
 Test potvrdil, že `RESERVATION_CREATED` založí historický beh v rovnakej hranici a `ALREADY_EXISTS` ďalší historický beh nezaloží.
 
+## Praktické integračné overenie
+
+V release `1.0.11` bol nad Hostinger MySQLi/InnoDB databázou spustený príkaz `metodika:verify-first-acceptance-transaction`.
+
+Výsledok:
+
+```text
+úspešné prvé prijatie vytvorilo rezerváciu, historický beh a dve doménové väzby v jednej transakčnej hranici,
+nadradený rollback odstránil všetky testovacie zápisy,
+úmyselná chyba po historickom zápise vrátila späť rezerváciu, beh aj doménové väzby,
+po oboch scenároch nezostali testovacie dáta.
+```
+
 ## Nevykonané
 
 ```text
 RequestReplayGuard,
-priame integračné testy RequestReferenceRepository nad MySQL/MariaDB,
-rollback integračný test,
-súbežný test dvoch prvých prijatí,
+súbežný test dvoch prvých prijatí cez samostatné databázové spojenia,
+priame integračné overenie operácií markRunning, attachCompletedResult a loadCompletedResult,
 ďalšie operácie DerivationHistoryPort pre bránu, vetvy, výsledok a trace.
 ```
 
@@ -106,14 +118,14 @@ súbežný test dvoch prvých prijatí,
 ```text
 IMPLEMENTATION_RESULT
 =
-UNIT_VALIDATED_WITH_INTEGRATION_LIMITATIONS
+MYSQL_FIRST_ACCEPTANCE_VALIDATED_WITH_REPLAY_LIMITATIONS
 ```
 
 ## Nasledujúci krok
 
 ```text
-doplniť integračný test nad skutočnou transakčnou databázou
-→ overiť rollback a súbežnosť
-→ reValidovať prvé prijatie
+pripraviť súbežný test dvoch samostatných prijatí rovnakej REQUEST_REFERENCE
+→ overiť unikátnosť a kolízny výsledok
+→ reValidovať replay hranicu
 → až potom pripojiť RequestReplayGuard
 ```

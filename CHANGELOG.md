@@ -16,8 +16,10 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - následný `php spark migrate:status` potvrdil všetkých osem migrácií v skupine `default`, s časom `2026-07-23 08:36:20 UTC` a v batchi `1`,
 - v release `1.0.9` bol nasadený čítací príkaz [`codei/app/Commands/VerifyQuestionDerivationSchema.php`](codei/app/Commands/VerifyQuestionDerivationSchema.php),
 - príkaz `php spark metodika:verify-question-schema` potvrdil 8 z 8 tabuliek s InnoDB a `utf8mb4_bin` a 10 z 10 cudzích kľúčov s `DELETE RESTRICT` a `UPDATE RESTRICT`,
-- implementačný stav bol aktualizovaný v [`TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md`](TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md),
-- praktická reValidácia je v [`TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md) s výsledkom `VALID_WITH_LIMITATIONS`; otvorené zostávajú repository adaptéry a integračné testy.
+- loader [`codei/app/Config/ExternalEnvironment.php`](codei/app/Config/ExternalEnvironment.php) bol v release `1.0.11` opravený tak, aby prechádzal všetkých rodičov až po filesystem root namiesto pevnej hĺbky,
+- po nasadení release `1.0.11` bolo znovu potvrdené načítanie externého prostredia a fyzická schéma 8/8 tabuliek a 10/10 reštriktívnych cudzích kľúčov,
+- implementačný stav je evidovaný v [`TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md`](TECHNICKE-NAVRHY/2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md),
+- praktická reValidácia schémy je v [`TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md`](TECHNICKE-NAVRHY/2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md).
 
 ### Repository adaptéry
 
@@ -30,15 +32,25 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - unit test [`codei/tests/unit/FirstAcceptanceServiceTest.php`](codei/tests/unit/FirstAcceptanceServiceTest.php) bol spustený v Codespaces nad PHP `8.4.15` a skončil `2/2`, so 4 assertions,
 - scenár `RESERVATION_CREATED` založil historický beh v tej istej transakčnej hranici a `ALREADY_EXISTS` ďalší historický beh nezaložil,
 - `codei/composer.lock` uzamyká vývojové závislosti a `codei/build/` je ignorovaný ako lokálny PHPUnit cache a výstupný adresár,
-- aktuálny stav a otvorené integračné obmedzenia sú v [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md) a [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md).
+- aktuálny stav je v [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md) a [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md).
 
 ### Integračné overenie prvého prijatia
 
 - vytvorený Spark príkaz [`codei/app/Commands/VerifyFirstAcceptanceTransaction.php`](codei/app/Commands/VerifyFirstAcceptanceTransaction.php),
-- príkaz overuje reálny MySQLi zápis rezervácie, historického behu a dvoch zoradených doménových väzieb v nadradenej testovacej transakcii,
-- úspešný scenár po kontrole vždy vykoná rollback a chybový scenár úmyselne zlyhá po historickom zápise, aby overil rollback celej aplikačnej transakcie,
-- každé spustenie používa jedinečné testovacie referencie a `finally` blok obsahuje cielené núdzové čistenie v poradí cudzích kľúčov,
-- návrh, kritériá úspechu a otvorené runtime obmedzenia sú v [`TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md); praktické spustenie nad MySQLi ešte nebolo vykonané.
+- príkaz bol prakticky spustený v release `1.0.11` nad Hostinger MySQLi/InnoDB databázou,
+- scenár A potvrdil spoločný vznik rezervácie, historického behu a dvoch zoradených doménových väzieb a následný úplný rollback testovacích dát,
+- scenár B potvrdil, že úmyselná chyba po založení historického behu vráti späť rezerváciu, beh aj doménové väzby,
+- po oboch scenároch nezostali v databáze žiadne testovacie riadky,
+- výsledok `MYSQL_TRANSACTION_ATOMICITY_VALIDATED` a otvorené obmedzenie súbežného testu sú v [`TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md).
+
+### Súbežné overenie prvého prijatia
+
+- vytvorený Spark príkaz [`codei/app/Commands/VerifyConcurrentFirstAcceptance.php`](codei/app/Commands/VerifyConcurrentFirstAcceptance.php),
+- príkaz používa dve nesdielané MySQLi spojenia s rozdielnymi databázovými `thread_id`,
+- spojenie A vytvorí celé prvé prijatie v otvorenej vonkajšej transakcii a spojenie B súbežne odošle asynchrónny `INSERT` rovnakej `REQUEST_REFERENCE`,
+- po commite spojenia A musí spojenie B dostať unikátnu kolíziu `1062` a následné volanie služby musí vrátiť `ALREADY_EXISTS` s `derivation_reference` toku A,
+- test kontroluje výsledné počty `1 rezervácia + 1 beh + 2 doménové väzby` a po cielenom čistení `0 + 0 + 0`,
+- praktické runtime overenie ešte nebolo vykonané; stav a hranice testu sú v [`TECHNICKE-NAVRHY/2026-07-23_SUBEZNE-OVERENIE-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_SUBEZNE-OVERENIE-PRVEHO-PRIJATIA.md).
 
 ---
 
