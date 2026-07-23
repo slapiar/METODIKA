@@ -92,9 +92,9 @@ Význam:
 | `2026-07-22_BEZPECNA-DATABAZOVA-KONFIGURACIA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Aktuálny kontrakt používa externý súrodenecký `private/metodika.env`, loader pred webovým aj CLI bootstrapom a sledovaný kód bez tajomstiev. Heslo bolo podľa potvrdenia používateľa zrotované. |
 | `2026-07-22_VALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md` | PRACOVNÝ | Historická Validácia sanitizácie aktuálnej vetvy s výsledkom `VALID_WITH_LIMITATIONS`; zachováva stav pred potvrdenou rotáciou a externým private env. |
 | `2026-07-22_REVALIDACIA-BEZPECNEJ-DATABAZOVEJ-KONFIGURACIE.md` | PRACOVNÝ | ReValidácia po rotácii a presunutí konfigurácie mimo `/codei`; výsledok `VALID_WITH_LIMITATIONS`, pretože serverové pripojenie a práva externého súboru ešte neboli prakticky overené. |
-| `2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Externý env loader, diagnostika a migrácie M1 až M8 sú implementované; migrácie boli 2026-07-23 prakticky vykonané na Hostingeri v skupine `default`, batch `1`. Otvorené zostávajú fyzické overenie cudzích kľúčov, repository adaptéry a integračné testy. |
+| `2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Externý env loader, diagnostika a migrácie M1 až M8 sú implementované; migrácie aj fyzická schéma boli 2026-07-23 prakticky potvrdené na Hostingeri. Otvorené zostávajú repository adaptéry a integračné testy. |
 | `2026-07-22_VALIDACIA-IMPLEMENTACIE-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md` | PRACOVNÝ | Historická statická Validácia implementácie s výsledkom `VALID_WITH_LIMITATIONS`; zachováva stav pred praktickou diagnostikou a vykonaním schémy. |
-| `2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md` | PRACOVNÝ | Praktická reValidácia vykonania všetkých ôsmich migrácií na Hostingeri. Výsledok `VALID_WITH_LIMITATIONS`; schéma je založená, no samostatné overenie fyzických cudzích kľúčov, repository adaptéry a integračné testy ešte chýbajú. |
+| `2026-07-23_REVALIDACIA-VYKONANIA-MIGRACII-M1-M8.md` | PRACOVNÝ | Praktická reValidácia vykonania migrácií a fyzickej schémy na Hostingeri. Výsledok `VALID_WITH_LIMITATIONS`; 8 tabuliek a 10 reštriktívnych cudzích kľúčov je potvrdených, repository adaptéry a integračné testy ešte chýbajú. |
 
 ---
 
