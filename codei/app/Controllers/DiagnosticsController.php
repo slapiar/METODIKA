@@ -47,6 +47,8 @@ final class DiagnosticsController extends BaseController
         }
 
         $inspection = $this->inspector()->inspect();
+        $concurrencyWebEnabled = $this->isConcurrencyWebEnabled();
+        $scriptNonce = $concurrencyWebEnabled ? base64_encode(random_bytes(16)) : null;
 
         return $this->secureHtmlResponse(view('diagnostics/database', [
             'externalEnvironmentLoaded' => ExternalEnvironment::isLoaded(),
@@ -56,7 +58,9 @@ final class DiagnosticsController extends BaseController
                 && $inspection['innodb']
                 && $inspection['utf8mb4Bin']
                 && $inspection['datetime6'],
-        ]));
+            'concurrencyWebEnabled' => $concurrencyWebEnabled,
+            'scriptNonce' => $scriptNonce,
+        ]), 200, $scriptNonce);
     }
 
     public function login(): ResponseInterface
@@ -975,8 +979,13 @@ final class DiagnosticsController extends BaseController
         ];
     }
 
-    private function secureHtmlResponse(string $html, int $statusCode = 200): ResponseInterface
+    private function secureHtmlResponse(string $html, int $statusCode = 200, ?string $scriptNonce = null): ResponseInterface
     {
+        $csp = "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; style-src 'self' 'unsafe-inline'";
+        if (is_string($scriptNonce) && trim($scriptNonce) !== '') {
+            $csp .= "; script-src 'nonce-" . $scriptNonce . "'";
+        }
+
         return $this->response
             ->setStatusCode($statusCode)
             ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
@@ -984,7 +993,7 @@ final class DiagnosticsController extends BaseController
             ->setHeader('X-Content-Type-Options', 'nosniff')
             ->setHeader('X-Frame-Options', 'DENY')
             ->setHeader('Referrer-Policy', 'no-referrer')
-            ->setHeader('Content-Security-Policy', "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; style-src 'self' 'unsafe-inline'")
+            ->setHeader('Content-Security-Policy', $csp)
             ->setContentType('text/html', 'UTF-8')
             ->setBody($html);
     }

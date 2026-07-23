@@ -81,6 +81,7 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
     public function testCorrectTokenAllowsDiagnosticsPage(): void
     {
         $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('0');
         $this->injectInspectorResult([
             'connection' => true,
             'serverVersion' => '8.0.39',
@@ -108,6 +109,37 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $response->assertStatus(200);
         $response->assertSee('Celkovy vysledok');
         $response->assertSee('PRIPRAVENE');
+        $response->assertDontSee('Webove subezne overenie');
+    }
+
+    public function testDiagnosticsPageShowsConcurrencyUiWhenFeatureFlagEnabled(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+        $this->injectInspectorResult([
+            'connection' => true,
+            'serverVersion' => '8.0.39',
+            'server' => true,
+            'innodb' => true,
+            'utf8mb4Bin' => true,
+            'datetime6' => true,
+            'errorCode' => null,
+            'diagnosedAt' => '2026-07-22T00:00:00+00:00',
+        ]);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)
+            ->get('/diagnostics/database');
+
+        $response->assertStatus(200);
+        $response->assertSee('Webove subezne overenie');
+        $response->assertSee('id="diag-concurrency-start"');
+        $response->assertSee('/diagnostics/concurrency/start');
+        $response->assertSee('/diagnostics/concurrency/result/');
     }
 
     public function testDiagnosticsOutputDoesNotContainSensitiveNamesOrDsn(): void
