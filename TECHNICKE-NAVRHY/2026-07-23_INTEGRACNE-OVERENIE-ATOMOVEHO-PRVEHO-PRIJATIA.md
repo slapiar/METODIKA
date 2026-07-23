@@ -3,7 +3,7 @@
 ## Stav dokumentu
 
 ```text
-ČIASTOČNE-IMPLEMENTOVANÝ
+IMPLEMENTOVANÝ
 ```
 
 ## Predmet
@@ -70,29 +70,53 @@ Scenár B: po úmyselnej výnimke všetko 0.
 Príkaz skončí EXIT_SUCCESS.
 ```
 
+## Praktické vykonanie
+
+Príkaz bol prakticky spustený 2026-07-23 v release `1.0.11` nad Hostinger MySQLi/InnoDB databázou po úspešnom overení fyzickej schémy:
+
+```text
+8/8 tabuliek = InnoDB + utf8mb4_bin,
+10/10 cudzích kľúčov = DELETE RESTRICT + UPDATE RESTRICT.
+```
+
+Výsledok integračného príkazu:
+
+```text
+Scenár A: OK — rezervácia, beh a doménové väzby vznikli spolu a po rollbacku nezostali v databáze.
+Scenár B: OK — chyba vrátila späť rezerváciu, beh aj doménové väzby.
+EXIT_SUCCESS
+```
+
 ## Aktuálny výsledok
 
 ```text
-IMPLEMENTED_WITHOUT_MYSQL_RUNTIME_VALIDATION
+INTEGRATION_RESULT
+=
+MYSQL_TRANSACTION_ATOMICITY_VALIDATED
 ```
 
-Príkaz bol spätne načítaný a porovnaný s implementáciou vnorených transakcií v CodeIgniter 4.7.4. Praktické spustenie nad MySQLi databázou ešte nebolo vykonané.
+Potvrdený rozsah:
+
+```text
+úspešné prvé prijatie vytvorí rezerváciu, historický beh a doménové väzby v jednej transakčnej hranici,
+rollback nadradenej testovacej transakcie odstráni všetky testovacie zápisy,
+úmyselná chyba po historickom zápise vráti späť rezerváciu, beh aj doménové väzby,
+po oboch scenároch nezostali testovacie dáta.
+```
 
 ## Otvorené obmedzenia
 
 ```text
-syntaktická kontrola v aktuálnom Codespaces runtime,
-registrácia príkazu v Spark zozname,
-praktické spustenie nad fyzickou MySQLi schémou,
-súbežný test dvoch samostatných databázových spojení.
+súbežný test dvoch samostatných databázových spojení,
+RequestReplayGuard,
+ďalšie operácie DerivationHistoryPort pre bránu, vetvy, výsledok a trace.
 ```
 
 ## Nasledujúci krok
 
 ```text
-synchronizovať aktuálny main
-→ php -l codei/app/Commands/VerifyFirstAcceptanceTransaction.php
-→ v Codespaces overiť php spark list | grep verify-first-acceptance
-→ po vytvorení release spustiť príkaz nad Hostinger MySQLi
-→ zapísať výsledok a reValidovať transakčnú hranicu
+pripraviť súbežný test dvoch prvých prijatí
+→ overiť unikátnosť a správanie pri kolízii REQUEST_REFERENCE
+→ reValidovať replay hranicu
+→ pripojiť RequestReplayGuard
 ```
