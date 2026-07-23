@@ -43,10 +43,6 @@ final readonly class InitialDerivationRun
             throw new RuntimeException('run_mode musí byť PARTIAL_RUN_WITH_ATOMIC_GATE.');
         }
 
-        if ($this->domainTermReferences === []) {
-            throw new RuntimeException('domain_term_references nesmie byť prázdne.');
-        }
-
         $seen = [];
         foreach ($this->domainTermReferences as $reference) {
             if (! is_string($reference) || $reference === '' || mb_strlen($reference) > 191) {
