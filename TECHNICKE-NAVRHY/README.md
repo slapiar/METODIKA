@@ -98,6 +98,7 @@ Význam:
 | `2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | MySQLi prvé prijatie bolo unit aj integračne overené. Úspešný zápis aj úmyselná chyba potvrdili atómovosť rezervácie, historického behu a doménových väzieb; otvorená zostáva súbežnosť a replay. |
 | `2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Implementácia prešla unit testom 2/2 a praktickým MySQL integračným overením v release 1.0.11. Potvrdený je úspešný zápis aj rollback po úmyselnej chybe; otvorený zostáva súbežný test. |
 | `2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md` | IMPLEMENTOVANÝ | Spark príkaz bol prakticky spustený nad Hostinger MySQLi/InnoDB. Scenár A aj B skončili úspešne a po oboch zostali počty testovacích dát 0 + 0 + 0. |
+| `2026-07-23_SUBEZNE-OVERENIE-PRVEHO-PRIJATIA.md` | ČIASTOČNE-IMPLEMENTOVANÝ | Pripravený Spark príkaz s dvoma nesdielanými MySQLi spojeniami, asynchrónnou kolíziou rovnakej `REQUEST_REFERENCE`, kontrolou kódu 1062 a následným `ALREADY_EXISTS`. Praktické runtime overenie ešte chýba. |
 
 ---
 
