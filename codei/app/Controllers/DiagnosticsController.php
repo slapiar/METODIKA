@@ -11,6 +11,8 @@ use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\Session\Session;
 use Config\ExternalEnvironment;
 use Config\Services;
+use RuntimeException;
+use Throwable;
 
 final class DiagnosticsController extends BaseController
 {
@@ -19,6 +21,10 @@ final class DiagnosticsController extends BaseController
     private const AUTH_TTL_SECONDS = 900;
     private const CONCURRENCY_RUN_TTL_SECONDS = 180;
     private const BARRIER_WAIT_TIMEOUT_MS = 2500;
+    private const HIT_ALLOWED_STATES = [
+        DiagnosticsConcurrencyRunState::CREATED,
+        DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER,
+    ];
 
     public function database(): ResponseInterface
     {
@@ -190,6 +196,16 @@ final class DiagnosticsController extends BaseController
         ]);
     }
 
+    public function hitConcurrencyA(): ResponseInterface
+    {
+        return $this->handleHit('a');
+    }
+
+    public function hitConcurrencyB(): ResponseInterface
+    {
+        return $this->handleHit('b');
+    }
+
     public function logout(): ResponseInterface
     {
         if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null || ! $this->isAuthorized()) {
@@ -299,6 +315,90 @@ final class DiagnosticsController extends BaseController
         }
 
         return '{}';
+    }
+
+    private function handleHit(string $participant): ResponseInterface
+    {
+        if (
+            ! $this->isDiagnosticsEnabled()
+            || ! $this->isConcurrencyWebEnabled()
+            || $this->expectedToken() === null
+            || ! $this->isAuthorized()
+        ) {
+            return $this->diagnosticsFallbackNotFound();
+        }
+
+        $runId = $this->request->getPost('runId');
+        $participantToken = $this->request->getPost('participantToken');
+
+        if (! is_string($runId) || trim($runId) === '' || ! is_string($participantToken) || trim($participantToken) === '') {
+            return $this->diagnosticsFallbackNotFound();
+        }
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        $nowIso = gmdate('c');
+        $tokenHash = hash('sha256', trim($participantToken));
+
+        try {
+            $updated = $this->runStore()->mutate(trim($runId), function (?array $current) use ($participant, $tokenHash, $nowIso): array {
+                if (! is_array($current)) {
+                    throw new RuntimeException('Run nenajdeny.');
+                }
+
+                $state = $current['state'] ?? null;
+                if (! is_string($state) || ! in_array($state, self::HIT_ALLOWED_STATES, true)) {
+                    throw new RuntimeException('Nepovoleny stav runu pre HIT.');
+                }
+
+                $slot = $current['participants'][$participant] ?? null;
+                if (! is_array($slot)) {
+                    throw new RuntimeException('Neplatny participant slot.');
+                }
+
+                $storedHash = $slot['tokenHash'] ?? null;
+                if (! is_string($storedHash) || ! hash_equals($storedHash, $tokenHash)) {
+                    throw new RuntimeException('Neplatny participant token.');
+                }
+
+                if (($slot['consumedAt'] ?? null) !== null) {
+                    throw new RuntimeException('Participant token uz bol pouzity.');
+                }
+
+                $expiresAt = $current['expiresAt'] ?? null;
+                if (! is_string($expiresAt) || strtotime($expiresAt) === false || strtotime($expiresAt) < time()) {
+                    throw new RuntimeException('Run expiroval.');
+                }
+
+                $current['participants'][$participant]['consumedAt'] = $nowIso;
+                $current['participants'][$participant]['readyAt'] = $nowIso;
+
+                $partner = $participant === 'a' ? 'b' : 'a';
+                $partnerReadyAt = $current['participants'][$partner]['readyAt'] ?? null;
+
+                if (is_string($partnerReadyAt) && $partnerReadyAt !== '') {
+                    $current['barrier']['openedAt'] ??= $nowIso;
+                    $current['state'] = DiagnosticsConcurrencyRunState::BARRIER_OPEN;
+                } else {
+                    $current['state'] = DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER;
+                }
+
+                return $current;
+            });
+        } catch (Throwable) {
+            return $this->diagnosticsFallbackNotFound();
+        }
+
+        $barrierOpenedAt = $updated['barrier']['openedAt'] ?? null;
+
+        return $this->secureJsonResponse([
+            'runId' => $updated['runId'] ?? trim($runId),
+            'participant' => $participant,
+            'state' => $updated['state'] ?? null,
+            'barrierOpened' => is_string($barrierOpenedAt) && $barrierOpenedAt !== '',
+        ]);
     }
 
     private function secureHtmlResponse(string $html, int $statusCode = 200): ResponseInterface

@@ -206,6 +206,134 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->deleteTree($storeDirectory);
     }
 
+    public function testConcurrencyHitFlowSetsReadyAndOpensBarrier(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+
+        $runId = 'run-aaaaaaaaaaaaaaaaaaaaaaaa';
+        $tokenA = 'token-a-plain';
+        $tokenB = 'token-b-plain';
+        $store->save($runId, $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED'));
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $responseA = $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => $tokenA,
+        ]);
+
+        $responseA->assertStatus(200);
+        $payloadA = json_decode(html_entity_decode(strip_tags((string) $responseA->getBody())), true);
+        $this->assertIsArray($payloadA);
+        $this->assertSame('WAITING_FOR_PARTNER', $payloadA['state']);
+        $this->assertFalse((bool) $payloadA['barrierOpened']);
+
+        $afterA = $store->load($runId);
+        $this->assertIsArray($afterA);
+        $this->assertSame('WAITING_FOR_PARTNER', $afterA['state']);
+        $this->assertNotNull($afterA['participants']['a']['consumedAt']);
+        $this->assertNotNull($afterA['participants']['a']['readyAt']);
+        $this->assertNull($afterA['participants']['b']['readyAt']);
+
+        $responseB = $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+            'runId' => $runId,
+            'participantToken' => $tokenB,
+        ]);
+
+        $responseB->assertStatus(200);
+        $payloadB = json_decode(html_entity_decode(strip_tags((string) $responseB->getBody())), true);
+        $this->assertIsArray($payloadB);
+        $this->assertSame('BARRIER_OPEN', $payloadB['state']);
+        $this->assertTrue((bool) $payloadB['barrierOpened']);
+
+        $afterB = $store->load($runId);
+        $this->assertIsArray($afterB);
+        $this->assertSame('BARRIER_OPEN', $afterB['state']);
+        $this->assertNotNull($afterB['participants']['b']['consumedAt']);
+        $this->assertNotNull($afterB['participants']['b']['readyAt']);
+        $this->assertNotNull($afterB['barrier']['openedAt']);
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyHitRejectsInvalidTokenWithoutRunChange(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-invalid-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+
+        $runId = 'run-bbbbbbbbbbbbbbbbbbbbbbbb';
+        $tokenA = 'token-a-plain';
+        $tokenB = 'token-b-plain';
+        $store->save($runId, $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED'));
+
+        $before = $store->load($runId);
+        $this->assertIsArray($before);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => 'wrong-token',
+        ])->assertStatus(404);
+
+        $after = $store->load($runId);
+        $this->assertSame($before, $after);
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyHitRejectsDisallowedStateWithoutRunChange(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-state-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+
+        $runId = 'run-cccccccccccccccccccccccc';
+        $tokenA = 'token-a-plain';
+        $tokenB = 'token-b-plain';
+        $store->save($runId, $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED'));
+        $store->mutate($runId, static function (?array $current): array {
+            $current['state'] = 'BARRIER_OPEN';
+            return $current;
+        });
+
+        $before = $store->load($runId);
+        $this->assertIsArray($before);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => $tokenA,
+        ])->assertStatus(404);
+
+        $after = $store->load($runId);
+        $this->assertSame($before, $after);
+
+        $this->deleteTree($storeDirectory);
+    }
+
     private function setDiagnosticsEnv(string $enabled, string $token): void
     {
         putenv('METODIKA_DIAGNOSTICS_ENABLED=' . $enabled);
@@ -319,5 +447,65 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         }
 
         @rmdir($path);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function makeRunDocument(string $runId, string $tokenHashA, string $tokenHashB, string $state): array
+    {
+        return [
+            'version' => 1,
+            'runId' => $runId,
+            'state' => $state,
+            'createdAt' => gmdate('c', time() - 5),
+            'expiresAt' => gmdate('c', time() + 120),
+            'input' => [
+                'requestReference' => 'req-test-' . bin2hex(random_bytes(4)),
+                'payloadFingerprint' => hash('sha256', 'payload'),
+                'derivationReferenceA' => 'derivation-a-test',
+                'derivationReferenceB' => 'derivation-b-test',
+                'derivationApplicationInput' => '{"input":"alpha"}',
+            ],
+            'participants' => [
+                'a' => [
+                    'tokenHash' => $tokenHashA,
+                    'consumedAt' => null,
+                    'readyAt' => null,
+                    'startedAt' => null,
+                    'finishedAt' => null,
+                    'outcome' => null,
+                    'errorCode' => null,
+                ],
+                'b' => [
+                    'tokenHash' => $tokenHashB,
+                    'consumedAt' => null,
+                    'readyAt' => null,
+                    'startedAt' => null,
+                    'finishedAt' => null,
+                    'outcome' => null,
+                    'errorCode' => null,
+                ],
+            ],
+            'barrier' => [
+                'openedAt' => null,
+                'waitTimeoutMs' => 2500,
+            ],
+            'finalization' => [
+                'claimedAt' => null,
+                'claimedBy' => null,
+                'finishedAt' => null,
+            ],
+            'cleanup' => [
+                'cleanupConfirmed' => false,
+                'cleanupErrorCode' => null,
+            ],
+            'assertions' => [
+                'dbUniquenessConfirmed' => null,
+                'appReplayConfirmed' => null,
+                'cleanupConfirmed' => null,
+                'overallSuccess' => null,
+            ],
+        ];
     }
 }

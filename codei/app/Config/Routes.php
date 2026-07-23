@@ -13,3 +13,5 @@ $routes->post('diagnostics/database/login', 'DiagnosticsController::login', ['fi
 $routes->post('diagnostics/database/run', 'DiagnosticsController::run', ['filter' => 'csrf']);
 $routes->post('diagnostics/database/logout', 'DiagnosticsController::logout', ['filter' => 'csrf']);
 $routes->post('diagnostics/concurrency/start', 'DiagnosticsController::startConcurrencyRun', ['filter' => 'csrf']);
+$routes->post('diagnostics/concurrency/hit/a', 'DiagnosticsController::hitConcurrencyA');
+$routes->post('diagnostics/concurrency/hit/b', 'DiagnosticsController::hitConcurrencyB');
