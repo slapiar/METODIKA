@@ -3,12 +3,19 @@ $currentYear = isset($currentYear) ? (int) $currentYear : (int) date('Y');
 
 if (! isset($releaseVersion)) {
     $releaseVersion = null;
-    $releaseFile = dirname(__DIR__, 3) . '/RELEASE_VERSION';
+    $releaseFiles = [
+        dirname(__DIR__, 3) . '/deploy/RELEASE_VERSION.txt',
+        dirname(__DIR__, 3) . '/RELEASE_VERSION',
+        dirname(__DIR__, 4) . '/RELEASE_VERSION',
+    ];
 
-    if (is_file($releaseFile) && is_readable($releaseFile)) {
-        $value = trim((string) file_get_contents($releaseFile));
-        if ($value !== '') {
-            $releaseVersion = $value;
+    foreach ($releaseFiles as $releaseFile) {
+        if (is_file($releaseFile) && is_readable($releaseFile)) {
+            $value = trim((string) file_get_contents($releaseFile));
+            if ($value !== '') {
+                $releaseVersion = $value;
+                break;
+            }
         }
     }
 }
