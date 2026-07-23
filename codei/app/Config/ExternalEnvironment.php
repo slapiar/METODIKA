@@ -20,12 +20,15 @@ final class ExternalEnvironment
         } else {
             $candidatePaths = [];
             $envFilenames = ['.env', 'metodika.env'];
+            $privateDirNames = ['private', '.private'];
 
             // Try common shared-hosting layouts where `private` can be above public_html.
             for ($level = 2; $level <= 6; $level++) {
                 $baseDir = dirname(__DIR__, $level);
-                foreach ($envFilenames as $filename) {
-                    $candidatePaths[] = $baseDir . DIRECTORY_SEPARATOR . 'private' . DIRECTORY_SEPARATOR . $filename;
+                foreach ($privateDirNames as $privateDirName) {
+                    foreach ($envFilenames as $filename) {
+                        $candidatePaths[] = $baseDir . DIRECTORY_SEPARATOR . $privateDirName . DIRECTORY_SEPARATOR . $filename;
+                    }
                 }
             }
 
