@@ -53,26 +53,52 @@ repository samo neotvára ani nepotvrdzuje transakciu prvého prijatia.
 
 ## Transakčná hranica
 
-Adaptér rezervácie zámerne nevytvára historický `QUESTION_DERIVATION`. Atómová hranica prvého prijatia musí vzniknúť až koordináciou:
+Adaptér rezervácie zámerne nevytvára historický `QUESTION_DERIVATION`. Atómová hranica prvého prijatia je implementovaná koordináciou:
 
 ```text
 TransactionBoundaryPort
 → RequestReferenceRepositoryPort.reserveFirstAcceptance
-→ DerivationHistoryPort.createHistoricalRun
+→ DerivationHistoryPort.createInitialRun
 → commit
 ```
 
-Pri chybe musí nadradená transakčná hranica vykonať rollback oboch zápisov.
+Pri chybe musí nadradená transakčná hranica vykonať rollback všetkých zápisov.
+
+Implementované sú:
+
+```text
+DerivationHistoryPort,
+DerivationHistoryRepository,
+TransactionBoundaryPort,
+DatabaseTransactionBoundary,
+FirstAcceptanceService,
+FirstAcceptanceServiceFactory.
+```
+
+Všetky databázové komponenty továrne používajú tú istú `BaseConnection`.
+
+## Praktické overenie
+
+Syntaktická kontrola repository, history a transaction súborov prešla bez chyby.
+
+Unit test `FirstAcceptanceServiceTest` bol prakticky spustený v Codespaces nad PHP `8.4.15`:
+
+```text
+Tests: 2
+Assertions: 4
+2 / 2 = 100 %
+```
+
+Test potvrdil, že `RESERVATION_CREATED` založí historický beh v rovnakej hranici a `ALREADY_EXISTS` ďalší historický beh nezaloží.
 
 ## Nevykonané
 
 ```text
-DerivationHistoryPort a jeho adaptér,
-TransactionBoundaryPort a jeho adaptér,
 RequestReplayGuard,
-aplikačná služba,
-automatické testy repository adaptéra,
-integračné overenie nad databázou.
+priame integračné testy RequestReferenceRepository nad MySQL/MariaDB,
+rollback integračný test,
+súbežný test dvoch prvých prijatí,
+ďalšie operácie DerivationHistoryPort pre bránu, vetvy, výsledok a trace.
 ```
 
 ## Aktuálny výsledok
@@ -80,14 +106,14 @@ integračné overenie nad databázou.
 ```text
 IMPLEMENTATION_RESULT
 =
-IMPLEMENTED_WITHOUT_RUNTIME_VALIDATION
+UNIT_VALIDATED_WITH_INTEGRATION_LIMITATIONS
 ```
 
 ## Nasledujúci krok
 
 ```text
-implementovať DerivationHistoryPort pre založenie historického behu
-→ implementovať TransactionBoundaryPort
-→ otestovať atómovú hranicu prvého prijatia
+doplniť integračný test nad skutočnou transakčnou databázou
+→ overiť rollback a súbežnosť
+→ reValidovať prvé prijatie
 → až potom pripojiť RequestReplayGuard
 ```
