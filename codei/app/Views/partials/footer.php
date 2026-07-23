@@ -3,7 +3,7 @@ $currentYear = isset($currentYear) ? (int) $currentYear : (int) date('Y');
 
 if (! isset($releaseVersion)) {
     $releaseVersion = null;
-    $releaseFile = dirname(__DIR__, 3) . '/deploy/RELEASE_VERSION';
+    $releaseFile = dirname(__DIR__, 3) . '/RELEASE_VERSION';
 
     if (is_file($releaseFile) && is_readable($releaseFile)) {
         $value = trim((string) file_get_contents($releaseFile));
