@@ -18,8 +18,7 @@ final class DiagnosticsConcurrencyRunStore
     public function __construct(
         ?string $baseDirectory = null,
         ?DiagnosticsConcurrencyRunDocumentValidator $validator = null,
-    )
-    {
+    ) {
         $this->baseDirectory = rtrim($baseDirectory ?? (WRITEPATH . 'diagnostics/concurrency'), DIRECTORY_SEPARATOR);
         $this->validator = $validator ?? new DiagnosticsConcurrencyRunDocumentValidator();
     }
@@ -73,6 +72,10 @@ final class DiagnosticsConcurrencyRunStore
                 throw new RuntimeException('Mutator musi vratit JSON objekt ako asociativne pole.');
             }
 
+            if (is_array($current)) {
+                $next = $this->preserveOpenBarrierUntilBothParticipantsStarted($current, $next);
+            }
+
             $this->validator->validate($next);
             $this->validator->validateTransition($current, $next);
 
@@ -116,6 +119,41 @@ final class DiagnosticsConcurrencyRunStore
     public function baseDirectory(): string
     {
         return $this->baseDirectory;
+    }
+
+    /**
+     * Bariéra je trvalý fakt runu, nie okamžitý medzistav jedného requestu.
+     * Stav BARRIER_OPEN preto zostáva zachovaný, kým nezačali obaja účastníci.
+     * Čakajúci request tak nemôže prehliadnuť otvorenie bariéry iba preto,
+     * že druhý request už stihol prejsť do EXECUTING.
+     *
+     * @param array<string, mixed> $current
+     * @param array<string, mixed> $next
+     * @return array<string, mixed>
+     */
+    private function preserveOpenBarrierUntilBothParticipantsStarted(array $current, array $next): array
+    {
+        $openedAt = $current['barrier']['openedAt'] ?? $next['barrier']['openedAt'] ?? null;
+        $nextState = $next['state'] ?? null;
+
+        if (! is_string($openedAt) || trim($openedAt) === '' || $nextState !== DiagnosticsConcurrencyRunState::EXECUTING) {
+            return $next;
+        }
+
+        $participants = $next['participants'] ?? null;
+        if (! is_array($participants)) {
+            return $next;
+        }
+
+        foreach (['a', 'b'] as $participant) {
+            $startedAt = $participants[$participant]['startedAt'] ?? null;
+            if (! is_string($startedAt) || trim($startedAt) === '') {
+                $next['state'] = DiagnosticsConcurrencyRunState::BARRIER_OPEN;
+                return $next;
+            }
+        }
+
+        return $next;
     }
 
     private function assertValidRunId(string $runId): void
