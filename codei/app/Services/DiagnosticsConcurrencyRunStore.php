@@ -12,7 +12,6 @@ final class DiagnosticsConcurrencyRunStore
     private const RUN_ID_PATTERN = '/^[a-z0-9][a-z0-9\-]{7,127}$/';
 
     private string $baseDirectory;
-
     private DiagnosticsConcurrencyRunDocumentValidator $validator;
 
     public function __construct(
@@ -36,7 +35,7 @@ final class DiagnosticsConcurrencyRunStore
 
             $this->validator->validate($document);
 
-            return $document;
+            return $this->exposeOpenedBarrierToWaitingRequest($document);
         });
     }
 
@@ -72,8 +71,8 @@ final class DiagnosticsConcurrencyRunStore
                 throw new RuntimeException('Mutator musi vratit JSON objekt ako asociativne pole.');
             }
 
-            if (is_array($current)) {
-                $next = $this->preserveOpenBarrierUntilBothParticipantsStarted($current, $next);
+            if (is_array($current) && $this->isPartnerTimeoutAttempt($current, $next) && $this->isBarrierOpened($current)) {
+                return $current;
             }
 
             $this->validator->validate($next);
@@ -122,38 +121,67 @@ final class DiagnosticsConcurrencyRunStore
     }
 
     /**
-     * Bariéra je trvalý fakt runu, nie okamžitý medzistav jedného requestu.
-     * Stav BARRIER_OPEN preto zostáva zachovaný, kým nezačali obaja účastníci.
-     * Čakajúci request tak nemôže prehliadnuť otvorenie bariéry iba preto,
-     * že druhý request už stihol prejsť do EXECUTING.
+     * Čakajúci request musí rozpoznať otvorenú bariéru podľa trvalého faktu
+     * barrier.openedAt, aj keď druhý request už posunul run do EXECUTING.
+     * Návratová kópia nemení uložený dokument.
+     *
+     * @param array<string, mixed> $document
+     * @return array<string, mixed>
+     */
+    private function exposeOpenedBarrierToWaitingRequest(array $document): array
+    {
+        if (! $this->isBarrierOpened($document)) {
+            return $document;
+        }
+
+        $state = $document['state'] ?? null;
+        if ($state === DiagnosticsConcurrencyRunState::EXECUTING && ! $this->bothParticipantsStarted($document)) {
+            $document['state'] = DiagnosticsConcurrencyRunState::BARRIER_OPEN;
+        }
+
+        return $document;
+    }
+
+    /**
+     * Posledná kontrola pred zápisom timeoutu prebieha pod tým istým
+     * exkluzívnym zámkom ako mutácia. Ak sa bariéra už otvorila,
+     * PARTNER_TIMEOUT sa nesmie zapísať.
      *
      * @param array<string, mixed> $current
      * @param array<string, mixed> $next
-     * @return array<string, mixed>
      */
-    private function preserveOpenBarrierUntilBothParticipantsStarted(array $current, array $next): array
+    private function isPartnerTimeoutAttempt(array $current, array $next): bool
     {
-        $openedAt = $current['barrier']['openedAt'] ?? $next['barrier']['openedAt'] ?? null;
-        $nextState = $next['state'] ?? null;
-
-        if (! is_string($openedAt) || trim($openedAt) === '' || $nextState !== DiagnosticsConcurrencyRunState::EXECUTING) {
-            return $next;
-        }
-
-        $participants = $next['participants'] ?? null;
-        if (! is_array($participants)) {
-            return $next;
-        }
-
         foreach (['a', 'b'] as $participant) {
-            $startedAt = $participants[$participant]['startedAt'] ?? null;
-            if (! is_string($startedAt) || trim($startedAt) === '') {
-                $next['state'] = DiagnosticsConcurrencyRunState::BARRIER_OPEN;
-                return $next;
+            $currentError = $current['participants'][$participant]['errorCode'] ?? null;
+            $nextError = $next['participants'][$participant]['errorCode'] ?? null;
+
+            if ($currentError !== 'PARTNER_TIMEOUT' && $nextError === 'PARTNER_TIMEOUT') {
+                return true;
             }
         }
 
-        return $next;
+        return false;
+    }
+
+    /** @param array<string, mixed> $document */
+    private function isBarrierOpened(array $document): bool
+    {
+        $openedAt = $document['barrier']['openedAt'] ?? null;
+        return is_string($openedAt) && trim($openedAt) !== '';
+    }
+
+    /** @param array<string, mixed> $document */
+    private function bothParticipantsStarted(array $document): bool
+    {
+        foreach (['a', 'b'] as $participant) {
+            $startedAt = $document['participants'][$participant]['startedAt'] ?? null;
+            if (! is_string($startedAt) || trim($startedAt) === '') {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function assertValidRunId(string $runId): void
