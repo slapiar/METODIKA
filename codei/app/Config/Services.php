@@ -27,4 +27,13 @@ class Services extends BaseService
 
         return new \App\Services\DatabaseCapabilityInspector();
     }
+
+    public static function diagnosticsConcurrencyRunStore(bool $getShared = true): \App\Services\DiagnosticsConcurrencyRunStore
+    {
+        if ($getShared) {
+            return static::getSharedInstance('diagnosticsConcurrencyRunStore');
+        }
+
+        return new \App\Services\DiagnosticsConcurrencyRunStore();
+    }
 }
