@@ -567,6 +567,129 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->deleteTree($storeDirectory);
     }
 
+    public function testConcurrencyResultMarksReadOnceAndReturnsRedactedTombstone(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-result-read-once-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'ALREADY_EXISTS'),
+        );
+        Services::injectMock(
+            'diagnosticsConcurrencyPersistenceService',
+            $this->makePersistenceMock([
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+                ['reservations' => 0, 'runs' => 0, 'domainTerms' => 0],
+            ]),
+        );
+
+        $runId = 'run-121212121212121212121212';
+        $tokenA = 'token-a-result';
+        $tokenB = 'token-b-result';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $doneAt = gmdate('c', time() - 1);
+        $document['participants']['a']['consumedAt'] = $doneAt;
+        $document['participants']['a']['readyAt'] = $doneAt;
+        $document['participants']['a']['startedAt'] = $doneAt;
+        $document['participants']['a']['finishedAt'] = $doneAt;
+        $document['participants']['a']['outcome'] = 'CREATED';
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+            'runId' => $runId,
+            'participantToken' => $tokenB,
+        ])->assertStatus(200);
+
+        $response = $this->withSession($session)
+            ->get('/diagnostics/concurrency/result/' . $runId);
+
+        $response->assertStatus(200);
+        $payload = json_decode(html_entity_decode(strip_tags((string) $response->getBody())), true);
+        $this->assertIsArray($payload);
+        $this->assertSame('COMPLETED_SUCCESS', $payload['state']);
+        $this->assertArrayHasKey('readOnceConsumedAt', $payload);
+        $this->assertNotNull($payload['readOnceConsumedAt']);
+        $this->assertArrayNotHasKey('input', $payload);
+        $this->assertArrayNotHasKey('tokenHash', $payload['participants']['a']);
+        $this->assertArrayNotHasKey('tokenHash', $payload['participants']['b']);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertNotNull($stored['readOnceConsumedAt']);
+        $this->assertArrayNotHasKey('input', $stored);
+        $this->assertNull($stored['participants']['a']['tokenHash']);
+        $this->assertNull($stored['participants']['b']['tokenHash']);
+        $this->assertFileExists($store->baseDirectory() . '/' . $runId . '.json');
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testConcurrencyResultSweepsExpiredTombstone(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-result-sweep-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'ALREADY_EXISTS'),
+        );
+        Services::injectMock(
+            'diagnosticsConcurrencyPersistenceService',
+            $this->makePersistenceMock([
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+                ['reservations' => 0, 'runs' => 0, 'domainTerms' => 0],
+            ]),
+        );
+
+        $runId = 'run-343434343434343434343434';
+        $tokenA = 'token-a-sweep';
+        $tokenB = 'token-b-sweep';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $doneAt = gmdate('c', time() - 1);
+        $document['participants']['a']['consumedAt'] = $doneAt;
+        $document['participants']['a']['readyAt'] = $doneAt;
+        $document['participants']['a']['startedAt'] = $doneAt;
+        $document['participants']['a']['finishedAt'] = $doneAt;
+        $document['participants']['a']['outcome'] = 'CREATED';
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $this->withSession($session)->post('/diagnostics/concurrency/hit/b', [
+            'runId' => $runId,
+            'participantToken' => $tokenB,
+        ])->assertStatus(200);
+
+        $store->mutate($runId, static function (?array $current): array {
+            $current['deleteAfter'] = gmdate('c', time() - 1);
+            return $current;
+        });
+
+        $this->withSession($session)
+            ->get('/diagnostics/concurrency/result/' . $runId)
+            ->assertStatus(404);
+
+        $this->assertFileDoesNotExist($store->baseDirectory() . '/' . $runId . '.json');
+        $this->assertFileDoesNotExist($store->baseDirectory() . '/' . $runId . '.lock');
+
+        $this->deleteTree($storeDirectory);
+    }
+
     public function testConcurrencyHitRejectsDisallowedStateWithoutRunChange(): void
     {
         $this->setDiagnosticsEnv('1', 'secret-token');

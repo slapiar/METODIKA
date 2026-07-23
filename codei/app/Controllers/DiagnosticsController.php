@@ -24,6 +24,7 @@ final class DiagnosticsController extends BaseController
     private const AUTH_TIME_SESSION_KEY = 'metodika_diagnostics_auth_time';
     private const AUTH_TTL_SECONDS = 900;
     private const CONCURRENCY_RUN_TTL_SECONDS = 180;
+    private const CONCURRENCY_TOMBSTONE_TTL_SECONDS = 600;
     private const BARRIER_WAIT_TIMEOUT_MS = 2500;
     private const HIT_ALLOWED_STATES = [
         DiagnosticsConcurrencyRunState::CREATED,
@@ -223,6 +224,58 @@ final class DiagnosticsController extends BaseController
         $session->regenerate(true);
 
         return redirect()->to(site_url('diagnostics/database'));
+    }
+
+    public function concurrencyResult(string $runId): ResponseInterface
+    {
+        if (
+            ! $this->isDiagnosticsEnabled()
+            || ! $this->isConcurrencyWebEnabled()
+            || $this->expectedToken() === null
+            || ! $this->isAuthorized()
+        ) {
+            return $this->diagnosticsFallbackNotFound();
+        }
+
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_write_close();
+        }
+
+        try {
+            $document = $this->runStore()->load($runId);
+            if (! is_array($document)) {
+                return $this->diagnosticsFallbackNotFound();
+            }
+
+            $deleteAfter = $document['deleteAfter'] ?? null;
+            if (is_string($deleteAfter) && strtotime($deleteAfter) !== false && strtotime($deleteAfter) <= time()) {
+                $this->runStore()->cleanup($runId);
+                return $this->diagnosticsFallbackNotFound();
+            }
+
+            $state = $document['state'] ?? null;
+            if (in_array($state, [
+                DiagnosticsConcurrencyRunState::COMPLETED_SUCCESS,
+                DiagnosticsConcurrencyRunState::COMPLETED_FAILED,
+                DiagnosticsConcurrencyRunState::COMPLETED_FAILED_CLEANUP,
+            ], true)) {
+                $document = $this->runStore()->mutate($runId, static function (?array $current): array {
+                    if (! is_array($current)) {
+                        throw new RuntimeException('Run nenajdeny.');
+                    }
+
+                    if (! is_string($current['readOnceConsumedAt'] ?? null) || trim((string) $current['readOnceConsumedAt']) === '') {
+                        $current['readOnceConsumedAt'] = gmdate('c');
+                    }
+
+                    return $current;
+                });
+            }
+        } catch (Throwable) {
+            return $this->diagnosticsFallbackNotFound();
+        }
+
+        return $this->secureJsonResponse($this->publicResultPayload($document));
     }
 
     private function inspector(): DatabaseCapabilityInspector
@@ -623,6 +676,8 @@ final class DiagnosticsController extends BaseController
             $latest['finalization']['claimedBy'] = $participant;
             $latest['state'] = $completedState;
 
+            $latest = $this->reduceToTombstone($latest);
+
             return $latest;
         });
     }
@@ -835,6 +890,89 @@ final class DiagnosticsController extends BaseController
         sort($pair);
 
         return $pair === ['ALREADY_EXISTS', 'CREATED'];
+    }
+
+    /**
+     * @param array<string, mixed> $document
+     * @return array<string, mixed>
+     */
+    private function reduceToTombstone(array $document): array
+    {
+        $completedAt = gmdate('c');
+        $deleteAfter = gmdate('c', time() + self::CONCURRENCY_TOMBSTONE_TTL_SECONDS);
+
+        $participants = $document['participants'] ?? [];
+        if (! is_array($participants)) {
+            $participants = [];
+        }
+
+        $sanitize = static function (mixed $slot): array {
+            if (! is_array($slot)) {
+                $slot = [];
+            }
+
+            return [
+                'tokenHash' => null,
+                'consumedAt' => null,
+                'readyAt' => null,
+                'startedAt' => is_string($slot['startedAt'] ?? null) ? $slot['startedAt'] : null,
+                'finishedAt' => is_string($slot['finishedAt'] ?? null) ? $slot['finishedAt'] : null,
+                'outcome' => is_string($slot['outcome'] ?? null) ? $slot['outcome'] : null,
+                'errorCode' => is_string($slot['errorCode'] ?? null) ? $slot['errorCode'] : null,
+            ];
+        };
+
+        $document['participants'] = [
+            'a' => $sanitize($participants['a'] ?? []),
+            'b' => $sanitize($participants['b'] ?? []),
+        ];
+
+        unset($document['input']);
+
+        $document['completedAt'] = $completedAt;
+        $document['deleteAfter'] = $deleteAfter;
+        $document['readOnceConsumedAt'] = null;
+
+        return $document;
+    }
+
+    /**
+     * @param array<string, mixed> $document
+     * @return array<string, mixed>
+     */
+    private function publicResultPayload(array $document): array
+    {
+        $participants = $document['participants'] ?? [];
+        if (! is_array($participants)) {
+            $participants = [];
+        }
+
+        $participantPayload = static function (mixed $slot): array {
+            if (! is_array($slot)) {
+                $slot = [];
+            }
+
+            return [
+                'startedAt' => $slot['startedAt'] ?? null,
+                'finishedAt' => $slot['finishedAt'] ?? null,
+                'outcome' => $slot['outcome'] ?? null,
+                'errorCode' => $slot['errorCode'] ?? null,
+            ];
+        };
+
+        return [
+            'runId' => $document['runId'] ?? null,
+            'state' => $document['state'] ?? null,
+            'completedAt' => $document['completedAt'] ?? null,
+            'deleteAfter' => $document['deleteAfter'] ?? null,
+            'readOnceConsumedAt' => $document['readOnceConsumedAt'] ?? null,
+            'assertions' => $document['assertions'] ?? null,
+            'cleanup' => $document['cleanup'] ?? null,
+            'participants' => [
+                'a' => $participantPayload($participants['a'] ?? []),
+                'b' => $participantPayload($participants['b'] ?? []),
+            ],
+        ];
     }
 
     private function secureHtmlResponse(string $html, int $statusCode = 200): ResponseInterface

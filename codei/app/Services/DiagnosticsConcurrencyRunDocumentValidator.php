@@ -23,8 +23,8 @@ final class DiagnosticsConcurrencyRunDocumentValidator
         $participantA = $this->requireArray($participants, 'a');
         $participantB = $this->requireArray($participants, 'b');
 
-        $this->validateParticipant($participantA);
-        $this->validateParticipant($participantB);
+        $this->validateParticipant($participantA, $state);
+        $this->validateParticipant($participantB, $state);
 
         $barrier = $this->requireArray($document, 'barrier');
         $this->requireNullableString($barrier, 'openedAt');
@@ -47,6 +47,12 @@ final class DiagnosticsConcurrencyRunDocumentValidator
         $this->requireNullableBool($assertions, 'appReplayConfirmed');
         $this->requireNullableBool($assertions, 'cleanupConfirmed');
         $this->requireNullableBool($assertions, 'overallSuccess');
+
+        if ($this->isCompletedState($state)) {
+            $this->requireString($document, 'completedAt');
+            $this->requireString($document, 'deleteAfter');
+            $this->requireNullableString($document, 'readOnceConsumedAt');
+        }
 
         if ($state === DiagnosticsConcurrencyRunState::RESULTS_READY) {
             $this->assertParticipantFinished($participantA);
@@ -78,9 +84,14 @@ final class DiagnosticsConcurrencyRunDocumentValidator
     /**
      * @param array<string, mixed> $participant
      */
-    private function validateParticipant(array $participant): void
+    private function validateParticipant(array $participant, string $state): void
     {
-        $this->requireString($participant, 'tokenHash');
+        if ($this->isCompletedState($state)) {
+            $this->requireNullableString($participant, 'tokenHash');
+        } else {
+            $this->requireString($participant, 'tokenHash');
+        }
+
         $this->requireNullableString($participant, 'consumedAt');
         $this->requireNullableString($participant, 'readyAt');
         $this->requireNullableString($participant, 'startedAt');
@@ -207,6 +218,15 @@ final class DiagnosticsConcurrencyRunDocumentValidator
         }
 
         return $value;
+    }
+
+    private function isCompletedState(string $state): bool
+    {
+        return in_array($state, [
+            DiagnosticsConcurrencyRunState::COMPLETED_SUCCESS,
+            DiagnosticsConcurrencyRunState::COMPLETED_FAILED,
+            DiagnosticsConcurrencyRunState::COMPLETED_FAILED_CLEANUP,
+        ], true);
     }
 
     private function invalid(): never
