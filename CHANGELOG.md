@@ -32,6 +32,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - `codei/composer.lock` uzamyká vývojové závislosti a `codei/build/` je ignorovaný ako lokálny PHPUnit cache a výstupný adresár,
 - aktuálny stav a otvorené integračné obmedzenia sú v [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-REQUEST-REFERENCE-REPOSITORY-ADAPTERA.md) a [`TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_IMPLEMENTACIA-ATOMOVEHO-PRVEHO-PRIJATIA.md).
 
+### Integračné overenie prvého prijatia
+
+- vytvorený Spark príkaz [`codei/app/Commands/VerifyFirstAcceptanceTransaction.php`](codei/app/Commands/VerifyFirstAcceptanceTransaction.php),
+- príkaz overuje reálny MySQLi zápis rezervácie, historického behu a dvoch zoradených doménových väzieb v nadradenej testovacej transakcii,
+- úspešný scenár po kontrole vždy vykoná rollback a chybový scenár úmyselne zlyhá po historickom zápise, aby overil rollback celej aplikačnej transakcie,
+- každé spustenie používa jedinečné testovacie referencie a `finally` blok obsahuje cielené núdzové čistenie v poradí cudzích kľúčov,
+- návrh, kritériá úspechu a otvorené runtime obmedzenia sú v [`TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md`](TECHNICKE-NAVRHY/2026-07-23_INTEGRACNE-OVERENIE-ATOMOVEHO-PRVEHO-PRIJATIA.md); praktické spustenie nad MySQLi ešte nebolo vykonané.
+
 ---
 
 ## 2026-07-22
