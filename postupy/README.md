@@ -31,6 +31,7 @@ Význam:
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
+| `2026-07-23_14-21_IMPLEMENTACNY-CHECKLIST-A-TESTOVACIA-MATICA-WEBOVEHO-SUBEZNEHO-OVERENIA.md` | PRACOVNÝ | Uzavretý implementačný podklad pre krátko-žijúci webový diagnostický scenár súbežného prvého prijatia. Obsahuje záväzné hranice, poradový checklist, testovaciu maticu, produkčné akceptačné kritérium a otvorené riziká; implementácia ani runtime Validácia ešte neprebehli. |
 | `2026-07-22_09-38_CodeIgniter.md` | PREKONANÝ | Historický technický podklad. Aktívne technické pravidlá boli oddelené do `TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md`; technické návrhy sa už nemajú ukladať medzi metodické postupy. Zmena 2026-07-22. |
 | `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Tri blokujúce body boli opravené: doplnený `INTENDED_APPLICABILITY_SCOPE`, historický záznam pokusu vzniká pred kontrolami a každé zastavenie vracia jednotný `DERIVATION_RESULT`. Spoločná reValidácia skončila `VALID_WITH_LIMITATIONS`. |
 | `2026-07-22_ONTOLOGIA-VSTUPOV-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Revidovaná pracovná ontológia vstupov. Spoločná reValidácia s opraveným algoritmom skončila `VALID_WITH_LIMITATIONS`; možno odvodiť aplikačný kontrakt pri zachovaní uvedeného obmedzenia. |
