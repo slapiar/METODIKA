@@ -50,3 +50,5 @@ jobs:
         run: vendor/bin/phpunit --no-coverage tests/integration/DiagnosticsConcurrencyBarrierProcessTest.php
 
 # Trigger Kroku 9: 2026-07-24
+
+# Trigger opravy fixture Kroku 9: 2026-07-24
