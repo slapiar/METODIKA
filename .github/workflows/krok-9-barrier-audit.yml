@@ -1,0 +1,50 @@
+name: Krok 9 - Barrier load timeout audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/krok-9-barrier-audit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit-and-test:
+    name: Audit stored state, load projection and timeout guard
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4 with pcntl and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli, intl, mbstring, xml, curl, pcntl
+          tools: composer:v2
+          coverage: none
+
+      - name: Install locked dependencies
+        working-directory: codei
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Verify process environment
+        run: |
+          php -r "printf('PHP_VERSION=%s\n', PHP_VERSION);"
+          php -r "if (!function_exists('pcntl_fork')) { fwrite(STDERR, 'PCNTL_MISSING\n'); exit(1); } echo 'PCNTL_READY\n';"
+
+      - name: Syntax validation
+        run: php -l codei/tests/integration/DiagnosticsConcurrencyBarrierProcessTest.php
+
+      - name: Run existing run-store tests
+        working-directory: codei
+        run: vendor/bin/phpunit --no-coverage tests/unit/DiagnosticsConcurrencyRunStoreTest.php
+
+      - name: Run two-process barrier and timeout test
+        working-directory: codei
+        run: vendor/bin/phpunit --no-coverage tests/integration/DiagnosticsConcurrencyBarrierProcessTest.php
