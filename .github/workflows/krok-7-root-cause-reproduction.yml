@@ -1,0 +1,87 @@
+name: Krok 7 - Root cause reproduction
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/krok-7-root-cause-reproduction.yml
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce-root-cause:
+    name: Reproduce on isolated MariaDB
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: metodika_krok7
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PHP, MySQLi and Composer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            php-cli php-mysql php-intl php-mbstring php-xml php-curl \
+            composer mariadb-client
+          php -v
+          php -m | grep -E '^(intl|mysqli)$'
+
+      - name: Install locked dependencies
+        working-directory: codei
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Configure isolated development database
+        working-directory: codei
+        run: |
+          cat > .env <<'ENV'
+          CI_ENVIRONMENT=development
+          database.default.hostname=127.0.0.1
+          database.default.database=metodika_krok7
+          database.default.username=root
+          database.default.password=root
+          database.default.DBDriver=MySQLi
+          database.default.DBPrefix=
+          database.default.port=3306
+          database.default.charset=utf8mb4
+          database.default.DBCollat=utf8mb4_bin
+          database.default.DBDebug=false
+          ENV
+
+      - name: Verify isolated MariaDB target
+        run: |
+          test "$(mariadb -h 127.0.0.1 -uroot -proot -Nse 'SELECT DATABASE()' metodika_krok7)" = "metodika_krok7"
+          mariadb -h 127.0.0.1 -uroot -proot -Nse "SELECT ENGINE, SUPPORT FROM information_schema.ENGINES WHERE ENGINE='InnoDB'" | grep -E '^InnoDB[[:space:]]+(DEFAULT|YES)$'
+
+      - name: Run migrations M1-M8
+        working-directory: codei
+        run: |
+          php spark migrate --all
+          php spark migrate:status
+
+      - name: Verify question derivation schema
+        working-directory: codei
+        run: php spark metodika:verify-question-schema
+
+      - name: Reproduce root cause through unchanged application path
+        working-directory: codei
+        env:
+          METODIKA_ROOT_CAUSE_REPRO_ENABLED: '1'
+        run: php spark metodika:reproduce-first-acceptance-root-cause
