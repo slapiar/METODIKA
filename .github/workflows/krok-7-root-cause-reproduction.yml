@@ -35,14 +35,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install PHP, MySQLi and Composer
+      - name: Setup PHP 8.4, extensions and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli, intl, mbstring, xml, curl
+          tools: composer:v2
+          coverage: none
+        env:
+          fail-fast: true
+
+      - name: Install MariaDB client
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            php-cli php-mysql php-intl php-mbstring php-xml php-curl \
-            composer mariadb-client
+          sudo apt-get install -y --no-install-recommends mariadb-client
           php -v
           php -m | grep -E '^(intl|mysqli)$'
+          composer --version
 
       - name: Install locked dependencies
         working-directory: codei
@@ -85,5 +94,3 @@ jobs:
         env:
           METODIKA_ROOT_CAUSE_REPRO_ENABLED: '1'
         run: php spark metodika:reproduce-first-acceptance-root-cause
-
-# Trigger Kroku 7: 2026-07-24
