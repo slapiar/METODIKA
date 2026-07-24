@@ -72,3 +72,5 @@ jobs:
           git push origin HEAD:main
 
 # Trigger Kroku 8: 2026-07-24
+
+# Trigger opravy PHPUnit warningu: 2026-07-24
