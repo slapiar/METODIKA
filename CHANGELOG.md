@@ -8,6 +8,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 2 — úplný audit checklistu 1–14
+
+- Krok 2 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_09-55_Krok_2_Úplný_audit_checklistu_1-14.md`](postupy/WORK/2026-07-24_09-55_Krok_2_Úplný_audit_checklistu_1-14.md),
+- audit vyhodnotil 1 bod ako `HOTOVÉ`, 9 bodov ako `ČIASTOČNE` a 4 body ako `CHYBNÉ`,
+- potvrdené boli najmä nedostatky bariéry a timeoutu, vonkajšieho `try/catch` pri `accept()`, absencia skutočného dvojprocesového integračného testu a neúspešný produkčný výsledok,
+- register [`postupy/README.md`](postupy/README.md) určuje ako jediný nasledujúci povolený úkon Krok 3 — audit testovacej matice `M01–M26`,
+- vykonateľný kód ani produkčné prostredie sa nemenili.
+
 ### Krok 1 — zmrazenie repozitárového východiska
 
 - Krok 1 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_09-31_Krok_1_Zmrazenie_repozitárového_východiska.md`](postupy/WORK/2026-07-24_09-31_Krok_1_Zmrazenie_repozitárového_východiska.md),
@@ -179,7 +187,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - vytvorený idempotentný skript [`.devcontainer/setup-php-extensions.sh`](.devcontainer/setup-php-extensions.sh), ktorý pre aktívny `/usr/local/php` rebuildne rovnakú verziu PHP s `intl` a `mysqli` a prepne symlink `current` bez prechodu na systémové `/usr/bin/php`,
 - technický záznam je v [`TECHNICKE-NAVRHY/2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`](TECHNICKE-NAVRHY/2026-07-22_CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md),
 - Validácia výsledku je v [`TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md`](TECHNICKE-NAVRHY/2026-07-22_VALIDACIA-CODESPACES-PHP-RUNTIME-INTL-MYSQLI.md).
-- doplnený bezpečný webový diagnostický endpoint databázy cez [`codei/app/Controllers/DiagnosticsController.php`](codei/app/Controllers/DiagnosticsController.php) a views v [`codei/app/Views/diagnostics/`](codei/app/Views/diagnostics),
+- doplnený bezpečný webový diagnostický endpoint databázy cez [`codei/app/Controllers/DiagnosticsController.php`](codei/app/Controllers/DiagnosticsController.php) a views v `codei/app/Views/diagnostics/`,
 - diagnostika je gated serverovými premennými `METODIKA_DIAGNOSTICS_ENABLED` a `METODIKA_DIAGNOSTICS_TOKEN`, používa POST token overenie s `hash_equals`, krátkodobú session autorizáciu, CSRF filter a no-cache/noindex hlavičky,
 - SQL capability logika je zdieľaná v [`codei/app/Services/DatabaseCapabilityInspector.php`](codei/app/Services/DatabaseCapabilityInspector.php) a používaná súčasne CLI príkazom [`codei/app/Commands/VerifyDatabaseCapabilities.php`](codei/app/Commands/VerifyDatabaseCapabilities.php) aj webovým controllerom,
 - explicitné routes sú v [`codei/app/Config/Routes.php`](codei/app/Config/Routes.php) s vypnutým auto-routingom,
