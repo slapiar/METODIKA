@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 4 — audit routovania, START vetiev a UI
+
+- Krok 4 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_10-17_Krok_4_Audit_routovania_START_vetiev_a_UI.md`](postupy/WORK/2026-07-24_10-17_Krok_4_Audit_routovania_START_vetiev_a_UI.md),
+- produkčný START endpoint obsluhuje `DiagnosticsConcurrencyStartController::start()`, kým `DiagnosticsController::startConcurrencyRun()` je mŕtva neroutovaná duplicita s odlišným verejným a chybovým kontraktom,
+- testy START volajú rovnakú route ako produkcia,
+- UI oddeľuje HTTP transport od aplikačných osí, ale `COMPLETED_FAILED` môže stále pôsobiť ako úspech pre text `Hotovo` a zelený záverečný log,
+- register [`postupy/README.md`](postupy/README.md) určuje ako jediný nasledujúci povolený úkon Krok 5 — pokus o získanie historického produkčného dôkazu,
+- vykonateľný kód, testy ani produkčné prostredie sa nemenili.
+
 ### Krok 3 — audit testovacej matice M01–M26
 
 - Krok 3 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_10-24_Krok_3_Audit_testovacej_matice_M01-M26.md`](postupy/WORK/2026-07-24_10-24_Krok_3_Audit_testovacej_matice_M01-M26.md),
