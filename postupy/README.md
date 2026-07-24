@@ -26,12 +26,15 @@ Význam:
 - `NEPLATNÝ` — nesmie byť použitý ako východisko návrhu ani implementácie.
 - `ARCHIVOVANÝ` — zachovaný iba ako historický záznam.
 
+Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Určuje však povinnosť striktne dodržiavať jeho operačné poradie, rozsah a rozhodovacie brány až do výslovne zaznamenaného naplnenia, metodicky korektného zastavenia alebo nahradenia.
+
 ## Aktuálny register
 
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
-| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ | Úplný plán práce pre pokračovanie po neúspešnej produkčnej Validácii. Zahŕňa dokončenie auditu, získanie dôkazu o `FAILED_RUNTIME_ERROR`, samostatnú diagnostickú opravu, audit bariéry a timeoutu, najmenšiu funkčnú opravu, testy, release, produkčnú Validáciu a povinný záznam. |
+| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Úplný plán práce pre pokračovanie po neúspešnej produkčnej Validácii. Je záväzný až do úplného naplnenia alebo metodicky korektného zastavenia podľa vlastných rozhodovacích brán. Pri každej inicializácii sa musí načítať a pokračovať presne podľa jeho aktuálnej fázy. Prívlastok udelený používateľom 2026-07-24. |
+| `PLAN/2026-07-24_A1_Východiskový_stav.md` | PRACOVNÝ | Záznam začatia Fázy A1 záväzného plánu: zmrazenie dostupného repozitárového a produkčného východiska, rozlíšenie potvrdených údajov a chýbajúcich produkčných dôkazov. |
 | `2026-07-24/07_44-Dnešný plán tvorba štruktúry` | PRACOVNÝ | Pracovný záznam používateľa obsahujúci predbežný audit, prvý plán, doplnenie a druhý plán; slúži ako historický vstup pre úplný plán v `PLAN/2026-07-24_08-04_Plán_práce.md`. |
 | `2026-07-23_17-50_CHECKPOINT-WEBOVE-SUBEZNE-OVERENIE-PO-NEUSPESNEJ-PRODUKCNEJ-VALIDACII.md` | PRACOVNÝ | Záväzný checkpoint pre pokračovanie: produkčný run skončil `COMPLETED_FAILED`; potvrdené sú transport, otvorenie bariéry bez timeoutu, DB unikátnosť a cleanup, nepotvrdený zostáva aplikačný replay a presná príčina `FAILED_RUNTIME_ERROR`. Pred ďalším zápisom je povinný úplný audit podľa `Inicializácia práce.md`. |
 | `2026-07-23_12-27_Copilot-checklist a testovacia matica.md` | PRACOVNÝ | Aktívny implementačný podklad pre krátko-žijúci webový diagnostický scenár súbežného prvého prijatia. Kroky 1 az 13 boli deklarované ako implementačne pokryté, ale po neúspešnej produkčnej Validácii a dnešných zásahoch musia byť znovu auditované; krok 14 je otvorený a produkčný výsledok je `COMPLETED_FAILED`. |
