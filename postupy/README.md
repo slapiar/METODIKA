@@ -33,8 +33,9 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
-| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Opravená striktne lineárna verzia. V jednom čase povoľuje presne jeden otvorený krok; každý krok sa musí uzavrieť ako `SPLNENÉ`, `UZAVRETÉ S OBMEDZENÍM` alebo `ZASTAVENÉ ROZHODOVACOU BRÁNOU`. Aktuálne miesto je Krok 1 — zmrazenie repozitárového východiska. |
-| `WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md` | PRACOVNÝ | Záznam používateľom nariadeného STOP, identifikácie chyby pôvodného plánu a jeho opravy na jediný lineárny rad 15 krokov. Určuje návrat na Krok 1. |
+| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Opravená striktne lineárna verzia. Krok 1 je `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 2 — úplný audit checklistu 1–14. |
+| `WORK/2026-07-24_09-31_Krok_1_Zmrazenie_repozitárového_východiska.md` | PRACOVNÝ | Uzavretý záznam Kroku 1 s výsledkom `SPLNENÉ`: auditovaný HEAD `fe562e1...`, release `1.1.9`, produkčný commit `3b91c4e...`, 24 commitov vpredu a úplný diff bez zmeny vykonateľného kódu. |
+| `WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md` | PRACOVNÝ | Záznam používateľom nariadeného STOP, identifikácie chyby pôvodného plánu a jeho opravy na jediný lineárny rad 15 krokov. |
 | `WORK/2026-07-24_A1_Východiskový_stav.md` | PREKONANÝ | Historický záznam pôvodného A1. Jeho miešanie repozitárových a externých produkčných dôkazov bolo prekonané opraveným záväzným plánom 2026-07-24. |
 | `WORK/2026-07-24_08-57_A1_Pokračovanie_a_produkčná_blokácia.md` | PREKONANÝ | Historický záznam blokácie, ktorá odhalila chybu plánu. Nahradený lineárnym pravidlom, podľa ktorého sa externý dôkaz rieši v samostatnom uzatvárateľnom Kroku 5. |
 | `2026-07-24/07_44-Dnešný plán tvorba štruktúry` | PRACOVNÝ | Pracovný záznam používateľa obsahujúci predbežný audit, prvý plán, doplnenie a druhý plán; slúži ako historický vstup pre záväzný plán. |
