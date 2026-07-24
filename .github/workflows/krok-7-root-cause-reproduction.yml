@@ -94,3 +94,5 @@ jobs:
         env:
           METODIKA_ROOT_CAUSE_REPRO_ENABLED: '1'
         run: php spark metodika:reproduce-first-acceptance-root-cause
+
+# Trigger PHP 8.4 reprodukcie: 2026-07-24
