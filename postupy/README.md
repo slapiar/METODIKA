@@ -33,7 +33,8 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Potvrdená syntéza existujúcich pravidiel pre povinnú inicializáciu každej práce. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
-| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Opravená striktne lineárna verzia. Kroky 1 až 4 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 5 — pokus o získanie historického produkčného dôkazu. |
+| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Opravená striktne lineárna verzia. Kroky 1 až 5 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 6 — statická lokalizácia chybových fáz. |
+| `WORK/2026-07-24_11-05_Krok_5_Historicky_produkcny_dokaz.md` | PRACOVNÝ | Uzavretý záznam Kroku 5 s výsledkom `SPLNENÉ — dôkaz získaný`: potvrdené flagy, run/tombstone, neuskutočnený sweep a presná `RuntimeException` pri historickom behu bez rezervácie `REQUEST_REFERENCE`. |
 | `WORK/2026-07-24_10-17_Krok_4_Audit_routovania_START_vetiev_a_UI.md` | PRACOVNÝ | Uzavretý záznam Kroku 4 s výsledkom `SPLNENÉ`: produkčný START kontrolér je určený, duplicitná vetva je mŕtva a UI chyba pri prezentácii `COMPLETED_FAILED` je potvrdená. |
 | `WORK/2026-07-24_10-24_Krok_3_Audit_testovacej_matice_M01-M26.md` | PRACOVNÝ | Uzavretý záznam Kroku 3 s výsledkom `SPLNENÉ`: 5 scenárov `HOTOVÉ`, 15 `ČIASTOČNE`, 6 `CHYBNÉ`; obsahuje úplnú mapu M01–M26 a záväzný register testovacích dier. |
 | `WORK/2026-07-24_09-55_Krok_2_Úplný_audit_checklistu_1-14.md` | PRACOVNÝ | Uzavretý záznam Kroku 2 s výsledkom `SPLNENÉ`: 1 bod `HOTOVÉ`, 9 bodov `ČIASTOČNE`, 4 body `CHYBNÉ`; najzávažnejšie nedostatky sú v bariére/timeout, `accept()`, integračnom teste a produkčnej Validácii. |
@@ -42,8 +43,8 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 | `WORK/2026-07-24_A1_Východiskový_stav.md` | PREKONANÝ | Historický záznam pôvodného A1. Jeho miešanie repozitárových a externých produkčných dôkazov bolo prekonané opraveným záväzným plánom 2026-07-24. |
 | `WORK/2026-07-24_08-57_A1_Pokračovanie_a_produkčná_blokácia.md` | PREKONANÝ | Historický záznam blokácie, ktorá odhalila chybu plánu. Nahradený lineárnym pravidlom, podľa ktorého sa externý dôkaz rieši v samostatnom uzatvárateľnom Kroku 5. |
 | `2026-07-24/07_44-Dnešný plán tvorba štruktúry` | PRACOVNÝ | Pracovný záznam používateľa obsahujúci predbežný audit, prvý plán, doplnenie a druhý plán; slúži ako historický vstup pre záväzný plán. |
-| `2026-07-23_17-50_CHECKPOINT-WEBOVE-SUBEZNE-OVERENIE-PO-NEUSPESNEJ-PRODUKCNEJ-VALIDACII.md` | PRACOVNÝ | Záväzný checkpoint pre pokračovanie: produkčný run skončil `COMPLETED_FAILED`; potvrdené sú transport, otvorenie bariéry bez timeoutu, DB unikátnosť a cleanup, nepotvrdený zostáva aplikačný replay a presná príčina `FAILED_RUNTIME_ERROR`. |
-| `2026-07-23_12-27_Copilot-checklist a testovacia matica.md` | PRACOVNÝ | Aktívny implementačný podklad. Kroky 2 až 4 záväzného plánu auditovali checklist 1–14, maticu M01–M26, routovanie, START vetvy a UI; podrobné výsledky sú v príslušných záznamoch `WORK/`. |
+| `2026-07-23_17-50_CHECKPOINT-WEBOVE-SUBEZNE-OVERENIE-PO-NEUSPESNEJ-PRODUKCNEJ-VALIDACII.md` | PRACOVNÝ | Záväzný checkpoint pre pokračovanie: produkčný run skončil `COMPLETED_FAILED`; presná príčina `FAILED_RUNTIME_ERROR` bola získaná v Kroku 5. |
+| `2026-07-23_12-27_Copilot-checklist a testovacia matica.md` | PRACOVNÝ | Aktívny implementačný podklad. Kroky 2 až 5 záväzného plánu auditovali checklist 1–14, maticu M01–M26, routovanie, START vetvy, UI a historický produkčný dôkaz; podrobné výsledky sú v príslušných záznamoch `WORK/`. |
 | `2026-07-23_14-21_IMPLEMENTACNY-CHECKLIST-A-TESTOVACIA-MATICA-WEBOVEHO-SUBEZNEHO-OVERENIA.md` | PREKONANÝ | Nahradený dokumentom `2026-07-23_12-27_Copilot-checklist a testovacia matica.md`. |
 | `2026-07-22_09-38_CodeIgniter.md` | PREKONANÝ | Historický technický podklad. Aktívna technická náhrada je v `TECHNICKE-NAVRHY/2026-07-22_CODEIGNITER-AKO-TECHNICKE-PROSTREDIE.md`. |
 | `2026-07-22_ODVODZOVANIE-SPECIFICKYCH-OTAZOK.md` | PRACOVNÝ | Tri blokujúce body boli opravené; spoločná reValidácia skončila `VALID_WITH_LIMITATIONS`. |
@@ -51,7 +52,7 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 | `2026-07-22_SPOLOCNA-VALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md` | PRACOVNÝ | Historická spoločná Validácia s výsledkom `CONDITIONALLY_VALID`. |
 | `2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md` | PRACOVNÝ | Nová spoločná reValidácia po opravách s výsledkom `VALID_WITH_LIMITATIONS`. |
 | `2026-07-22_APLIKACNY-KONTRAKT-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Opravený aplikačný kontrakt s topológiou `PARTIAL_RUN_WITH_ATOMIC_GATE`; reValidácia skončila `VALID`. |
-| `2026-07-22_VALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Historická Validácia s výsledkom `CONDITIONALLY_VALID`. |
+| `2026-07-22_VALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Historická Validácia kontraktu s výsledkom `CONDITIONALLY_VALID`. |
 | `2026-07-22_REVALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | ReValidácia opraveného aplikačného kontraktu; výsledok `VALID`. |
 | `2026-07-21_10-23_DB-METODIKA-MAPMET.md` | PRACOVNÝ | Databázový návrh nesmie predbehnúť potvrdenú metodiku. |
 | `2026-07-21_13-52_LOG-MODEL-METODIC.md` | NEPLATNÝ | Výslovne označený ako neplatný pracovný návrh určený na revíziu. |
