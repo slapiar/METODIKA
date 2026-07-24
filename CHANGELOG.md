@@ -13,7 +13,9 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - vytvorený úplný pracovný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md), ktorý nahrádza neúplné pracovné návrhy jedným riadeným postupom s rozhodovacími bránami, dôkazmi, rollbackmi a kritériami Validácie,
 - plán zahŕňa dokončenie auditu checklistu a matice `M01 – M26`, získanie presnej príčiny `FAILED_RUNTIME_ERROR`, samostatnú opravu diagnostického rozlíšenia, audit `load()`, bariéry a timeout poistky, najmenšiu funkčnú opravu, úplné testy, release, jeden čistý produkčný run, tombstone, sweep a povinný záznam,
 - pracovný vstup používateľa [`postupy/2026-07-24/07_44-Dnešný plán tvorba štruktúry`](postupy/2026-07-24/07_44-Dnešný%20plán%20tvorba%20štruktúry) bol zaevidovaný ako `PRACOVNÝ`,
-- stav oboch dokumentov je zapísaný v [`postupy/README.md`](postupy/README.md); nevznikla zmena autoritatívnych definícií ani vykonateľného kódu.
+- používateľ udelil plánu prívlastok **ZÁVÄZNÝ** až do úplného naplnenia alebo metodicky korektného zastavenia; povinnosť je zapísaná v [`README.md`](README.md) a v registri [`postupy/README.md`](postupy/README.md),
+- začala Fáza A1 a vznikol záznam [`postupy/PLAN/2026-07-24_A1_Východiskový_stav.md`](postupy/PLAN/2026-07-24_A1_Východiskový_stav.md), ktorý zmrazil release `1.1.9`, technický commit `3b91c4e...`, metodický HEAD pri začatí A1 `5fbe06a...`, posledný verejný produkčný výsledok a chýbajúce produkčné dôkazy,
+- nevznikla zmena vykonateľného kódu ani produkčného prostredia.
 
 ---
 
