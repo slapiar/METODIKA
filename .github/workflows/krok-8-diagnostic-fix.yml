@@ -70,3 +70,5 @@ jobs:
           git add -A
           git commit -m 'Krok 8: rozlíšenie diagnostických chybových fáz'
           git push origin HEAD:main
+
+# Trigger Kroku 8: 2026-07-24
