@@ -8,6 +8,16 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 5 — historický produkčný dôkaz
+
+- Krok 5 záväzného plánu bol uzavretý ako `SPLNENÉ — dôkaz získaný`; výsledok je v [`postupy/WORK/2026-07-24_11-05_Krok_5_Historicky_produkcny_dokaz.md`](postupy/WORK/2026-07-24_11-05_Krok_5_Historicky_produkcny_dokaz.md),
+- produkčné flagy `METODIKA_DIAGNOSTICS_ENABLED` a `METODIKA_CONCURRENCY_WEB_ENABLED` boli potvrdené ako zapnuté,
+- tombstone runu `run-5c73222700d7863a1b05e135` potvrdil `COMPLETED_FAILED`, participant A `FAILED_RUNTIME_ERROR`, participant B `CREATED`, otvorenú bariéru, potvrdenú DB unikátnosť a cleanup, ale nepotvrdený aplikačný replay,
+- serverový log určil presnú príčinu: `RuntimeException` — historický beh nemožno založiť bez presnej rezervácie `REQUEST_REFERENCE`,
+- tombstone aj stabilný `.lock` zostali na serveri po `deleteAfter`, čím sa potvrdil chýbajúci účinný následný sweep,
+- register [`postupy/README.md`](postupy/README.md) určuje ako jediný nasledujúci povolený úkon Krok 6 — statická lokalizácia chybových fáz,
+- vykonateľný kód, testy ani produkčné prostredie sa nemenili.
+
 ### Krok 4 — audit routovania, START vetiev a UI
 
 - Krok 4 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_10-17_Krok_4_Audit_routovania_START_vetiev_a_UI.md`](postupy/WORK/2026-07-24_10-17_Krok_4_Audit_routovania_START_vetiev_a_UI.md),
