@@ -6,6 +6,17 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ---
 
+## 2026-07-24
+
+### Plán pokračovania webového súbežného overenia
+
+- vytvorený úplný pracovný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md), ktorý nahrádza neúplné pracovné návrhy jedným riadeným postupom s rozhodovacími bránami, dôkazmi, rollbackmi a kritériami Validácie,
+- plán zahŕňa dokončenie auditu checklistu a matice `M01 – M26`, získanie presnej príčiny `FAILED_RUNTIME_ERROR`, samostatnú opravu diagnostického rozlíšenia, audit `load()`, bariéry a timeout poistky, najmenšiu funkčnú opravu, úplné testy, release, jeden čistý produkčný run, tombstone, sweep a povinný záznam,
+- pracovný vstup používateľa [`postupy/2026-07-24/07_44-Dnešný plán tvorba štruktúry`](postupy/2026-07-24/07_44-Dnešný%20plán%20tvorba%20štruktúry) bol zaevidovaný ako `PRACOVNÝ`,
+- stav oboch dokumentov je zapísaný v [`postupy/README.md`](postupy/README.md); nevznikla zmena autoritatívnych definícií ani vykonateľného kódu.
+
+---
+
 ## 2026-07-23
 
 ### Databázová implementácia
