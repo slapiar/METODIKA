@@ -8,6 +8,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 3 — audit testovacej matice M01–M26
+
+- Krok 3 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_10-24_Krok_3_Audit_testovacej_matice_M01-M26.md`](postupy/WORK/2026-07-24_10-24_Krok_3_Audit_testovacej_matice_M01-M26.md),
+- audit vyhodnotil 5 scenárov ako `HOTOVÉ`, 15 ako `ČIASTOČNE` a 6 ako `CHYBNÉ`,
+- vznikol záväzný register testovacích dier pre skutočný dvojprocesový file-store test, paralelné HTTP požiadavky, reálnu aplikačnú službu a DB spojenia, presnú klasifikáciu chybovej fázy, expiráciu, manuálny cleanup, autorizáciu a feature flag,
+- register [`postupy/README.md`](postupy/README.md) určuje ako jediný nasledujúci povolený úkon Krok 4 — audit routovania, START vetiev a UI,
+- vykonateľný kód, testy ani produkčné prostredie sa nemenili.
+
 ### Krok 2 — úplný audit checklistu 1–14
 
 - Krok 2 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_09-55_Krok_2_Úplný_audit_checklistu_1-14.md`](postupy/WORK/2026-07-24_09-55_Krok_2_Úplný_audit_checklistu_1-14.md),
