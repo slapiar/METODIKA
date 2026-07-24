@@ -1,0 +1,39 @@
+name: Krok 9 - Finalize documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/krok-9-finalize.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Finalize Krok 9 records
+        run: php tools/finalize-krok9.php
+
+      - name: Remove one-shot tooling
+        run: |
+          rm -f .github/workflows/krok-9-barrier-audit.yml
+          rm -f .github/workflows/krok-9-finalize.yml
+          rm -f tools/finalize-krok9.php
+
+      - name: Commit finalized Krok 9
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Krok 9: uzavretie auditu bariéry load a timeoutu'
+          git push origin HEAD:main
