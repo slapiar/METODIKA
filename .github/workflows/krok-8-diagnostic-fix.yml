@@ -49,8 +49,8 @@ jobs:
       - name: Run diagnostic phase tests
         working-directory: codei
         run: |
-          vendor/bin/phpunit tests/unit/DiagnosticsConcurrencyFailureReporterTest.php
-          vendor/bin/phpunit --filter DiagnosticsControllerTest
+          vendor/bin/phpunit --no-coverage tests/unit/DiagnosticsConcurrencyFailureReporterTest.php
+          vendor/bin/phpunit --no-coverage --filter DiagnosticsControllerTest
 
       - name: Finalize Krok 8 documentation
         run: php tools/finalize-krok8.php
