@@ -52,15 +52,21 @@ jobs:
           vendor/bin/phpunit tests/unit/DiagnosticsConcurrencyFailureReporterTest.php
           vendor/bin/phpunit --filter DiagnosticsControllerTest
 
-      - name: Commit validated controller and session test
+      - name: Finalize Krok 8 documentation
+        run: php tools/finalize-krok8.php
+
+      - name: Commit validated Krok 8
         run: |
-          if git diff --quiet -- codei/app/Controllers/DiagnosticsController.php codei/tests/session/DiagnosticsControllerTest.php; then
-            echo 'Expected Krok 8 patch produced no changes.' >&2
+          if git diff --quiet; then
+            echo 'Expected Krok 8 changes were not produced.' >&2
             exit 1
           fi
 
+          rm -f tools/apply-krok8-diagnostic-fix.php tools/finalize-krok8.php
+          rm -f .github/workflows/krok-8-diagnostic-fix.yml
+
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add codei/app/Controllers/DiagnosticsController.php codei/tests/session/DiagnosticsControllerTest.php
+          git add -A
           git commit -m 'Krok 8: rozlíšenie diagnostických chybových fáz'
           git push origin HEAD:main
