@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### STOP a oprava záväzného plánu
+
+- používateľ nariadil `STOP`, pretože pôvodný plán umožnil ponechať A1 otvorené počas čakania na externý produkčný dôkaz a tým znemožnil systematické lineárne pokračovanie,
+- záväzný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md) bol opravený na jediný lineárny rad 15 krokov; v jednom čase môže byť otvorený presne jeden krok,
+- každý krok sa musí pred otvorením ďalšieho uzavrieť ako `SPLNENÉ`, `UZAVRETÉ S OBMEDZENÍM` alebo `ZASTAVENÉ ROZHODOVACOU BRÁNOU`,
+- externý produkčný dôkaz bol oddelený do samostatného Kroku 5, ktorého nedostupnosť sa uzavrie s obmedzením namiesto ponechania práce v blokovanom medzistave,
+- vznikol pracovný záznam [`postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md`](postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md),
+- pôvodné A1 záznamy boli v [`postupy/README.md`](postupy/README.md) označené ako `PREKONANÉ`; aktuálnym miestom práce je Krok 1 opravenej verzie plánu.
+
 ### Plán pokračovania webového súbežného overenia
 
 - vytvorený úplný pracovný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md), ktorý nahrádza neúplné pracovné návrhy jedným riadeným postupom s rozhodovacími bránami, dôkazmi, rollbackmi a kritériami Validácie,
