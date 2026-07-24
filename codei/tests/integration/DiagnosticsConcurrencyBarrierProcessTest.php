@@ -34,10 +34,17 @@ final class DiagnosticsConcurrencyBarrierProcessTest extends CIUnitTestCase
     {
         $runId = 'run-process-0001';
         $store = new DiagnosticsConcurrencyRunStore($this->baseDirectory);
-        $document = $this->makeDocument($runId);
-        $document['state'] = DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER;
-        $document['participants']['a']['readyAt'] = gmdate('c');
-        $store->save($runId, $document);
+        $store->save($runId, $this->makeDocument($runId));
+        $store->mutate($runId, static function (?array $current): array {
+            if (! is_array($current)) {
+                throw new RuntimeException('Run nenájdený pri počiatočnom prechode.');
+            }
+
+            $current['state'] = DiagnosticsConcurrencyRunState::WAITING_FOR_PARTNER;
+            $current['participants']['a']['readyAt'] = gmdate('c');
+
+            return $current;
+        });
 
         $pid = pcntl_fork();
         $this->assertNotSame(-1, $pid, 'Druhý proces sa nepodarilo vytvoriť.');
