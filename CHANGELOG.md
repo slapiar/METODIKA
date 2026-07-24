@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 6 — statická lokalizácia chybových fáz
+
+- Krok 6 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_11-42_Krok_6_Staticka_lokalizacia_chybovych_faz.md`](postupy/WORK/2026-07-24_11-42_Krok_6_Staticka_lokalizacia_chybovych_faz.md),
+- presná produkčná výnimka bola lokalizovaná do fázy `CREATE_INITIAL_HISTORY_RUN` v `DerivationHistoryRepository::createInitialRun()`,
+- staticky potvrdená príčinná cesta vedie cez nekontrolovaný neúspešný `insert()` pri `DBDebug=false`, nepresný postcheck iba podľa `REQUEST_REFERENCE` a následné zlyhanie presnej korelácie `REQUEST_REFERENCE + derivation_reference`,
+- vznikla úplná mapa fáz od zostavenia `InitialDerivationRun` po zápis participant outcome vrátane hraníc catchov a verejných bezpečných kódov,
+- register [`postupy/README.md`](postupy/README.md) určuje ako jediný nasledujúci povolený úkon Krok 7 — reprodukcia koreňovej príčiny mimo produkcie,
+- vykonateľný kód, testy ani produkčné prostredie sa nemenili.
+
 ### Krok 5 — historický produkčný dôkaz
 
 - Krok 5 záväzného plánu bol uzavretý ako `SPLNENÉ — dôkaz získaný`; výsledok je v [`postupy/WORK/2026-07-24_11-05_Krok_5_Historicky_produkcny_dokaz.md`](postupy/WORK/2026-07-24_11-05_Krok_5_Historicky_produkcny_dokaz.md),
@@ -63,7 +72,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 - vytvorený úplný pracovný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md), ktorý nahrádza neúplné pracovné návrhy jedným riadeným postupom s rozhodovacími bránami, dôkazmi, rollbackmi a kritériami Validácie,
 - plán zahŕňa dokončenie auditu checklistu a matice `M01 – M26`, získanie presnej príčiny `FAILED_RUNTIME_ERROR`, samostatnú opravu diagnostického rozlíšenia, audit `load()`, bariéry a timeout poistky, najmenšiu funkčnú opravu, úplné testy, release, jeden čistý produkčný run, tombstone, sweep a povinný záznam,
-- pracovný vstup používateľa [`postupy/2026-07-24/07_44-Dnešný plán tvorba štruktúry`](postupy/2026-07-24/07_44-Dnešný%20plán%20tvorba%20štruktúry) bol zaevidovaný ako `PRACOVNÝ`,
+- pracovný vstup používateľa [`postupy/2026-07-24/07_44-Dnešný plán tvorba štruktúry`](postupy/2026-07-24/07_44-Dnešný%20plán%20tvorba%20%C5%A1trukt%C3%BAry) bol zaevidovaný ako `PRACOVNÝ`,
 - používateľ udelil plánu prívlastok **ZÁVÄZNÝ** až do úplného naplnenia alebo metodicky korektného zastavenia; povinnosť je zapísaná v [`README.md`](README.md) a v registri [`postupy/README.md`](postupy/README.md),
 - začala Fáza A1 a vznikol záznam [`postupy/PLAN/2026-07-24_A1_Východiskový_stav.md`](postupy/PLAN/2026-07-24_A1_Východiskový_stav.md), ktorý zmrazil release `1.1.9`, technický commit `3b91c4e...`, metodický HEAD pri začatí A1 `5fbe06a...`, posledný verejný produkčný výsledok a chýbajúce produkčné dôkazy,
 - nevznikla zmena vykonateľného kódu ani produkčného prostredia.
