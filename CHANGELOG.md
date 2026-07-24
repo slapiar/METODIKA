@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Sprísnenie povinnej inicializačnej brány
+
+- pred úpravou vznikol dôkazový inicializačný záznam [`postupy/WORK/INI/2026-07-24_12-42_INI_Uprava_inicializacnej_brany.md`](postupy/WORK/INI/2026-07-24_12-42_INI_Uprava_inicializacnej_brany.md) s deviatimi doloženými hodnotami `ÁNO`, rozsahom, kritériom úspechu a rollbackom,
+- [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) bol rozpracovaný na nepriechodnú vykonávaciu bránu: `prečítané ≠ splnené`, samotné `ÁNO` bez dôkazu znamená `NEOVERENÉ` a pri jedinom bode `NIE/NEOVERENÉ` nesmie vzniknúť návrh, implementácia, príkaz ani zmena prostredia,
+- povinne sa rozlišuje existencia klienta, ovládača, rozšírenia, triedy, príkazu alebo konfigurácie od skutočnej pripravenosti služby a prostredia,
+- doplnené boli pravidlá pre zmenu podstatného predpokladu po otvorení brány, spätné načítanie vzdialeného výsledku a povinný STOP záznam pri práci bez otvorenej brány,
+- register [`postupy/README.md`](postupy/README.md) eviduje sprísnený dokument aj jeho INI záznam,
+- vykonateľný kód ani produkčné prostredie sa nemenili.
+
 ### Krok 6 — statická lokalizácia chybových fáz
 
 - Krok 6 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_11-42_Krok_6_Staticka_lokalizacia_chybovych_faz.md`](postupy/WORK/2026-07-24_11-42_Krok_6_Staticka_lokalizacia_chybovych_faz.md),
