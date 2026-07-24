@@ -12,6 +12,8 @@ Tento postup vznikol syntézou existujúcich záväzných pravidiel v `README.md
 
 # Povinný postup
 
+
+
 ## 1. Obnova univerzálnej metodiky
 
 Znovu načítať aktuálny obsah univerzálnej metodiky a autoritatívnych dokumentov. Nespoliehať sa iba na pamäť predchádzajúcej práce.
@@ -62,6 +64,30 @@ skutočnosť
 ≠ dôkaz
 ≠ Validácia
 ```
+Všeobecne Záväzné pravidlo:
+Vytvára sa explicitný záznam vo /WORK/INI/ s označením dátumu a času a skratky kroku alebo popisu činnosti, s príponou.md
+INICIALIZÁCIA KROKU X
+
+1. Metodika načítaná: ÁNO / NIE
+2. Projekt a autoritatívny zdroj overený: ÁNO / NIE
+3. Vetva a HEAD overené: ÁNO / NIE
+4. Potrebné prístupy prakticky overené: ÁNO / NIE
+5. Prostredie prakticky overené: ÁNO / NIE
+6. Závislosti kroku dostupné: ÁNO / NIE
+7. Predmet a hranice zásahu určené: ÁNO / NIE
+8. Kritérium úspechu určené: ÁNO / NIE
+9. Rollback určený: ÁNO / NIE
+
+GATE = OPEN iba vtedy, keď všetko = ÁNO
+
+Ak je čo i len jeden bod NIE alebo NEOVERENÉ,
+nesmie vzniknúť:
+- návrh riešenia,
+- nový súbor,
+- commit,
+- príkaz na spustenie,
+- zmena prostredia,
+- pokračovanie ďalším krokom.
 
 ## 7. Vymedzenie predmetu a rozsahu práce
 
