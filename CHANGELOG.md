@@ -8,6 +8,13 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 1 — zmrazenie repozitárového východiska
+
+- Krok 1 záväzného plánu bol uzavretý ako `SPLNENÉ`; výsledok je v [`postupy/WORK/2026-07-24_09-31_Krok_1_Zmrazenie_repozitárového_východiska.md`](postupy/WORK/2026-07-24_09-31_Krok_1_Zmrazenie_repozitárového_východiska.md),
+- auditovaný HEAD je `fe562e1...`, produkčný základ zostáva release `1.1.9` na commite `3b91c4e...`,
+- úplný GitHub diff potvrdil 24 commitov vpredu, 0 pozadu a iba deväť dokumentačných alebo metodických súborov; vykonateľný kód ani produkčné prostredie sa nemenili,
+- register [`postupy/README.md`](postupy/README.md) určuje ako jediný nasledujúci povolený úkon Krok 2 — úplný audit checklistu 1–14.
+
 ### STOP a oprava záväzného plánu
 
 - používateľ nariadil `STOP`, pretože pôvodný plán umožnil ponechať A1 otvorené počas čakania na externý produkčný dôkaz a tým znemožnil systematické lineárne pokračovanie,
