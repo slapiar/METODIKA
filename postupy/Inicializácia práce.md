@@ -65,7 +65,8 @@ skutočnosť
 
 ## 7. Vymedzenie predmetu a rozsahu práce
 
-Určiť:
+Skontrolovať priečinok /postupy/PLAN/ a vyhľadať plán práce na dnes. Pokiaľ plán na dnes neexistuje, je potrebné ho vytvoriť a zapísať do súboru podľa vzoru predošlých dní. 
+Z plánu a záverov prevedenej práce určiť ďalej:
 
 - čo presne je predmetom práce,
 - čo sa má vykonať,
