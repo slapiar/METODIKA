@@ -48,3 +48,5 @@ jobs:
       - name: Run two-process barrier and timeout test
         working-directory: codei
         run: vendor/bin/phpunit --no-coverage tests/integration/DiagnosticsConcurrencyBarrierProcessTest.php
+
+# Trigger Kroku 9: 2026-07-24
