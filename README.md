@@ -36,6 +36,19 @@ Pred vykonaním práce musí človek alebo AI agent obnoviť pamäť a postupova
 
 Implementácia nesmie predbehnúť metodiku. Databázová alebo softvérová štruktúra môže vzniknúť až ako dôsledok potvrdených významových vzťahov.
 
+## Aktuálne záväzný plán práce
+
+Dokument [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md) má prívlastok **ZÁVÄZNÝ** a musí sa striktne dodržiavať až do jeho úplného naplnenia alebo do metodicky korektného zastavenia podľa rozhodovacích brán uvedených v samotnom pláne.
+
+Pri každom načítaní `postupy/Inicializácia práce.md` je povinné zároveň:
+
+1. overiť existenciu tohto plánu v `postupy/PLAN/`,
+2. obnoviť aktuálnu fázu a posledný zaznamenaný krok,
+3. nevykonať úkon mimo jeho poradia, rozsahu a rozhodovacích brán,
+4. zapisovať plnenie v rovnakej štruktúre, akú určuje plán.
+
+Záväznosť trvá, kým nebude v registri `postupy/README.md` výslovne zaznamenané úplné naplnenie, metodicky korektné zastavenie alebo nahradenie novším potvrdeným plánom.
+
 ---
 
 # Skutočná štruktúra repozitára
