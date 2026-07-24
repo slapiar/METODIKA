@@ -1,0 +1,66 @@
+name: Krok 8 - Diagnostic phase separation
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/krok-8-diagnostic-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply-and-test:
+    name: Apply diagnostic fix and validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP 8.4, extensions and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli, intl, mbstring, xml, curl
+          tools: composer:v2
+          coverage: none
+
+      - name: Install locked dependencies
+        working-directory: codei
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Apply exact Krok 8 patch
+        run: php tools/apply-krok8-diagnostic-fix.php
+
+      - name: Syntax validation
+        run: |
+          php -l codei/app/Controllers/DiagnosticsController.php
+          php -l codei/app/Services/DiagnosticsConcurrencyAcceptanceRunner.php
+          php -l codei/app/Services/DiagnosticsConcurrencyFailureReporter.php
+          php -l codei/tests/unit/DiagnosticsConcurrencyFailureReporterTest.php
+          php -l codei/tests/session/DiagnosticsControllerTest.php
+
+      - name: Run diagnostic phase tests
+        working-directory: codei
+        run: |
+          vendor/bin/phpunit tests/unit/DiagnosticsConcurrencyFailureReporterTest.php
+          vendor/bin/phpunit --filter DiagnosticsControllerTest
+
+      - name: Commit validated controller and session test
+        run: |
+          if git diff --quiet -- codei/app/Controllers/DiagnosticsController.php codei/tests/session/DiagnosticsControllerTest.php; then
+            echo 'Expected Krok 8 patch produced no changes.' >&2
+            exit 1
+          fi
+
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add codei/app/Controllers/DiagnosticsController.php codei/tests/session/DiagnosticsControllerTest.php
+          git commit -m 'Krok 8: rozlíšenie diagnostických chybových fáz'
+          git push origin HEAD:main
