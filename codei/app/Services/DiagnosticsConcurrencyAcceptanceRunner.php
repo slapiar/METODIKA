@@ -19,29 +19,34 @@ final class DiagnosticsConcurrencyAcceptanceRunner
     public function __construct(?Closure $acceptor = null)
     {
         $this->acceptor = $acceptor ?? static function (string $payloadFingerprint, InitialDerivationRun $run): string {
-            try {
-                $result = FirstAcceptanceServiceFactory::fromDefaultConnection()->accept($payloadFingerprint, $run);
+            $result = FirstAcceptanceServiceFactory::fromDefaultConnection()->accept($payloadFingerprint, $run);
 
-                return match ($result->outcome) {
-                    ReservationResult::CREATED => 'CREATED',
-                    ReservationResult::ALREADY_EXISTS => 'ALREADY_EXISTS',
-                    default => 'FAILED_UNEXPECTED_OUTCOME',
-                };
-            } catch (Throwable $exception) {
-                $errorCode = self::classifyException($exception);
-
-                log_message('error', 'Diagnostics acceptance failed [{code}]: {class}: {message}', [
-                    'code' => $errorCode,
-                    'class' => $exception::class,
-                    'message' => $exception->getMessage(),
-                ]);
-
-                return 'FAILED_' . $errorCode;
-            }
+            return match ($result->outcome) {
+                ReservationResult::CREATED => 'CREATED',
+                ReservationResult::ALREADY_EXISTS => 'ALREADY_EXISTS',
+                default => 'FAILED_UNEXPECTED_OUTCOME',
+            };
         };
     }
 
     public function accept(string $payloadFingerprint, InitialDerivationRun $run): string
+    {
+        try {
+            return $this->acceptOrThrow($payloadFingerprint, $run);
+        } catch (Throwable $exception) {
+            $errorCode = self::classifyException($exception);
+
+            log_message('error', 'Diagnostics acceptance failed [{code}]: {class}: {message}', [
+                'code' => $errorCode,
+                'class' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return 'FAILED_' . $errorCode;
+        }
+    }
+
+    public function acceptOrThrow(string $payloadFingerprint, InitialDerivationRun $run): string
     {
         return ($this->acceptor)($payloadFingerprint, $run);
     }
