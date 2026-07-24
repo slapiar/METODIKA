@@ -112,7 +112,7 @@ Zápis sa nepovažuje za dokončený, kým nebol overený výsledný stav.
 ## 12. Validácia výsledku
 
 Posúdiť výsledok podľa vopred určených kritérií, v konkrétnom kontexte, čase a rozsahu. Validácia nie je pravda ani vlastnosť reality.
-Štruktúra záznamov vykonanej práce podľa plánu, musí rešpektovať štruktúru plánu a takto bude aj zapisovaná po jednotlivých jeho krokoch, do zložky /postupy/WORK, do súboru s označením dátumu a časum názvu kroku podľa plánu,md.
+Štruktúra záznamov vykonanej práce podľa plánu, musí rešpektovať štruktúru plánu a takto bude aj zapisovaná po jednotlivých jeho krokoch, do zložky /postupy/WORK, do súboru s označením dátumu a času a názvu kroku podľa plánu.md.
 
 ## 13. Záznam metodického úkonu
 
