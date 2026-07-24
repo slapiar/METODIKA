@@ -65,7 +65,7 @@ skutočnosť
 
 ## 7. Vymedzenie predmetu a rozsahu práce
 
-Skontrolovať priečinok /postupy/PLAN/ a vyhľadať plán práce na dnes. Pokiaľ plán na dnes neexistuje, je potrebné ho vytvoriť a zapísať do súboru podľa vzoru predošlých dní. 
+Skontrolovať priečinok /postupy/PLAN/ a vyhľadať plán práce na dnes. Pokiaľ plán na dnes neexistuje, je potrebné ho vytvoriť a zapísať do súboru, podľa vzoru predošlých dní. Musí obsahovať ako dátumovú, tak aj časovú značku, v názve a .md. Každý plán sa musí skladať z jednoznačných krokov, navzájom nadväzujúcich a vykonateľných bez prerušenia práce očakávaním na výsledky iných krokov alebo meraní.
 Z plánu a záverov prevedenej práce určiť ďalej:
 
 - čo presne je predmetom práce,
