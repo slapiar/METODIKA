@@ -853,6 +853,51 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->deleteTree($storeDirectory);
     }
 
+    public function testApplicationFailurePersistsOnlySafePhaseCode(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-phase-error-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+
+        $rawMessage = 'RAW_SECRET_APPLICATION_EXCEPTION';
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static function () use ($rawMessage): string {
+                throw new RuntimeException($rawMessage);
+            }),
+        );
+
+        $runId = 'run-phase-error-aaaaaaaa';
+        $tokenA = 'token-a-phase-error';
+        $tokenB = 'token-b-phase-error';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $document['participants']['b']['readyAt'] = gmdate('c', time() - 1);
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => $tokenA,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertDontSee($rawMessage);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('FAILED', $stored['participants']['a']['outcome']);
+        $this->assertSame('APPLICATION_ACCEPT_RUNTIME_ERROR', $stored['participants']['a']['errorCode']);
+        $this->assertStringNotContainsString($rawMessage, json_encode($stored, JSON_THROW_ON_ERROR));
+
+        $this->deleteTree($storeDirectory);
+    }
     private function setDiagnosticsEnv(string $enabled, string $token): void
     {
         putenv('METODIKA_DIAGNOSTICS_ENABLED=' . $enabled);

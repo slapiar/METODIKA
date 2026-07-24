@@ -32,9 +32,12 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
+| `WORK/2026-07-24_13-45_Krok_8_Oprava_diagnostickeho_rozlisenia.md` | PRACOVNÝ | Uzavretý záznam Kroku 8 s výsledkom `SPLNENÉ`: diagnostické zlyhania sú rozlíšené podľa fázy a triedy chyby; interný log nesie úplný kontext a verejný dokument iba bezpečný kód. |
+| `WORK/2026-07-24_13-25_Krok_7_Reprodukcia_korenovej_priciny_mimo_produkcie.md` | PRACOVNÝ | Uzavretý záznam Kroku 7 s výsledkom `SPLNENÉ`: koreňová príčina bola reprodukovaná v izolovanej MariaDB 11.4 cez reálnu MySQLi/InnoDB cestu, s potvrdeným rollbackom a cleanupom. |
+| `WORK/INI/2026-07-24_13-34_INI_Zosuladenie_Kroku_7_a_Krok_8.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre zosúladenie Kroku 7 a samostatnú diagnostickú opravu Kroku 8. |
 | `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Sprísnená záväzná inicializačná brána: pred každým krokom musí vzniknúť dôkazový záznam v `postupy/WORK/INI/`; bez deviatich doložených hodnôt `ÁNO` nesmie vzniknúť návrh, implementácia, príkaz ani zmena prostredia. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
 | `WORK/INI/2026-07-24_12-42_INI_Uprava_inicializacnej_brany.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre úpravu dokumentu `Inicializácia práce.md`; obsahuje deväť overených bodov, rozsah, kritérium úspechu a rollback. |
-| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Opravená striktne lineárna verzia. Kroky 1 až 6 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 7 — reprodukcia koreňovej príčiny mimo produkcie. |
+| `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Opravená striktne lineárna verzia. Kroky 1 až 8 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 9 — audit a test bariéry, `load()` a timeoutu. |
 | `WORK/2026-07-24_11-42_Krok_6_Staticka_lokalizacia_chybovych_faz.md` | PRACOVNÝ | Uzavretý záznam Kroku 6 s výsledkom `SPLNENÉ`: produkčná výnimka je lokalizovaná do `CREATE_INITIAL_HISTORY_RUN`; statická príčinná cesta vedie cez nekontrolovaný neúspešný insert rezervácie a nepresný postcheck iba podľa `REQUEST_REFERENCE`. |
 | `WORK/2026-07-24_11-05_Krok_5_Historicky_produkcny_dokaz.md` | PRACOVNÝ | Uzavretý záznam Kroku 5 s výsledkom `SPLNENÉ — dôkaz získaný`: potvrdené flagy, run/tombstone, neuskutočnený sweep a presná `RuntimeException` pri historickom behu bez rezervácie `REQUEST_REFERENCE`. |
 | `WORK/2026-07-24_10-17_Krok_4_Audit_routovania_START_vetiev_a_UI.md` | PRACOVNÝ | Uzavretý záznam Kroku 4 s výsledkom `SPLNENÉ`: produkčný START kontrolér je určený, duplicitná vetva je mŕtva a UI chyba pri prezentácii `COMPLETED_FAILED` je potvrdená. |

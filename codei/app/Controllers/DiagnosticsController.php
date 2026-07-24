@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use App\Application\QuestionDerivation\Data\InitialDerivationRun;
 use App\Services\DiagnosticsConcurrencyAcceptanceRunner;
+use App\Services\DiagnosticsConcurrencyFailureReporter;
 use App\Services\DiagnosticsConcurrencyPersistenceService;
 use App\Services\DiagnosticsConcurrencyRunStore;
 use App\Services\DiagnosticsConcurrencyRunState;
@@ -727,18 +728,65 @@ final class DiagnosticsController extends BaseController
 
         $outcome = 'FAILED';
         $errorCode = null;
+        $reporter = new DiagnosticsConcurrencyFailureReporter();
+        $run = null;
+        $payloadFingerprint = null;
+        $runner = null;
 
         try {
             $run = $this->buildInitialRunFromDocument($marked, $participant);
-            $payloadFingerprint = $this->payloadFingerprintFromDocument($marked);
-            $outcome = $this->acceptanceRunner()->accept($payloadFingerprint, $run);
-        } catch (Throwable) {
-            $errorCode = 'ACCEPT_RUNTIME_ERROR';
+        } catch (Throwable $exception) {
+            $errorCode = $reporter->report(
+                DiagnosticsConcurrencyFailureReporter::BUILD_INITIAL_RUN,
+                $exception,
+                $runId,
+                $participant,
+            );
+        }
+
+        if ($errorCode === null) {
+            try {
+                $payloadFingerprint = $this->payloadFingerprintFromDocument($marked);
+            } catch (Throwable $exception) {
+                $errorCode = $reporter->report(
+                    DiagnosticsConcurrencyFailureReporter::LOAD_PAYLOAD_FINGERPRINT,
+                    $exception,
+                    $runId,
+                    $participant,
+                );
+            }
+        }
+
+        if ($errorCode === null) {
+            try {
+                $runner = $this->acceptanceRunner();
+            } catch (Throwable $exception) {
+                $errorCode = $reporter->report(
+                    DiagnosticsConcurrencyFailureReporter::CREATE_ACCEPTANCE_RUNNER,
+                    $exception,
+                    $runId,
+                    $participant,
+                );
+            }
+        }
+
+        if ($errorCode === null) {
+            try {
+                $outcome = $runner->acceptOrThrow($payloadFingerprint, $run);
+            } catch (Throwable $exception) {
+                $errorCode = $reporter->report(
+                    DiagnosticsConcurrencyFailureReporter::APPLICATION_ACCEPT,
+                    $exception,
+                    $runId,
+                    $participant,
+                );
+            }
         }
 
         $completedAt = gmdate('c');
 
-        return $this->runStore()->mutate($runId, function (?array $latest) use ($participant, $outcome, $errorCode, $completedAt): array {
+        try {
+            return $this->runStore()->mutate($runId, function (?array $latest) use ($participant, $outcome, $errorCode, $completedAt): array {
             if (! is_array($latest)) {
                 throw new RuntimeException('Run nenajdeny.');
             }
@@ -772,8 +820,22 @@ final class DiagnosticsController extends BaseController
                 $latest['state'] = DiagnosticsConcurrencyRunState::EXECUTING;
             }
 
-            return $latest;
-        });
+                return $latest;
+            });
+        } catch (Throwable $exception) {
+            $writeErrorCode = $reporter->report(
+                DiagnosticsConcurrencyFailureReporter::WRITE_PARTICIPANT_RESULT,
+                $exception,
+                $runId,
+                $participant,
+            );
+
+            $marked['participants'][$participant]['finishedAt'] = $completedAt;
+            $marked['participants'][$participant]['outcome'] = 'FAILED';
+            $marked['participants'][$participant]['errorCode'] = $writeErrorCode;
+
+            return $marked;
+        }
     }
 
     private function acceptanceRunner(): DiagnosticsConcurrencyAcceptanceRunner

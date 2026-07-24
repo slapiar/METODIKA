@@ -8,6 +8,22 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 8 — oprava diagnostického rozlíšenia
+
+- vonkajšie spracovanie v `DiagnosticsController::executeAcceptIfReady()` rozlišuje fázy `BUILD_INITIAL_RUN`, `LOAD_PAYLOAD_FINGERPRINT`, `CREATE_ACCEPTANCE_RUNNER`, `APPLICATION_ACCEPT` a `WRITE_PARTICIPANT_RESULT`,
+- bezpečný kód nesie súčin `fáza × trieda chyby`; raw text výnimky sa zapisuje iba do serverového logu spolu s `runId` a participantom,
+- verejný run dokument a UI dostávajú iba bezpečný kód,
+- `DiagnosticsConcurrencyAcceptanceRunner` zachováva pôvodné bezpečné `accept()` a pre kontrolér poskytuje `acceptOrThrow()` na vonkajšie fázové rozlíšenie,
+- testy bezpečných kódov všetkých fáz a session test neprítomnosti raw exception textu prešli na PHP 8.4,
+- výsledok je v [`postupy/WORK/2026-07-24_13-45_Krok_8_Oprava_diagnostickeho_rozlisenia.md`](postupy/WORK/2026-07-24_13-45_Krok_8_Oprava_diagnostickeho_rozlisenia.md),
+- funkčná koreňová chyba rezervácie sa v Kroku 8 nemenila; jediným ďalším povoleným krokom je Krok 9.
+
+### Krok 7 — reprodukcia koreňovej príčiny mimo produkcie
+
+- izolovaný GitHub Actions run `30089261354` nad PHP 8.4 a MariaDB 11.4 úspešne vykonal migrácie M1–M8, overenie schémy a reprodukciu cez nezmenenú aplikačnú cestu,
+- potvrdená bola trieda príčiny `DBDebug=false + nekontrolovaný insert rezervácie + postcheck iba podľa REQUEST_REFERENCE`,
+- druhý tok skončil presnou `RuntimeException` vo fáze `CREATE_INITIAL_HISTORY_RUN`, jeho transakcia bola vrátená späť a cleanup potvrdil počty `0 + 0 + 0`,
+- výsledok je v [`postupy/WORK/2026-07-24_13-25_Krok_7_Reprodukcia_korenovej_priciny_mimo_produkcie.md`](postupy/WORK/2026-07-24_13-25_Krok_7_Reprodukcia_korenovej_priciny_mimo_produkcie.md).
 ### Sprísnenie povinnej inicializačnej brány
 
 - pred úpravou vznikol dôkazový inicializačný záznam [`postupy/WORK/INI/2026-07-24_12-42_INI_Uprava_inicializacnej_brany.md`](postupy/WORK/INI/2026-07-24_12-42_INI_Uprava_inicializacnej_brany.md) s deviatimi doloženými hodnotami `ÁNO`, rozsahom, kritériom úspechu a rollbackom,
