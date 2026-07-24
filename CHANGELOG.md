@@ -8,6 +8,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-24
 
+### Krok 9 — audit bariéry, `load()` a timeoutu
+
+- GitHub Actions run `30098298849` na PHP 8.4.23 s `pcntl_fork` úspešne vykonal existujúce run-store testy aj nový skutočný dvojprocesový test,
+- fyzicky uložený stav `EXECUTING` bol presne odlíšený od návratovej projekcie `BARRIER_OPEN`, ktorú `load()` poskytuje čakajúcemu requestu bez zmeny raw JSON,
+- oneskorený pokus zapísať `PARTNER_TIMEOUT` po otvorení bariéry bol pod exkluzívnym zámkom odmietnutý; raw dokument zostal nezmenený,
+- zmena `load()` nebola preukázaná ako nevyhnutná, preto produkčný run store, kontrolér a stavový automat zostali bez zmeny,
+- výsledok je v [`postupy/WORK/2026-07-24_15-50_Krok_9_Audit_bariery_load_timeoutu.md`](postupy/WORK/2026-07-24_15-50_Krok_9_Audit_bariery_load_timeoutu.md),
+- jediným ďalším povoleným krokom je Krok 10 — najmenšia funkčná oprava koreňovej príčiny.
 ### Krok 8 — oprava diagnostického rozlíšenia
 
 - vonkajšie spracovanie v `DiagnosticsController::executeAcceptIfReady()` rozlišuje fázy `BUILD_INITIAL_RUN`, `LOAD_PAYLOAD_FINGERPRINT`, `CREATE_ACCEPTANCE_RUNNER`, `APPLICATION_ACCEPT` a `WRITE_PARTICIPANT_RESULT`,
