@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-25
 
+### Náprava chýbajúcej tabuľky metodických úkonov
+
+- pri kontrole uzavretia Kroku 10 sa zistilo, že jeho INI záznam obsahoval iba netabuľkový blok `#ID / R / W`, hoci základné pravidlo [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) prikazuje vypísať na obrazovku tabuľku stavu čítania a vykonávania pokynov a uložiť ju na koniec INI záznamu,
+- pred nápravou vznikol samostatný inicializačný záznam [`postupy/WORK/INI/2026-07-25_09-18_INI_Doplnenie_tabulky_metodickych_ukonov.md`](postupy/WORK/INI/2026-07-25_09-18_INI_Doplnenie_tabulky_metodickych_ukonov.md),
+- na úplnom konci [`postupy/WORK/INI/2026-07-25_08-14_INI_Dokoncenie_Kroku_10_po_STOP.md`](postupy/WORK/INI/2026-07-25_08-14_INI_Dokoncenie_Kroku_10_po_STOP.md) bola doplnená povinná markdown tabuľka ID 0–14 s názvom metodického pokynu a hodnotami `R` a `W`,
+- tabuľka bola zároveň vypísaná používateľovi na obrazovku; predchádzajúca záverečná odpoveď bez tabuľky bola neúplná,
+- register [`postupy/README.md`](postupy/README.md) bol doplnený o nápravný INI záznam a o informáciu, že pôvodný INI Kroku 10 už obsahuje tabuľku na skutočnom konci súboru,
+- funkčný kód, testy, databáza, workflow, stav Kroku 10, commit `c90ae562...` ani produkčné prostredie sa nemenili.
+
 ### Krok 10 — presná rezervácia prvého prijatia
 
 - inicializačná brána je zdokumentovaná v [`postupy/WORK/INI/2026-07-25_08-14_INI_Dokoncenie_Kroku_10_po_STOP.md`](postupy/WORK/INI/2026-07-25_08-14_INI_Dokoncenie_Kroku_10_po_STOP.md); praktické opakovanie existujúceho izolovaného jobu `89652985988` potvrdilo PHP 8.4, Composer 2, MySQLi, MariaDB 11.4, migrácie M1–M8, izoláciu, rollback a cleanup,
@@ -134,7 +143,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - záväzný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán-práce.md) bol opravený na jediný lineárny rad 15 krokov; v jednom čase môže byť otvorený presne jeden krok,
 - každý krok sa musí pred otvorením ďalšieho uzavrieť ako `SPLNENÉ`, `UZAVRETÉ S OBMEDZENÍM` alebo `ZASTAVENÉ ROZHODOVACOU BRÁNOU`,
 - externý produkčný dôkaz bol oddelený do samostatného Kroku 5, ktorého nedostupnosť sa uzavrie s obmedzením namiesto ponechania práce v blokovanom medzistave,
-- vznikol pracovný záznam [`postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md`](postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md),
+- vznikol pracovný záznam [`postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md`](postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného-plánu.md),
 - pôvodné A1 záznamy boli v [`postupy/README.md`](postupy/README.md) označené ako `PREKONANÉ`; aktuálnym miestom práce je Krok 1 opravenej verzie plánu.
 
 ### Plán pokračovania webového súbežného overenia
