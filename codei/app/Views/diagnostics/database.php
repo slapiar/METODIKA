@@ -25,6 +25,14 @@ $showFooter = false;
 <form method="post" action="<?= site_url('diagnostics/database/run') ?>"><?= csrf_field() ?><button type="submit">Spustit znovu</button></form>
 <form method="post" action="<?= site_url('diagnostics/database/logout') ?>"><?= csrf_field() ?><button type="submit">Odhlasit diagnostiku</button></form>
 <form method="post" action="<?= site_url('diagnostics/database/test-api') ?>"><?= csrf_field() ?><button type="submit">Test API /api/gate/sessions</button></form>
+<form method="post" action="<?= site_url('diagnostics/database/create-test-session') ?>">
+    <?= csrf_field() ?>
+
+    <button type="submit">
+        Vytvoriť testovaciu session
+    </button>
+</form>
+
 </div>
 
 <p class="notice">Diagnostika je iba citacia. Migracie neboli spustene.</p>

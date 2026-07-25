@@ -21,6 +21,11 @@ $routes->get('diagnostics/concurrency/result/(:segment)', 'DiagnosticsController
 $routes->get('gate', 'GateDashboard::index');
 $routes->get('api/gate/sessions', 'GateSupervisor::getAllSessions');
 $routes->post('diagnostics/database/test-api', 'DiagnosticsController::testApi');
+$routes->post(
+    'diagnostics/database/create-test-session',
+    'DiagnosticsController::createTestSession',
+    ['filter' => 'csrf']
+);
 
 $routes->group('api/gate', function($routes) {
 

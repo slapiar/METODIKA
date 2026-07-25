@@ -93,6 +93,7 @@ final class DiagnosticsController extends BaseController
             ]);
     }
 }
+
 public function xtestApi()
 {
     // Diagnostika má načítané prostredie, takže API sa spustí s DB pripojením
@@ -127,7 +128,37 @@ public function xtestApi()
 
         return redirect()->to(site_url('diagnostics/database'));
     }
+    public function createTestSession(): ResponseInterface
+{
+    try {
+        $sessionModel = new \App\Models\IniSessionModel();
 
+        $id = $sessionModel->insert([
+            'project_name' => 'METODIKA',
+            'agent_name'   => 'Joyee',
+            'gate_state'   => 'locked',
+        ]);
+
+        return $this->response->setJSON([
+            'ok'         => true,
+            'session_id' => $id,
+        ]);
+    } catch (\Throwable $e) {
+        log_message('error', 'Create test session failed: {message}', [
+            'message' => $e->getMessage(),
+        ]);
+
+        return $this->response
+            ->setStatusCode(500)
+            ->setJSON([
+                'ok'        => false,
+                'exception' => $e::class,
+                'message'   => $e->getMessage(),
+                'file'      => $e->getFile(),
+                'line'      => $e->getLine(),
+            ]);
+    }
+}
     public function loginForm(): ResponseInterface
     {
         if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null) {
