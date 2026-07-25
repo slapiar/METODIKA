@@ -33,6 +33,7 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
 | `PLAN/2026-07-25_05-18_Plan_prace.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Riadny plán práce na 2026-07-25. Kroky 1 až 9 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 10. Nahradil a po pokyne používateľa odstránil predbežný plán. |
+| `WORK/INI/2026-07-25_07-17_INI_Spresnenie_vyznamu_Gate_closed.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre metodické spresnenie, že `GATE=CLOSED` aktuálneho kroku neblokuje jeho vlastné overovacie úkony. |
 | `WORK/INI/2026-07-25_05-17_INI_Zavazny_plan_2026-07-25.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre vytvorenie riadneho záväzného plánu na 2026-07-25. |
 | `WORK/2026-07-25_05-20_Vytvorenie_zavazneho_planu.md` | PRACOVNÝ | Pracovný záznam vytvorenia, spätného načítania a evidenčného uzatvárania dnešného plánu. |
 | `WORK/INI/2026-07-25_05-33_INI_Uzavretie_planu_a_otvorenie_prace.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre odstránenie predbežného plánu, dokončenie evidencie a metodické otvorenie práce podľa dnešného plánu. |
@@ -40,7 +41,7 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 | `WORK/2026-07-24_13-45_Krok_8_Oprava_diagnostickeho_rozlisenia.md` | PRACOVNÝ | Uzavretý záznam Kroku 8 s výsledkom `SPLNENÉ`: diagnostické zlyhania sú rozlíšené podľa fázy a triedy chyby; interný log nesie úplný kontext a verejný dokument iba bezpečný kód. |
 | `WORK/2026-07-24_13-25_Krok_7_Reprodukcia_korenovej_priciny_mimo_produkcie.md` | PRACOVNÝ | Uzavretý záznam Kroku 7 s výsledkom `SPLNENÉ`: koreňová príčina bola reprodukovaná v izolovanej MariaDB 11.4 cez reálnu MySQLi/InnoDB cestu, s potvrdeným rollbackom a cleanupom. |
 | `WORK/INI/2026-07-24_13-34_INI_Zosuladenie_Kroku_7_a_Krok_8.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre zosúladenie Kroku 7 a samostatnú diagnostickú opravu Kroku 8. |
-| `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Sprísnená záväzná inicializačná brána: pred každým krokom musí vzniknúť dôkazový záznam v `postupy/WORK/INI/`; bez deviatich doložených hodnôt `ÁNO` nesmie vzniknúť návrh, implementácia, príkaz ani zmena prostredia. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
+| `Inicializácia práce.md` | POTVRDENÝ-NA-PRENESENIE | Sprísnená záväzná inicializačná brána. Výslovne rozlišuje `GATE=OPEN` predchádzajúceho kroku od `GATE=CLOSED` aktuálneho kroku: zatvorená brána aktuálneho kroku neblokuje dokončenie jeho bodov 1 až 9, ale až analýzu, návrh, implementáciu a ďalšie úkony vyžadujúce otvorenú bránu. Cieľom prípadného prenesenia sú `README.md` a `CHECKLISTY/StartProjektu.md`. |
 | `WORK/INI/2026-07-24_12-42_INI_Uprava_inicializacnej_brany.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre úpravu dokumentu `Inicializácia práce.md`; obsahuje deväť overených bodov, rozsah, kritérium úspechu a rollback. |
 | `PLAN/2026-07-24_08-04_Plán_práce.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Opravená striktne lineárna verzia. Kroky 1 až 9 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 10 — najmenšia funkčná oprava koreňovej príčiny. |
 | `WORK/2026-07-24_11-42_Krok_6_Staticka_lokalizacia_chybovych_faz.md` | PRACOVNÝ | Uzavretý záznam Kroku 6 s výsledkom `SPLNENÉ`: produkčná výnimka je lokalizovaná do `CREATE_INITIAL_HISTORY_RUN`; statická príčinná cesta vedie cez nekontrolovaný neúspešný insert rezervácie a nepresný postcheck iba podľa `REQUEST_REFERENCE`. |
@@ -63,9 +64,9 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 | `2026-07-22_SPOLOCNA-REVALIDACIA-ONTOLOGIE-A-ALGORITMU-ODVODZOVANIA.md` | PRACOVNÝ | Nová spoločná reValidácia po opravách s výsledkom `VALID_WITH_LIMITATIONS`. |
 | `2026-07-22_APLIKACNY-KONTRAKT-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Opravený aplikačný kontrakt s topológiou `PARTIAL_RUN_WITH_ATOMIC_GATE`; reValidácia skončila `VALID`. |
 | `2026-07-22_VALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Historická Validácia kontraktu s výsledkom `CONDITIONALLY_VALID`. |
-| `2026-07-22_REVALIDACIA-APLIKACNEHO-KONTRAKTU-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | ReValidácia opraveného aplikačného kontraktu; výsledok `VALID`. |
-| `2026-07-21_10-23_DB-METODIKA-MAPMET.md` | PRACOVNÝ | Databázový návrh nesmie predbehnúť potvrdenú metodiku. |
-| `2026-07-21_13-52_LOG-MODEL-METODIC.md` | NEPLATNÝ | Výslovne označený ako neplatný pracovný návrh určený na revíziu. |
+| `2026-07-22_TECHNICKY-PLAN-IMPLEMENTACIE-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Technický plán implementácie v CodeIgniter 4.7.4. |
+| `2026-07-22_VALIDACIA-TECHNICKEHO-PLANU-IMPLEMENTACIE.md` | PRACOVNÝ | Validácia technického plánu s výsledkom `VALID`. |
+| `2026-07-22_IMPLEMENTACIA-ODVODZOVANIA-OTAZOK.md` | PRACOVNÝ | Implementačný záznam aplikačného a infraštruktúrneho jadra. |
 | `2026-07-21_AKTOR-A-AUTORITA.md` | PRACOVNÝ | Súvisí s `AUTORITA.md`; platí iba prenesený obsah. |
 | `2026-07-21_AUTORITA-IDENTITY-SUBJEKTU.md` | PRACOVNÝ | Čaká na potvrdenie a prípadné prenesenie. |
 | `2026-07-21_DOKAZ-TVRDENIE-A-PRAVDA.md` | PRACOVNÝ | Čaká na potvrdenie a prípadné prenesenie. |
