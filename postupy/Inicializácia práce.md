@@ -206,6 +206,35 @@ Predchádzajúca konverzácia alebo interná pamäť slúži iba ako navigácia 
 
 Register slúži ako navigácia a evidencia stavu. Nenahrádza úplné čítanie dokumentov, na ktoré odkazuje, ani kontrolu ich aktuálneho vzdialeného obsahu.
 
+### Povinná kontrola predchádzajúcich úkonov a obnova dôkazov
+
+Pred vykonaním každého bodu nového projektového kroku sa musí v aktuálnom vzdialenom projekte najprv overiť, či ten istý bod, úkon, dôkaz alebo výsledok už nebol vykonaný a doložený v niektorom predchádzajúcom kroku.
+
+Povinne sa preveria najmenej príslušné INI, WORK a checkpoint záznamy, commity, testy, workflowy, logy, artefakty a databázové dôkazy, ktoré môžu preukázať predchádzajúce vykonanie. Už vykonaný bod sa neopakuje iba preto, že je uvedený aj v novom kroku.
+
+Existujúci výsledok možno použiť ako východisko iba po:
+
+- jeho novom načítaní z autoritatívneho zdroja,
+- overení, že presne zodpovedá požadovanému bodu,
+- overení kontinuity jeho predpokladov voči aktuálnemu HEAD, prostrediu, konfigurácii a rozsahu,
+- zapísaní zdroja dôkazu a toho, čo zostáva neoverené.
+
+Ak existujúci dôkaz, výsledok alebo artefakt nie je priamo dostupný, musí sa najprv vykonať bezpečný pokus o jeho obnovenie alebo sprístupnenie prostredníctvom vlastnej preukázanej administrátorskej autority a dostupných projektových nástrojov. Môže ísť najmä o opätovné načítanie historického commitu alebo vetvy, získanie uloženého logu či artefaktu, obnovenie bezpečného prístupu alebo vykonanie iného vratného obnovovacieho úkonu v rozsahu oprávnenia.
+
+Platí:
+
+```text
+nový krok ≠ povinné opakovanie už vykonaného bodu
+existujúci dôkaz ≠ automaticky platný dôkaz
+existujúci dôkaz + overená kontinuita = použiteľné východisko
+nedostupné ≠ neexistujúce
+administrátorská autorita = povinnosť pokúsiť sa o bezpečnú obnovu, nie právo domýšľať výsledok
+```
+
+Administrátorská autorita sa nesmie použiť na obchádzanie bezpečnostných hraníc, rozšírenie zásahu mimo otvorenej brány ani na zmenu produkcie bez osobitne potvrdeného oprávnenia a rollbacku.
+
+Ak sa predchádzajúce vykonanie nepodarí preukázať ani bezpečne obnoviť, bod zostáva `NIE` alebo `NEOVERENÉ`. Vykonať sa môže nanovo až vtedy, keď to povoľuje otvorená brána aktuálneho kroku, záväzný plán a potvrdené hranice zásahu.
+
 ## 6. Overenie skutočného stavu
 
 Nevychádzať z domnienok, placeholderov ani vymyslených údajov. Rozlíšiť najmenej:
