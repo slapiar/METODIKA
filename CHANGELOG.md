@@ -6,6 +6,21 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ---
 
+## 2026-07-25
+
+### Záväzný plán dňa a metodické otvorenie práce
+
+- po samostatnej inicializačnej bráne vznikol riadny záväzný plán [`postupy/PLAN/2026-07-25_05-18_Plan_prace.md`](postupy/PLAN/2026-07-25_05-18_Plan_prace.md),
+- plán zachováva lineárne poradie Krokov 10 až 15; Kroky 1 až 9 zostávajú `SPLNENÉ` a jediným nasledujúcim povoleným krokom je Krok 10,
+- predbežný plán `postupy/PLAN/2026-07-25_08-00_Predbezny_plan_Kroky_10-15.md` bol po výslovnom pokyne používateľa odstránený ako nahradený riadnym plánom,
+- plánovací úkon otvoril INI záznam [`postupy/WORK/INI/2026-07-25_05-17_INI_Zavazny_plan_2026-07-25.md`](postupy/WORK/INI/2026-07-25_05-17_INI_Zavazny_plan_2026-07-25.md) a výsledok zaznamenáva [`postupy/WORK/2026-07-25_05-20_Vytvorenie_zavazneho_planu.md`](postupy/WORK/2026-07-25_05-20_Vytvorenie_zavazneho_planu.md),
+- odstránenie predbežného plánu a dokončenie evidencie otvorila samostatná brána [`postupy/WORK/INI/2026-07-25_05-33_INI_Uzavretie_planu_a_otvorenie_prace.md`](postupy/WORK/INI/2026-07-25_05-33_INI_Uzavretie_planu_a_otvorenie_prace.md),
+- register [`postupy/README.md`](postupy/README.md) bol zosúladený s riadnym plánom, jeho INI a WORK záznamami,
+- dnešná práca je metodicky otvorená na úrovni záväzného plánu; samotný Krok 10 sa môže funkčne otvoriť iba vlastnou novou bránou po praktickom overení Codespace, PHP, Composeru, testovacej MariaDB, migrácií, izolácie, cleanupu a rollbacku,
+- vykonateľný kód, databáza, release ani produkčné prostredie sa týmto úkonom nemenili.
+
+---
+
 ## 2026-07-24
 
 ### Krok 9 — audit bariéry, `load()` a timeoutu
