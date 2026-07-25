@@ -2,7 +2,7 @@
 $navigation = $navigation ?? [
     ['key' => 'home', 'label' => 'Domov', 'url' => site_url('/')],
     ['key' => 'diagnostics', 'label' => 'Diagnostika', 'url' => site_url('diagnostics/database')],
-    ['key' => 'gate_superv', 'label' => 'GATE SuperV', 'url' => site_url('gate_dashboard.php')],
+    ['key' => 'gate_superv', 'label' => 'GATE SuperV', 'url' => site_url('/gate')],
     ['key' => 'docs', 'label' => 'CodeIgniter Docs', 'url' => 'https://codeigniter.com/user_guide/', 'target' => '_blank'],
 ];
 ?>
