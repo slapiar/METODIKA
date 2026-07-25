@@ -357,7 +357,7 @@ Predčasne vytvorený artefakt sa nesmie automaticky považovať za platný výs
 
 # Základné pravidlo
 
-> Najprv načítať úplný aktuálny vzdialený stav, potom dôkazom otvoriť inicializačnú bránu, obnoviť kontext, analyzovať a až následne navrhnúť alebo vykonať zmenu.
+> Najprv načítať úplný aktuálny vzdialený stav, potom dôkazom otvoriť inicializačnú bránu, obnoviť kontext, analyzovať a až následne navrhnúť alebo vykonať zmenu. Vypísať na obrazovku tabuľku stavu čítania a vykonávania pokynov, uvedenú na konci práve vytvoreného INI záznamu.
 
 Skrátené poradie:
 
