@@ -37,22 +37,105 @@ Nová brána Kroku 11 nepreberá `GATE=OPEN` predchádzajúceho kroku. Existujú
 2. dotknuté vykonateľné zdroje, testy, migrácie, závislosti a workflowy zostali nezmenené,
 3. dôkaz presne zodpovedá tomu, čo sa ním v novej bráne dokladá.
 
-Porovnanie:
+## Obnovenie po výpadku pripojenia a konsolidácia pokračovania
+
+Po obnovení internetového pripojenia bol znovu načítaný aktuálny vzdialený stav vetvy `main`.
+
+Používateľ výslovne určil, že pokračovanie Kroku 11 sa zapisuje do tohto pôvodného súboru:
+
+```text
+postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md
+```
+
+Nevytvára sa ďalší INI a nevyrába sa nový environmentálny test.
+
+Súbor:
+
+```text
+postupy/WORK/INI/2026-07-25_10-33_INI_Krok_11_po_zmene_HEAD.md
+```
+
+zostáva iba historickým dôkazom medzistavu. Nie je autoritatívnym pokračovaním Kroku 11 a v registri je označený ako `PREKONANÝ` týmto pôvodným INI záznamom.
+
+PR `#3` bol overený ako:
+
+```text
+STATE=closed
+MERGED=false
+BASE_SHA=39f054bd54d931cc6cc68b1d4c4cc3d65a30d1b0
+HEAD_SHA=a12c1b6ac9708054c9334b751a327f11f83713f3
+```
+
+Jeho výsledky sa nepoužívajú ako autoritatívna Validácia aktuálneho `main`.
+
+## Overenie aktuálneho HEAD a kontinuity dôkazov
+
+Aktuálny vzdialený technický HEAD pred týmto metodickým zápisom:
+
+```text
+CURRENT_TECHNICAL_HEAD=d418e72c162bde324af7546c937af979bd75182e
+```
+
+Úplné porovnanie od funkčného commitu Kroku 10:
 
 ```text
 BASE=c90ae562a859de9fe0b2174f39e924c7f7bc6a4e
-HEAD_PRED_OTVORENÍM=23cdcee06dd25427ecfab96cd5ea0ec4a0e4ec02
+HEAD=d418e72c162bde324af7546c937af979bd75182e
 STATUS=ahead
-AHEAD_BY=13
-ZMENENÉ_SÚBORY=iba metodické dokumenty a CHANGELOG
-VYKONATEĽNÝ_KÓD_ZMENENÝ=false
-TESTY_ZMENENÉ=false
-MIGRÁCIE_ZMENENÉ=false
-COMPOSER_LOCK_ZMENENÝ=false
-WORKFLOWY_ZMENENÉ=false
+AHEAD_BY=22
+BEHIND_BY=0
 ```
 
-Preto zostávajú predchádzajúce technické dôkazy použiteľné pre otvorenie Kroku 11.
+Pôvodná brána bola otvorená ešte nad dokumentačným stavom `39f054bd...`. Následne pribudli vykonateľné supervízorské zmeny. Posledná korekcia brány bola zaznamenaná na `b389443...`; po nej pribudli ešte dva commity:
+
+```text
+b925e9d9f7a2196f81079dc2ccc6ca0ed99c80c6  Supervisor modely init
+d418e72c162bde324af7546c937af979bd75182e  Krok 8 Supervizora
+```
+
+Porovnanie `b389443... → d418e72...` obsahuje iba:
+
+- doplnenie samostatných modelov supervízora,
+- presun `IniStepRegisterModel.php` do správnej modelovej cesty,
+- doplnenie samostatných `api/gate` routes,
+- samostatné supervízorské kontroléry, views, JavaScript a CSS.
+
+Nezmenili sa:
+
+```text
+composer.json
+composer.lock
+migrácie M1–M8
+.github/workflows/* Kroku 7 až 10
+DiagnosticsController
+DiagnosticsConcurrencyStartController
+DiagnosticsConcurrencyRunStore
+DiagnosticsConcurrencyRunDocumentValidator
+DiagnosticsConcurrencyAcceptanceRunner
+FirstAcceptanceService
+RequestReferenceRepository
+existujúce testy diagnostickej cesty
+cleanup a rollback kontrakty
+```
+
+`codei/app/Config/Routes.php` sa zmenil iba doplnením oddelenej skupiny `api/gate`; existujúce diagnostické routes ostali zachované.
+
+Supervízorský modul nie je predmetom Kroku 11. Jeho vlastná funkčnosť, databázové tabuľky, autorizácia, placeholdery a testy sa týmto záznamom nevyhlasujú za platné ani dokončené.
+
+Záver kontinuity:
+
+```text
+VYKONATEĽNÝ_KÓD_KROKU_11_ZMENENÝ=false
+TESTY_KROKU_11_ZMENENÉ=false
+MIGRÁCIE_ZMENENÉ=false
+COMPOSER_LOCK_ZMENENÝ=false
+WORKFLOWY_KROKU_11_ZMENENÉ=false
+DÔKAZY_KROKOV_7_AŽ_10_POUŽITEĽNÉ=true
+```
+
+Preto zostávajú predchádzajúce technické dôkazy použiteľné pre otvorenie Kroku 11 aj na technickom HEAD `d418e72...`.
+
+Metodické commity vzniknuté zápisom tohto INI, registra a `CHANGELOG.md` nemenia technický predmet Kroku 11. Bezprostredne pred prvým funkčným zápisom alebo testovacím behom sa musí znovu overiť, že od `d418e72...` pribudli iba tieto metodické záznamy; pri ďalšej technickej zmene sa brána znovu preverí.
 
 ## Záväzný rozsah Kroku 11
 
@@ -121,7 +204,7 @@ Použiteľné praktické dôkazy:
 - Krok 9 run `30098298849`: PHP 8.4.23 a funkčný `pcntl_fork`,
 - Krok 10 run `30148480939`: dve nezávislé MySQLi spojenia, výsledky `CREATED + ALREADY_EXISTS`, jediný history run a cleanup.
 
-Kontinuita týchto dôkazov je potvrdená nezmenenými workflowmi, závislosťami, testami a migráciami.
+Kontinuita týchto dôkazov je potvrdená nezmenenými workflowmi, závislosťami, testami a migráciami Kroku 11. Nový environmentálny beh nie je potrebný na opätovné vyrobenie už existujúcich dôkazov.
 
 Záver:
 
@@ -139,7 +222,7 @@ BOD_5=ÁNO
 | 4. Session a security endpointy | feature testy, routes, CSRF, token, session a feature flag; testovací teardown resetuje prostredie | ÁNO |
 | 5. Integračný DB rollback | `metodika:verify-first-acceptance-transaction`; predchádzajúci dôkaz potvrdil úspešnú vetvu aj úmyselnú chybu s nulovým zvyškom dát | ÁNO |
 | 6. Skutočný súbeh | dvojprocesový test Kroku 9 a DB príkazy s dvoma nezávislými MySQLi spojeniami; cleanup na nulové počty | ÁNO |
-| 7. `START → HIT A/B → RESULT` | existujúci feature E2E test a routy; známe obmedzenie jednovláknovej simulácie je predmetom Validácie Kroku 11, nie chýbajúcou závislosťou | ÁNO |
+| 7. `START → HIT A/B → RESULT` | existujúci feature E2E test a routes; známe obmedzenie jednovláknovej simulácie je predmetom Validácie Kroku 11, nie chýbajúcou závislosťou | ÁNO |
 | 8. Tombstone a sweep | read-once, redakcia, `deleteAfter`, sweep a cleanup testy; historický produkčný dôkaz Kroku 5 | ÁNO |
 | 9. Login/database/logout | login/database testy a logout route/controller sú dostupné; chýbajúca alebo nedostatočná logout regresia sa má analyzovať a podľa dôkazu doplniť v Kroku 11 | ÁNO |
 
@@ -153,17 +236,17 @@ BOD_6=ÁNO
 
 ## Inicializačná tabuľka
 
-| Bod | Stav | Čo bolo overené | Dôkaz |
-|---|---|---|---|
-| 1. Metodika načítaná | ÁNO | Úplný aktuálny obsah `postupy/Inicializácia práce.md`, body 0–14, STOP a základné pravidlo | aktuálny vzdialený súbor, blob `262fa71b93fd8059426f8e0fc430a2d9cb623e79` |
-| 2. Projekt a autoritatívny zdroj overený | ÁNO | METODIKA, `slapiar/METODIKA`, `main`, `/codei` | `PROJEKTY/ZoznamProjektov.md`, blob `5e6102ee0d19fbdd8e0ba489a993eb64f366046d` |
-| 3. Vetva a HEAD overené | ÁNO | Aktuálna história a kontinuita od validovaného funkčného commitu | porovnanie `c90ae562... → 23cdcee0...`; iba dokumentačné zmeny |
-| 4. Potrebné prístupy prakticky overené | ÁNO | admin/push/read/write/read-back a Actions vykonanie | metadata repozitára; job `89652985988`; run `30148480939`, job `89654680309` |
-| 5. Prostredie prakticky overené | ÁNO | PHP, Composer, MariaDB, MySQLi, pcntl, migrácie, izolácia, rollback a cleanup | runy `30098298849`, `30148480939`; joby `89652985988`, `89654680309` |
-| 6. Závislosti kroku dostupné | ÁNO | Presná mapa všetkých deviatich blokov, testov, príkazov a cleanup kontraktov | načítané aktuálne zdroje a nezmenený technický stav od `c90ae562...` |
-| 7. Predmet a hranice zásahu určené | ÁNO | Iba úplná lokálna a integračná Validácia; bez release a produkcie | záväzný plán Kroku 11 |
-| 8. Kritérium úspechu určené | ÁNO | Deväť blokov a spoločné binárne kritérium | záväzný plán Kroku 11 |
-| 9. Rollback určený | ÁNO | Odstrániť iba testovacie dáta a dočasné artefakty; Krok 10 sa automaticky nevracia | záväzný plán a existujúce cleanup kontrakty |
+| Bod | Stav | Čo bolo overené | Konkrétny výsledok a dôkaz | Zostáva neoverené |
+|---|---|---|---|---|
+| 1. Metodika načítaná | ÁNO | Úplný aktuálny obsah `postupy/Inicializácia práce.md`, body 0–14, STOP a základné pravidlo | vzdialený blob `262fa71b93fd8059426f8e0fc430a2d9cb623e79` | nič |
+| 2. Projekt a autoritatívny zdroj overený | ÁNO | METODIKA, `slapiar/METODIKA`, `main`, `/codei` | `PROJEKTY/ZoznamProjektov.md`; metadata repozitára | nič |
+| 3. Vetva a HEAD overené | ÁNO | Aktuálny vzdialený technický HEAD a úplná kontinuita od Kroku 10 | `c90ae562... → d418e72...`, 22 commitov vpredu, 0 pozadu; osobitne `b389443... → d418e72...` | iba povinná opätovná kontrola HEAD pred prvým funkčným zápisom alebo testom |
+| 4. Potrebné prístupy prakticky overené | ÁNO | admin/push/read/write/read-back a Actions vykonanie | metadata repozitára; job `89652985988`; run `30148480939`, job `89654680309` | nič |
+| 5. Prostredie prakticky overené | ÁNO | PHP, Composer, MariaDB, MySQLi, pcntl, migrácie, izolácia, rollback a cleanup | runy `30098298849`, `30148480939`; joby `89652985988`, `89654680309`; nezmenené technické predpoklady | spoločný validačný beh je predmet Kroku 11, nie predpoklad brány |
+| 6. Závislosti kroku dostupné | ÁNO | Presná mapa všetkých deviatich blokov, testov, príkazov a cleanup kontraktov | diagnostické zdroje, testy, migrácie, Composer a workflowy Kroku 11 zostali nezmenené na `d418e72...` | skutočné testovacie medzery sa určia analýzou Kroku 11 |
+| 7. Predmet a hranice zásahu určené | ÁNO | Iba úplná lokálna a integračná Validácia diagnostickej súbežnej cesty | bez auditu či opráv supervízora, release, nasadenia a produkcie | nič |
+| 8. Kritérium úspechu určené | ÁNO | Deväť blokov a spoločné binárne kritérium | záväzný plán Kroku 11 | praktické splnenie je predmetom Kroku 11 |
+| 9. Rollback určený | ÁNO | Odstrániť iba testovacie dáta a dočasné artefakty; Krok 10 sa automaticky nevracia | záväzný plán a existujúce cleanup kontrakty; PR #3 uzavretý bez merge | nič |
 
 ## Vyhodnotenie brány
 
@@ -178,17 +261,20 @@ BOD_6=ÁNO
 8=ÁNO
 9=ÁNO
 GATE=OPEN
+TECHNICAL_BASELINE=d418e72c162bde324af7546c937af979bd75182e
 ```
 
 ## Jediný povolený nasledujúci úkon
 
 ```text
-Vykonať analýzu presného pokrytia deviatich testovacích blokov na aktuálnom HEAD,
-určiť existujúce dôkazy a skutočné medzery,
-a až potom navrhnúť najmenšiu bezpečnú validačnú zostavu Kroku 11.
+1. bezprostredne znovu overiť aktuálny HEAD main,
+2. potvrdiť, že od technického základu d418e72... pribudli iba metodické záznamy tejto konsolidácie,
+3. vykonať analýzu presného pokrytia deviatich testovacích blokov,
+4. určiť existujúce dôkazy a skutočné medzery,
+5. až potom navrhnúť najmenšiu bezpečnú validačnú zostavu Kroku 11.
 ```
 
-Zakázané zostávajú release, nasadenie, produkčný run a otvorenie Kroku 12.
+Nevytvára sa nový INI ani nový environmentálny test. Zakázané zostávajú opravy supervízorského modulu, release, nasadenie, produkčný run a otvorenie Kroku 12.
 
 ## Tabuľka stavu čítania a vykonávania metodických pokynov
 
@@ -202,10 +288,10 @@ Zakázané zostávajú release, nasadenie, produkčný run a otvorenie Kroku 12.
 | 5 | Obnova projektového kontextu | 1 | 1 |
 | 6 | Overenie skutočného stavu | 1 | 1 |
 | 7 | Vymedzenie predmetu a rozsahu práce | 1 | 1 |
-| 8 | Analýza pred návrhom | 1 | 0 |
-| 9 | Návrh najmenšieho bezpečného riešenia | 1 | 0 |
+| 8 | Analýza pred návrhom | 1 | 1 |
+| 9 | Návrh najmenšieho bezpečného riešenia | 1 | 1 |
 | 10 | Implementácia až po analýze | 1 | 0 |
-| 11 | Spätné načítanie po zápise | 1 | 0 |
-| 12 | Validácia výsledku | 1 | 0 |
+| 11 | Spätné načítanie po zápise | 1 | 1 |
+| 12 | Validácia výsledku Kroku 11 | 1 | 0 |
 | 13 | Záznam metodického úkonu | 1 | 1 |
 | 14 | Ukončenie pracovného kroku | 1 | 0 |
