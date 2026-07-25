@@ -52,6 +52,24 @@ final class DiagnosticsGateEvidenceController extends BaseController
                     'content' => self::TEST_CONTENT,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
+
+                if ($evidenceId === false) {
+                    $databaseError = $evidenceModel->db->error();
+
+                    return $this->response
+                        ->setStatusCode(500)
+                        ->setJSON([
+                            'ok' => false,
+                            'created' => false,
+                            'evidence_id' => false,
+                            'model_errors' => $evidenceModel->errors(),
+                            'database_error' => [
+                                'code' => $databaseError['code'] ?? null,
+                                'message' => $databaseError['message'] ?? null,
+                            ],
+                        ]);
+                }
+
                 $created = true;
             }
 
