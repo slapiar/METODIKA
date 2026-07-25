@@ -63,7 +63,37 @@ final class DiagnosticsController extends BaseController
             'scriptNonce' => $scriptNonce,
         ]), 200, $scriptNonce);
     }
-public function testApi()
+    public function testApi(): ResponseInterface
+{
+    try {
+        $sessionModel = new \App\Models\IniSessionModel();
+
+        $sessions = $sessionModel
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        return $this->response->setJSON([
+            'ok'       => true,
+            'count'    => count($sessions),
+            'sessions' => $sessions,
+        ]);
+    } catch (\Throwable $e) {
+        log_message('error', 'GATE sessions diagnostic failed: {message}', [
+            'message' => $e->getMessage(),
+        ]);
+
+        return $this->response
+            ->setStatusCode(500)
+            ->setJSON([
+                'ok'        => false,
+                'exception' => $e::class,
+                'message'   => $e->getMessage(),
+                'file'      => $e->getFile(),
+                'line'      => $e->getLine(),
+            ]);
+    }
+}
+public function xtestApi()
 {
     // Diagnostika má načítané prostredie, takže API sa spustí s DB pripojením
     $client = \Config\Services::curlrequest();
