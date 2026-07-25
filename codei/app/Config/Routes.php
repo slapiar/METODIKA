@@ -16,3 +16,8 @@ $routes->post('diagnostics/concurrency/start', 'DiagnosticsConcurrencyStartContr
 $routes->post('diagnostics/concurrency/hit/a', 'DiagnosticsController::hitConcurrencyA', ['filter' => 'diagnosticsSessionRelease']);
 $routes->post('diagnostics/concurrency/hit/b', 'DiagnosticsController::hitConcurrencyB', ['filter' => 'diagnosticsSessionRelease']);
 $routes->get('diagnostics/concurrency/result/(:segment)', 'DiagnosticsController::concurrencyResult/$1');
+
+$routes->group('api/gate', function($routes) {
+    $routes->post('purge-cache/(:num)', 'GateSupervisor::purgeCache/$1');
+    $routes->post('submit-step', 'GateSupervisor::submitStep');
+});
