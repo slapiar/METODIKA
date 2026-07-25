@@ -17,6 +17,9 @@ $routes->post('diagnostics/concurrency/hit/a', 'DiagnosticsController::hitConcur
 $routes->post('diagnostics/concurrency/hit/b', 'DiagnosticsController::hitConcurrencyB', ['filter' => 'diagnosticsSessionRelease']);
 $routes->get('diagnostics/concurrency/result/(:segment)', 'DiagnosticsController::concurrencyResult/$1');
 
+// GATE SUPERVISOR
+$routes->get('gate', 'GateDashboard::index');
+
 $routes->group('api/gate', function($routes) {
 
     // EXISTUJÚCE:
