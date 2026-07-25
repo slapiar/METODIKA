@@ -8,6 +8,19 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-25
 
+### Krok 10 — presná rezervácia prvého prijatia
+
+- inicializačná brána je zdokumentovaná v [`postupy/WORK/INI/2026-07-25_08-14_INI_Dokoncenie_Kroku_10_po_STOP.md`](postupy/WORK/INI/2026-07-25_08-14_INI_Dokoncenie_Kroku_10_po_STOP.md); praktické opakovanie existujúceho izolovaného jobu `89652985988` potvrdilo PHP 8.4, Composer 2, MySQLi, MariaDB 11.4, migrácie M1–M8, izoláciu, rollback a cleanup,
+- predchádzajúce tvrdenie o chýbajúcom Composer-i a DNS bolo označené ako neplatné pre projekt, pretože sa týkalo iba interného pomocného sandboxu, nie projektového ani autoritatívneho testovacieho prostredia,
+- v [`codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php`](codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php) sa kontroluje výsledok `insert()` pri `DBDebug=false`, duplicitný kľúč `1062` vracia `ALREADY_EXISTS` a `CREATED` je povolené iba po presnej zhode `REQUEST_REFERENCE + payload_fingerprint + derivation_reference`,
+- príkaz [`codei/app/Commands/ReproduceFirstAcceptanceRootCause.php`](codei/app/Commands/ReproduceFirstAcceptanceRootCause.php) bol zmenený na regresný dôkaz dvoch nezávislých MySQLi spojení, jediného vlastníka rezervácie, jediného počiatočného history runu a úplného cleanupu,
+- workflow [`.github/workflows/krok-7-root-cause-reproduction.yml`](.github/workflows/krok-7-root-cause-reproduction.yml) teraz vykonáva trvalú PR/push regresnú Validáciu nad PHP 8.4, Composerom 2 a izolovanou MariaDB 11.4,
+- PR `#2` bol validovaný runom `30148480939`, jobom `89654680309`; prešli syntax, 2 jednotkové testy so 4 tvrdeniami, migrácie M1–M8, schéma, druhý výsledok `ALREADY_EXISTS`, neprítomnosť duplicitného history runu a cleanup,
+- funkčná zmena bola squash-mergeovaná do jediného commitu `c90ae562a859de9fe0b2174f39e924c7f7bc6a4e`,
+- úplný pracovný výsledok je v [`postupy/WORK/2026-07-25_09-01_Krok_10_Najmensia_funkcna_oprava_rezervacie.md`](postupy/WORK/2026-07-25_09-01_Krok_10_Najmensia_funkcna_oprava_rezervacie.md) a checkpoint v [`postupy/2026-07-25_09-05_CHECKPOINT-KROK-10-PRESNA-REZERVACIA.md`](postupy/2026-07-25_09-05_CHECKPOINT-KROK-10-PRESNA-REZERVACIA.md),
+- záväzný plán a register boli zosúladené: Kroky 1 až 10 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 11, ktorý zostáva zatvorený do vlastnej novej inicializačnej brány,
+- databázová schéma, diagnostické rozlíšenie, `DiagnosticsConcurrencyRunStore::load()`, timeoutová poistka, UI, release skripty a produkčné prostredie sa nemenili.
+
 ### Spresnenie významu `GATE=CLOSED`
 
 - metodický úkon otvoril INI záznam [`postupy/WORK/INI/2026-07-25_07-17_INI_Spresnenie_vyznamu_Gate_closed.md`](postupy/WORK/INI/2026-07-25_07-17_INI_Spresnenie_vyznamu_Gate_closed.md),
@@ -118,7 +131,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 ### STOP a oprava záväzného plánu
 
 - používateľ nariadil `STOP`, pretože pôvodný plán umožnil ponechať A1 otvorené počas čakania na externý produkčný dôkaz a tým znemožnil systematické lineárne pokračovanie,
-- záväzný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md) bol opravený na jediný lineárny rad 15 krokov; v jednom čase môže byť otvorený presne jeden krok,
+- záväzný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán-práce.md) bol opravený na jediný lineárny rad 15 krokov; v jednom čase môže byť otvorený presne jeden krok,
 - každý krok sa musí pred otvorením ďalšieho uzavrieť ako `SPLNENÉ`, `UZAVRETÉ S OBMEDZENÍM` alebo `ZASTAVENÉ ROZHODOVACOU BRÁNOU`,
 - externý produkčný dôkaz bol oddelený do samostatného Kroku 5, ktorého nedostupnosť sa uzavrie s obmedzením namiesto ponechania práce v blokovanom medzistave,
 - vznikol pracovný záznam [`postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md`](postupy/WORK/2026-07-24_09-12_STOP_Oprava_záväzného_plánu.md),
@@ -126,7 +139,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ### Plán pokračovania webového súbežného overenia
 
-- vytvorený úplný pracovný plán [`postupy/PLAN/2026-07-24_08-04_Plán_práce.md`](postupy/PLAN/2026-07-24_08-04_Plán_práce.md), ktorý nahrádza neúplné pracovné návrhy jedným riadeným postupom s rozhodovacími bránami, dôkazmi, rollbackmi a kritériami Validácie,
+- vytvorený úplný pracovný plán [`postupy/PLAN/2026-07-24_08-04_Plán-práce.md`](postupy/PLAN/2026-07-24_08-04_Plán-práce.md), ktorý nahrádza neúplné pracovné návrhy jedným riadeným postupom s rozhodovacími bránami, dôkazmi, rollbackmi a kritériami Validácie,
 - plán zahŕňa dokončenie auditu checklistu a matice `M01 – M26`, získanie presnej príčiny `FAILED_RUNTIME_ERROR`, samostatnú opravu diagnostického rozlíšenia, audit `load()`, bariéry a timeout poistky, najmenšiu funkčnú opravu, úplné testy, release, jeden čistý produkčný run, tombstone, sweep a povinný záznam,
 - pracovný vstup používateľa [`postupy/2026-07-24/07_44-Dnešný plán tvorba štruktúry`](postupy/2026-07-24/07_44-Dnešný%20plán%20tvorba%20%C5%A1trukt%C3%BAry) bol zaevidovaný ako `PRACOVNÝ`,
 - používateľ udelil plánu prívlastok **ZÁVÄZNÝ** až do úplného naplnenia alebo metodicky korektného zastavenia; povinnosť je zapísaná v [`README.md`](README.md) a v registri [`postupy/README.md`](postupy/README.md),
