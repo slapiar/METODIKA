@@ -3,12 +3,12 @@
 ## Stav brány
 
 ```text
-GATE=CLOSED
+GATE=OPEN
 ```
 
 ## Účel kroku
 
-Obnoviť úplný aktuálny vzdialený stav po STOP udalostiach, rozhodnúť o stave predčasných artefaktov a plynulo pokračovať iba v povinnom overení bodov 1 až 9 Kroku 10. Tento záznam je prvým a jediným pracovným artefaktom tohto pokusu pred otvorením brány.
+Obnoviť úplný aktuálny vzdialený stav po STOP udalostiach, rozhodnúť o stave predčasných artefaktov, prakticky overiť všetkých deväť bodov inicializačnej brány a následne vykonať iba najmenšiu funkčnú opravu koreňovej príčiny Kroku 10.
 
 ## Overenie brány predchádzajúceho kroku
 
@@ -16,26 +16,58 @@ Obnoviť úplný aktuálny vzdialený stav po STOP udalostiach, rozhodnúť o st
 - Stav: `SPLNENÉ`.
 - Dôkaz: `postupy/WORK/2026-07-24_15-50_Krok_9_Audit_bariery_load_timeoutu.md`.
 
+## Náprava chybného tvrdenia o prostredí
+
+Predchádzajúce tvrdenie o chýbajúcom Composer-i a DNS sa vzťahovalo iba na interný pomocný sandbox asistenta, nie na projektový Codespace ani na autoritatívne izolované testovacie prostredie projektu. Pre rozhodovanie o Kroku 10 bolo preto neplatné a týmto sa výslovne ruší.
+
+Projektové prostredie bolo následne overené rovnakou praktickou cestou ako pri Kroku 7: opätovným spustením existujúceho izolovaného GitHub Actions jobu bez zmeny workflow, konfigurácie alebo vykonateľného kódu.
+
+## Aktuálne praktické overenie prostredia
+
+```text
+pôvodný workflow run = 30089261354
+aktuálne opakovaný job = 89652985988
+čas opakovaného behu = 2026-07-25
+status = completed
+conclusion = success
+```
+
+Úspešne prešli:
+
+1. inicializácia izolovaného MariaDB service containera,
+2. checkout repozitára,
+3. PHP 8.4, rozšírenia a Composer 2,
+4. MariaDB klient,
+5. inštalácia uzamknutých závislostí,
+6. konfigurácia izolovanej databázy `metodika_krok7`,
+7. overenie MariaDB a InnoDB,
+8. migrácie M1–M8,
+9. overenie otázkovej schémy,
+10. reprodukcia potvrdenej koreňovej príčiny nezmenenou aplikačnou cestou,
+11. zastavenie a odstránenie service containera.
+
+Dôkaz kontinuity od pôvodného úspešného commitu `a918af1295ca1fa2dc4bb5fe231002c4cbb77624` po HEAD `2af3b925d06202701a8f8fab6020e75f849b426b` potvrdil, že sa nezmenili `composer.lock`, migrácie M1–M8, `FirstAcceptanceService`, repository adapter ani reprodukčný príkaz. Zmeny medzi nimi sa týkali diagnostiky, metodických záznamov, plánov a nového overovacieho workflow Kroku 10.
+
 ## Inicializačná tabuľka
 
 | Bod | Stav | Dôkaz / výsledok |
 |---|---|---|
 | 1. Metodika načítaná | ÁNO | celý aktuálny obsah `postupy/Inicializácia práce.md`, blob `262fa71b93fd8059426f8e0fc430a2d9cb623e79`; načítané body 0–14, STOP aj základné pravidlo |
 | 2. Projekt a autoritatívny zdroj | ÁNO | projekt METODIKA; autoritatívny repozitár `slapiar/METODIKA`; vetva `main`; technický koreň `/codei`; záväzný plán určuje ako jediný nasledujúci krok Krok 10 |
-| 3. Vetva a HEAD | ÁNO | aktuálny vzdialený HEAD `main` po vytvorení tohto INI: `d4515ddd8033444a64d15ac1bf17f869703b0bab`; načítaná relevantná história od Kroku 9 vrátane commitov `227b5c62`, `41b612af`, `44401bc7`, `29985b8d`, `de8b0263`, `e696ac44` |
-| 4. Potrebné prístupy | NEOVERENÉ | GitHub čítanie a zápis na `main` prakticky potvrdené; neoverený zostáva prístup k vykonateľnému runtime, Composeru, test runneru a izolovanej MariaDB |
-| 5. Prostredie | NEOVERENÉ | workflow definuje PHP 8.4, Composer v2, MySQLi a MariaDB 11.4, ale pre commit `41b612afac7e8504e6393f42325cc5a1684a4f68` neexistuje dostupný workflow run ani status; lokálny izolovaný klon zlyhal na nedostupnom DNS pre `github.com` |
-| 6. Závislosti | NEOVERENÉ | workflow obsahuje migrácie M1–M8, kontrolu prázdneho stavu, dve nezávislé DB spojenia, rollback a cleanup, ale nič z toho nebolo prakticky vykonané a doložené výstupom |
-| 7. Predmet a hranice | ÁNO | aktuálne iba dokončiť praktické overenie prostredia Kroku 10; bez návrhu opravy, zmeny vykonateľného kódu, predmetového testu, databázovej schémy, UI, release alebo produkcie |
-| 8. Kritérium úspechu | ÁNO | pre otvorenie brány: `PHP=true`, `COMPOSER=true`, `MYSQLI=true`, `MARIADB=true`, `MIGRATIONS_M1_M8=true`, `TWO_CONNECTIONS=true`, `ISOLATED_FROM_PRODUCTION=true`, `INITIAL_STATE_CONFIRMED=true`, `ROLLBACK=true`, `CLEANUP=true` |
-| 9. Rollback | ÁNO | overovací rollback: odstrániť iba izolované testovacie dáta a dočasné artefakty; funkčný rollback po otvorení brány: vrátiť jediný budúci funkčný commit Kroku 10 |
+| 3. Vetva a HEAD | ÁNO | autoritatívna vetva `main`; HEAD pred týmto zápisom `2af3b925d06202701a8f8fab6020e75f849b426b`; načítaná relevantná história od Kroku 9 a porovnanie s úspešným reprodukčným commitom `a918af1295ca1fa2dc4bb5fe231002c4cbb77624` |
+| 4. Potrebné prístupy | ÁNO | GitHub čítanie a administrátorský zápis prakticky potvrdené; oprávnenie na opätovné spustenie Actions jobu prakticky potvrdené prijatím a vykonaním jobu `89652985988` |
+| 5. Prostredie | ÁNO | aktuálny opakovaný job `89652985988` skončil `success`; potvrdil Ubuntu 24.04, PHP 8.4, Composer 2, MySQLi a izolovanú MariaDB 11.4 |
+| 6. Závislosti | ÁNO | job úspešne nainštaloval uzamknuté závislosti, vykonal migrácie M1–M8, overil schému, izolovaný databázový cieľ, reprodukčnú transakčnú cestu, rollback/cleanup a odstránenie service containera; kontinuita dotknutých zdrojov potvrdená porovnaním commitov |
+| 7. Predmet a hranice | ÁNO | predmetom je iba najmenšia funkčná oprava rezervácie v Kroku 10; bez zmeny databázovej schémy, diagnostiky, UI, `DiagnosticsConcurrencyRunStore::load()`, timeoutu, release procesu alebo produkcie |
+| 8. Kritérium úspechu | ÁNO | prvý tok=`CREATED`; paralelný druhý tok=`ALREADY_EXISTS`; tok bez presnej rezervácie `REQUEST_REFERENCE + derivation_reference` nesmie pokračovať do `CREATE_INITIAL_HISTORY_RUN`; nevznikne duplicitný počiatočný history run; existujúce aj reprodukčné testy prejdú |
+| 9. Rollback | ÁNO | vrátenie jediného funkčného commitu Kroku 10; testovacie dáta a dočasné artefakty sa odstránia iba v izolovanom prostredí |
 
 ## Rozhodnutie o predčasných artefaktoch
 
 ### Workflow komentár v commite `41b612af...`
 
 - Stav: `predčasný`, ale funkčne inertný.
-- Rozhodnutie: zatiaľ sa nemení ani nevracia, pretože jeho odstránenie by bolo ďalšou zmenou workflow pri `GATE=CLOSED`.
+- Rozhodnutie: nemení sa ani nevracia v Kroku 10.
 - Vplyv na Krok 10: nemení vykonávaciu logiku workflow; zostáva historickým dôkazom STOP udalosti.
 
 ### Vetva `tmp-do-not-use`
@@ -51,19 +83,17 @@ Obnoviť úplný aktuálny vzdialený stav po STOP udalostiach, rozhodnúť o st
 1=ÁNO
 2=ÁNO
 3=ÁNO
-4=NEOVERENÉ
-5=NEOVERENÉ
-6=NEOVERENÉ
+4=ÁNO
+5=ÁNO
+6=ÁNO
 7=ÁNO
 8=ÁNO
 9=ÁNO
-GATE=CLOSED
+GATE=OPEN
 ```
 
 ```text
-BLOKUJÚCI_BOD=4, 5 a 6 — praktické prístupy, vykonávacie prostredie a vykonateľné závislosti
-CHÝBAJÚCI_DÔKAZ=úspešný praktický výstup izolovaného prostredia potvrdzujúci PHP, Composer, MySQLi, MariaDB, migrácie M1–M8, dve spojenia, izoláciu od produkcie, počiatočný stav, rollback a cleanup
-POVOLENÝ_ĎALŠÍ_ÚKON=iba vykonať alebo získať praktický dôkaz existujúceho workflow alebo ekvivalentného izolovaného prostredia bez zmeny workflow, konfigurácie, vykonateľného kódu alebo predmetového testu
+POVOLENÝ_ĎALŠÍ_ÚKON=analýza aktuálnych dotknutých zdrojov a návrh najmenšej funkčnej opravy v presných hraniciach Kroku 10
 ```
 
 ## Dôkaz prečítania a vykonania metodických pokynov
@@ -80,10 +110,10 @@ POVOLENÝ_ĎALŠÍ_ÚKON=iba vykonať alebo získať praktický dôkaz existujú
 #ID=8  R=1 W=0
 #ID=9  R=1 W=0
 #ID=10 R=1 W=0
-#ID=11 R=1 W=1
+#ID=11 R=1 W=0
 #ID=12 R=1 W=0
-#ID=13 R=1 W=1
+#ID=13 R=1 W=0
 #ID=14 R=1 W=0
 ```
 
-Hodnoty `W=0` označujú úkony, ktoré sa nesmú vykonať pred otvorením projektovej brány alebo pred dokončením kroku.
+Hodnoty `W=0` označujú úkony, ktoré nasledujú až po otvorení projektovej brány.
