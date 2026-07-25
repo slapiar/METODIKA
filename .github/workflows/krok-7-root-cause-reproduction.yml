@@ -111,4 +111,12 @@ jobs:
         working-directory: codei
         env:
           METODIKA_ROOT_CAUSE_REPRO_ENABLED: '1'
-        run: php spark metodika:reproduce-first-acceptance-root-cause
+        run: |
+          output="$(php spark metodika:reproduce-first-acceptance-root-cause 2>&1)"
+          printf '%s\n' "$output"
+          grep -F 'FIRST_ACCEPTANCE_REGRESSION_CONFIRMED' <<< "$output"
+          grep -F 'FIRST_OUTCOME=RESERVATION_CREATED' <<< "$output"
+          grep -F 'SECOND_OUTCOME=ALREADY_EXISTS' <<< "$output"
+          grep -F 'NO_DUPLICATE_INITIAL_HISTORY_RUN=true' <<< "$output"
+          grep -F 'SECOND_PARTICIPANT_LEFT_NO_ROWS=true' <<< "$output"
+          grep -F 'CLEANUP_CONFIRMED' <<< "$output"
