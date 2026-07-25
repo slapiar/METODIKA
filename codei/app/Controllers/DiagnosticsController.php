@@ -63,6 +63,19 @@ final class DiagnosticsController extends BaseController
             'scriptNonce' => $scriptNonce,
         ]), 200, $scriptNonce);
     }
+public function testApi()
+{
+    // Diagnostika má načítané prostredie, takže API sa spustí s DB pripojením
+    $client = \Config\Services::curlrequest();
+
+    $response = $client->get(base_url('api/gate/sessions'));
+
+    return $this->response->setJSON([
+        'status' => $response->getStatusCode(),
+        'body'   => $response->getBody(),
+    ]);
+}
+
 
     public function login(): ResponseInterface
     {
