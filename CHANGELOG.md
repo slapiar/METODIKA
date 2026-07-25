@@ -8,6 +8,16 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-25
 
+### Povinná kontrola predchádzajúcich úkonov a obnova dôkazov
+
+- do [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) bol doplnený záväzný príkaz preveriť pred vykonaním každého bodu nového kroku jeho možné predchádzajúce vykonanie v tom istom projekte,
+- existujúci dôkaz sa neopakuje ani automaticky nepreberá; použije sa až po novom načítaní, overení presnej zhody a kontinuity voči aktuálnemu HEAD, prostrediu, konfigurácii a rozsahu,
+- ak dôkaz nie je priamo dostupný, najprv sa vykoná bezpečný pokus o jeho obnovenie alebo sprístupnenie prostredníctvom preukázanej administrátorskej autority; autorita neumožňuje domýšľanie výsledku, obchádzanie hraníc ani neoprávnenú zmenu produkcie,
+- autoritatívna brána úkonu je v [`postupy/WORK/INI/2026-07-25_12-35_INI_Kontrola_predchadzajucich_ukonov_po_zmene_main.md`](postupy/WORK/INI/2026-07-25_12-35_INI_Kontrola_predchadzajucich_ukonov_po_zmene_main.md); dva predchádzajúce pokusy zostávajú zachované ako metodické STOP záznamy,
+- úplný pracovný výsledok je v [`postupy/WORK/2026-07-25_12-42_Doplnenie_kontroly_predchadzajucich_ukonov.md`](postupy/WORK/2026-07-25_12-42_Doplnenie_kontroly_predchadzajucich_ukonov.md), metodický commit je `06eac77e998f8ac164566717c86ca50e8ccef3c2` a výsledný blob metodiky `1f32fd9144a4cc3ca94ca8219a1d5dcb4518ee19`,
+- register [`postupy/README.md`](postupy/README.md) bol zosúladený; súbežné zmeny vykonateľných súborov mimo predmetu tohto úkonu neboli prepisované ani zahrnuté do jeho výsledku,
+- týmto úkonom sa nemenil vykonateľný kód, databáza, workflow, produkcia ani technické uzavretie Kroku 11; jeho správne dokončenie zostáva samostatným nasledujúcim krokom.
+
 ### Krok 11 — otvorenie validačnej brány existujúcimi dôkazmi
 
 - vznikol a bol dokončený samostatný inicializačný záznam [`postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md`](postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md),
