@@ -1,0 +1,108 @@
+name: Krok 11 - Apply precise stale test repair
+
+on:
+  push:
+    branches:
+      - krok11-uplna-validacia
+    paths:
+      - '.github/workflows/krok-11-apply-stale-test-repair.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  repair-test-expectations:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout working branch
+        uses: actions/checkout@v4
+        with:
+          ref: krok11-uplna-validacia
+          fetch-depth: 0
+
+      - name: Apply exact replacements
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('codei/tests/session/DiagnosticsControllerTest.php')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = [
+              (
+                  "        $response->assertSee('/diagnostics/concurrency/result/');",
+                  "        $response->assertSee('/diagnostics/concurrency/result');",
+                  1,
+              ),
+              (
+                  """        $afterA = $store->load($runId);
+          $this->assertIsArray($afterA);
+          $this->assertSame('EXECUTING', $afterA['state']);
+          $this->assertNotNull($afterA['participants']['a']['consumedAt']);""",
+                  """        $afterA = $store->load($runId);
+          $this->assertIsArray($afterA);
+          $this->assertSame('BARRIER_OPEN', $afterA['state']);
+
+          $rawAfterA = json_decode(
+              (string) file_get_contents($storeDirectory . '/' . $runId . '.json'),
+              true,
+              512,
+              JSON_THROW_ON_ERROR,
+          );
+          $this->assertIsArray($rawAfterA);
+          $this->assertSame('EXECUTING', $rawAfterA['state']);
+          $this->assertNotNull($afterA['participants']['a']['consumedAt']);""",
+                  1,
+              ),
+              (
+                  """        $stored = $store->load($runId);
+          $this->assertIsArray($stored);
+          $this->assertSame('EXECUTING', $stored['state']);
+          $this->assertNotNull($stored['participants']['b']['startedAt']);
+          $this->assertNotNull($stored['participants']['b']['finishedAt']);
+          $this->assertSame('FAILED', $stored['participants']['b']['outcome']);""",
+                  """        $stored = $store->load($runId);
+          $this->assertIsArray($stored);
+          $this->assertSame('BARRIER_OPEN', $stored['state']);
+
+          $rawStored = json_decode(
+              (string) file_get_contents($storeDirectory . '/' . $runId . '.json'),
+              true,
+              512,
+              JSON_THROW_ON_ERROR,
+          );
+          $this->assertIsArray($rawStored);
+          $this->assertSame('EXECUTING', $rawStored['state']);
+          $this->assertNotNull($stored['participants']['b']['startedAt']);
+          $this->assertNotNull($stored['participants']['b']['finishedAt']);
+          $this->assertSame('FAILED', $stored['participants']['b']['outcome']);""",
+                  1,
+              ),
+          ]
+
+          for old, new, expected_count in replacements:
+              actual_count = text.count(old)
+              if actual_count != expected_count:
+                  raise SystemExit(
+                      f'Exact replacement guard failed: expected {expected_count}, found {actual_count}: {old[:80]!r}'
+                  )
+              text = text.replace(old, new, expected_count)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Verify resulting syntax and diff
+        run: |
+          php -l codei/tests/session/DiagnosticsControllerTest.php
+          git diff --check
+          git diff -- codei/tests/session/DiagnosticsControllerTest.php
+
+      - name: Commit exact test repair
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add codei/tests/session/DiagnosticsControllerTest.php
+          git commit -m 'Krok 11: zosúladenie session testov s potvrdenou projekciou load'
+          git push origin HEAD:krok11-uplna-validacia
