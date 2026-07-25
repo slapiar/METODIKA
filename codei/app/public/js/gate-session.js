@@ -104,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    connectWebSocket();
+   // connectWebSocket();
 
     // Renderovanie krokov
     function renderSteps(steps) {

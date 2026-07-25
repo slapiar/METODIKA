@@ -19,6 +19,7 @@
     <script src="/js/gate-dashboard.js"></script>
 </head>
 <body>
+<tbody id="sessions-table"></tbody>
 
 <h1>INI Gatekeeper – Sessions</h1>
 

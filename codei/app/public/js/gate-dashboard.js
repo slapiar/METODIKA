@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    connectWebSocket();
+    //connectWebSocket();
 
     // Renderovanie sessions
     function renderSessions(sessions) {
