@@ -135,27 +135,27 @@ inicializačný záznam = tento súbor
 nasledujúci logický krok = Krok 11, iba po vlastnej novej inicializačnej bráne
 ```
 
-## Dôkaz prečítania a vykonania metodických pokynov
-
-```text
-#ID=0  R=1 W=1
-#ID=1  R=1 W=1
-#ID=2  R=1 W=1
-#ID=3  R=1 W=1
-#ID=4  R=1 W=1
-#ID=5  R=1 W=1
-#ID=6  R=1 W=1
-#ID=7  R=1 W=1
-#ID=8  R=1 W=1
-#ID=9  R=1 W=1
-#ID=10 R=1 W=1
-#ID=11 R=1 W=1
-#ID=12 R=1 W=1
-#ID=13 R=1 W=1
-#ID=14 R=1 W=1
-```
-
 ```text
 JEDINÝ_NASLEDUJÚCI_POVOLENÝ_KROK=KROK_11
 KROK_11_GATE=CLOSED
 ```
+
+## Tabuľka stavu čítania a vykonávania metodických pokynov
+
+| ID | Metodický pokyn | R | W |
+|---:|---|:---:|:---:|
+| 0 | Povinné nové načítanie vzdialeného autoritatívneho repozitára | 1 | 1 |
+| 1 | Obnova univerzálnej metodiky | 1 | 1 |
+| 2 | Identifikácia projektu | 1 | 1 |
+| 3 | Určenie autoritatívneho zdroja | 1 | 1 |
+| 4 | Praktické overenie prístupov | 1 | 1 |
+| 5 | Obnova projektového kontextu | 1 | 1 |
+| 6 | Overenie skutočného stavu | 1 | 1 |
+| 7 | Vymedzenie predmetu a rozsahu práce | 1 | 1 |
+| 8 | Analýza pred návrhom | 1 | 1 |
+| 9 | Návrh najmenšieho bezpečného riešenia | 1 | 1 |
+| 10 | Implementácia až po analýze | 1 | 1 |
+| 11 | Spätné načítanie po zápise | 1 | 1 |
+| 12 | Validácia výsledku | 1 | 1 |
+| 13 | Záznam metodického úkonu | 1 | 1 |
+| 14 | Ukončenie pracovného kroku | 1 | 1 |
