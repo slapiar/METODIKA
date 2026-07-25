@@ -33,6 +33,10 @@ $showFooter = false;
     <?= csrf_field() ?>
     <button type="submit">Vytvoriť testovací krok</button>
 </form>
+<form method="post" action="<?= site_url('diagnostics/database/create-test-evidence') ?>">
+    <?= csrf_field() ?>
+    <button type="submit">Vytvoriť testovací dôkaz</button>
+</form>
 </div>
 
 <p class="notice">Diagnostika je iba citacia. Migracie neboli spustene.</p>
