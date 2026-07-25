@@ -10,7 +10,6 @@ $showFooter = false;
 <?= $this->section('content') ?>
 <section class="panel">
 <h1>Diagnostika databazy METODIKA</h1>
-<p><strong>VIEW TEST: 2026-07-25-A</strong></p>
 <table class="table">
 <tr><td>Externe prostredie nacitane</td><td class="<?= $externalEnvironmentLoaded ? 'ok' : 'bad' ?>"><?= $externalEnvironmentLoaded ? 'ANO' : 'NIE' ?></td></tr>
 <tr><td>Databazove spojenie</td><td class="<?= $inspection['connection'] ? 'ok' : 'bad' ?>"><?= $inspection['connection'] ? 'OK' : 'NIE' ?></td></tr>
