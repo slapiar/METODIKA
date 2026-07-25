@@ -42,4 +42,11 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
         // $this->session = service('session');
     }
+    public function initController(...$params)
+{
+    parent::initController(...$params);
+
+    \Config\ExternalEnvironment::load();
+}
+
 }

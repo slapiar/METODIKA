@@ -1,4 +1,5 @@
 <?php
+\Config\ExternalEnvironment::load();
 
 /*
  * The environment testing is reserved for PHPUnit testing. It has special
