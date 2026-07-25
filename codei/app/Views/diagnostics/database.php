@@ -23,7 +23,8 @@ $showFooter = false;
 <div class="actions">
 <form method="post" action="<?= site_url('diagnostics/database/run') ?>"><?= csrf_field() ?><button type="submit">Spustit znovu</button></form>
 <form method="post" action="<?= site_url('diagnostics/database/logout') ?>"><?= csrf_field() ?><button type="submit">Odhlasit diagnostiku</button></form>
-<form method="post" action="<?= base_url('diagnostics/database/test-api') ?>">
+<form method="post" action="<?= site_url('diagnostics/database/test-api') ?>">
+    <?= csrf_field() ?>
     <button type="submit">Test API /api/gate/sessions</button>
 </form>
 
