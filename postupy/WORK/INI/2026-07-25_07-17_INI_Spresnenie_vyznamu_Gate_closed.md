@@ -8,7 +8,7 @@
 ## 1. Metodika načítaná: ÁNO
 
 - Načítaný celý aktuálny obsah `postupy/Inicializácia práce.md`.
-- Blob: `c00743e3cbde1685e9bdfe69900e175bf21b59da`.
+- Východiskový blob: `c00743e3cbde1685e9bdfe69900e175bf21b59da`.
 
 ## 2. Projekt a autoritatívny zdroj overený: ÁNO
 
@@ -19,43 +19,50 @@
 ## 3. Vetva a HEAD overené: ÁNO
 
 - Aktuálny vzdialený stav bol načítaný priamo z `main`.
-- Predmetom je iba metodické spresnenie; vykonateľný kód sa nemení.
+- Predmetom bol iba metodický zásah; vykonateľný kód sa nezmenil.
 
 ## 4. Potrebné prístupy prakticky overené: ÁNO
 
-- Čítanie `main` bolo prakticky overené načítaním dokumentu.
-- Zápis bude prakticky overený týmto INI záznamom a následnými metodickými zápismi.
+- Čítanie `main` bolo prakticky overené načítaním dokumentov.
+- Zápis bol prakticky overený vytvorením tohto INI záznamu a následnými metodickými zápismi.
 
 ## 5. Prostredie prakticky overené: ÁNO
 
-- Potrebným prostredím je iba vzdialený GitHub repozitár.
-- Databáza, runtime, Composer, produkcia ani hosting nie sú predmetom úkonu.
+- Potrebným prostredím bol iba vzdialený GitHub repozitár.
+- Databáza, runtime, Composer, produkcia ani hosting neboli predmetom úkonu.
 
 ## 6. Závislosti kroku dostupné: ÁNO
 
-- Dostupné sú aktuálne súbory `postupy/Inicializácia práce.md`, `postupy/README.md` a `CHANGELOG.md`.
+- Dostupné boli aktuálne súbory `postupy/Inicializácia práce.md`, `postupy/README.md` a `CHANGELOG.md`.
 
 ## 7. Predmet a hranice zásahu určené: ÁNO
 
-- Doplniť jednoznačné pravidlo, že `GATE=CLOSED` aktuálne vykonávaného kroku nezastavuje jeho vlastné inicializačné a overovacie úkony.
+- Doplnené bolo jednoznačné pravidlo, že `GATE=CLOSED` aktuálne vykonávaného kroku nezastavuje jeho vlastné inicializačné a overovacie úkony.
 - Zakazuje iba analýzu, návrh, implementáciu a ďalšie úkony, ktoré výslovne vyžadujú otvorenú bránu.
 - Overovacie body označené `NEOVERENÉ` sa majú vykonať a doložiť v rámci aktuálneho kroku.
-- Mimo rozsahu: zmena plánu, vykonateľného kódu, testov, databázy, workflow a produkcie.
+- Mimo rozsahu zostali plán, vykonateľný kód, testy, databáza, workflow a produkcia.
 
 ## 8. Kritérium úspechu určené: ÁNO
 
-- Text jednoznačne rozlíši bránu predchádzajúceho kroku od brány aktuálneho kroku.
-- Odstráni chybnú interpretáciu, že `GATE=CLOSED` aktuálneho kroku zakazuje dokončiť jeho vlastné overovanie.
-- Register a `CHANGELOG.md` budú zosúladené.
+- Text jednoznačne rozlišuje bránu predchádzajúceho kroku od brány aktuálneho kroku.
+- Odstraňuje chybnú interpretáciu, že `GATE=CLOSED` aktuálneho kroku zakazuje dokončiť jeho vlastné overovanie.
+- Register a `CHANGELOG.md` sú zosúladené.
 
 ## 9. Rollback určený: ÁNO
 
 - Vrátiť commity tohto metodického úkonu.
-- Vykonateľný kód ani databáza sa nemenia.
+- Vykonateľný kód ani databáza sa nemenili.
 
 ```text
 GATE=OPEN
 ```
+
+## Výsledok a dôkazy
+
+- `postupy/Inicializácia práce.md`: commit `2bd39fce11001aa3314df11d367cb491a9c7caa3`, blob `262fa71b93fd8059426f8e0fc430a2d9cb623e79`.
+- `postupy/README.md`: commit `178d7209403b0425d62fe47a2f53d273cf78a529`, blob `73cf2511e19b6a4c0715ff3e7c57956113bb3772`.
+- `CHANGELOG.md`: commit `ddcb323365e24234283b3f05de30a2f2c50e567f`, blob `2eef594b77e1af4d8f3951c89087a8e193be9571`.
+- Spätné načítanie potvrdilo správny obsah všetkých troch vzdialených súborov.
 
 ## Dôkaz prečítania a vykonania metodických pokynov
 
@@ -70,9 +77,9 @@ GATE=OPEN
 #ID=7  R=1 W=1
 #ID=8  R=1 W=1
 #ID=9  R=1 W=1
-#ID=10 R=1 W=0
-#ID=11 R=1 W=0
-#ID=12 R=1 W=0
-#ID=13 R=1 W=0
-#ID=14 R=1 W=0
+#ID=10 R=1 W=1
+#ID=11 R=1 W=1
+#ID=12 R=1 W=1
+#ID=13 R=1 W=1
+#ID=14 R=1 W=1
 ```
