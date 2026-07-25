@@ -1,20 +1,29 @@
-name: Krok 7 - Root cause reproduction
+name: Krok 10 - First acceptance regression
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/krok-7-root-cause-reproduction.yml'
+      - 'codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php'
+      - 'codei/app/Commands/ReproduceFirstAcceptanceRootCause.php'
+      - 'codei/tests/unit/FirstAcceptanceServiceTest.php'
   push:
     branches:
       - main
     paths:
-      - .github/workflows/krok-7-root-cause-reproduction.yml
+      - '.github/workflows/krok-7-root-cause-reproduction.yml'
+      - 'codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php'
+      - 'codei/app/Commands/ReproduceFirstAcceptanceRootCause.php'
+      - 'codei/tests/unit/FirstAcceptanceServiceTest.php'
 
 permissions:
   contents: read
 
 jobs:
-  reproduce-root-cause:
-    name: Reproduce on isolated MariaDB
-    runs-on: ubuntu-latest
+  verify-first-acceptance:
+    name: Verify exact reservation on isolated MariaDB
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     services:
@@ -22,7 +31,7 @@ jobs:
         image: mariadb:11.4
         env:
           MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: metodika_krok7
+          MARIADB_DATABASE: metodika_krok10
         ports:
           - 3306:3306
         options: >-
@@ -45,7 +54,7 @@ jobs:
         env:
           fail-fast: true
 
-      - name: Install MariaDB client
+      - name: Verify runtime and install MariaDB client
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends mariadb-client
@@ -57,13 +66,22 @@ jobs:
         working-directory: codei
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Verify PHP syntax
+        run: |
+          php -l codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php
+          php -l codei/app/Commands/ReproduceFirstAcceptanceRootCause.php
+
+      - name: Run focused unit tests
+        working-directory: codei
+        run: vendor/bin/phpunit tests/unit/FirstAcceptanceServiceTest.php
+
       - name: Configure isolated development database
         working-directory: codei
         run: |
           cat > .env <<'ENV'
           CI_ENVIRONMENT=development
           database.default.hostname=127.0.0.1
-          database.default.database=metodika_krok7
+          database.default.database=metodika_krok10
           database.default.username=root
           database.default.password=root
           database.default.DBDriver=MySQLi
@@ -76,7 +94,7 @@ jobs:
 
       - name: Verify isolated MariaDB target
         run: |
-          test "$(mariadb -h 127.0.0.1 -uroot -proot -Nse 'SELECT DATABASE()' metodika_krok7)" = "metodika_krok7"
+          test "$(mariadb -h 127.0.0.1 -uroot -proot -Nse 'SELECT DATABASE()' metodika_krok10)" = "metodika_krok10"
           mariadb -h 127.0.0.1 -uroot -proot -Nse "SELECT ENGINE, SUPPORT FROM information_schema.ENGINES WHERE ENGINE='InnoDB'" | grep -E '^InnoDB[[:space:]]+(DEFAULT|YES)$'
 
       - name: Run migrations M1-M8
@@ -89,10 +107,8 @@ jobs:
         working-directory: codei
         run: php spark metodika:verify-question-schema
 
-      - name: Reproduce root cause through unchanged application path
+      - name: Verify first acceptance regression
         working-directory: codei
         env:
           METODIKA_ROOT_CAUSE_REPRO_ENABLED: '1'
         run: php spark metodika:reproduce-first-acceptance-root-cause
-
-# Trigger PHP 8.4 reprodukcie: 2026-07-24
