@@ -126,11 +126,12 @@ class GateSupervisor extends BaseController
         // Placeholder pre tvoju diagnostickú logiku
         return $this->response->setJSON(['status' => 'step submitted']);
     }
-}
-public function getAllSessions()
+    public function getAllSessions()
 {
     $sessionModel = new IniSessionModel();
     return $this->response->setJSON(
         $sessionModel->orderBy('created_at', 'DESC')->findAll()
     );
 }
+}
+
