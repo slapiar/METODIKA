@@ -93,6 +93,21 @@ CHÝBAJÚCI_DÔKAZ=<presný dôkaz>
 POVOLENÝ_ĎALŠÍ_ÚKON=<iba overenie chýbajúceho predpokladu>
 ```
 
+`GATE=CLOSED` aktuálne vykonávaného kroku nezastavuje ani nezakazuje jeho vlastné inicializačné a overovacie úkony. Práve naopak: body označené `NIE` alebo `NEOVERENÉ` určujú, ktoré chýbajúce predpoklady sa musia v rámci aktuálneho kroku prakticky overiť, vykonať a doložiť, pokiaľ tým ešte nevzniká predmet práce blokovaný bránou.
+
+Pred začatím aktuálneho kroku sa kontroluje `GATE=OPEN` predchádzajúceho kroku. Po začatí aktuálneho kroku jeho vlastné `GATE=CLOSED` blokuje iba analýzu, návrh, implementáciu, test predmetu práce, zásah do prostredia alebo ďalší krok, ktoré výslovne vyžadujú otvorenú bránu. Neblokuje dokončenie povinného overovania bodov 1 až 9 potrebného na otvorenie tejto brány.
+
+Platí:
+
+```text
+GATE predchádzajúceho kroku = OPEN
+→ aktuálny krok sa môže začať
+→ jeho body NIE / NEOVERENÉ sa musia vykonať a doložiť
+→ GATE aktuálneho kroku zostáva CLOSED počas overovania
+→ po deviatich doložených hodnotách ÁNO sa otvorí
+→ až potom môže nasledovať analýza, návrh a implementácia
+```
+
 Overovanie chýbajúceho predpokladu nesmie samo vykonať predmet práce, ktorý brána blokuje.
 
 ---
