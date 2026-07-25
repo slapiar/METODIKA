@@ -316,7 +316,8 @@ Ak sa mení dokument v `postupy/` alebo `poznámky/`, v tom istom pracovnom krok
 
 História sa neopravuje prepísaním významu. Dopĺňa sa novou udalosťou, ktorá pôvodný stav potvrdí, nahradí, zneplatní alebo opraví.
 
-Inicializačný záznam musí byť uvedený v pracovnom zázname alebo v `CHANGELOG.md` ako dôkaz otvorenia brány. Inicializačný záznam musí byť na konci opatrený dôkazom o dôkladnom prečítaní a naplnení všetkých pokynov tohto súboru, nasledovne: #ID (-číslo medodického pokynu v tomto súbore), R (- prečítané) =[1/0], W (-vykonané/zapísané) =[1/0]. Tento záznam nemá vplyv na stav brány vývojového alebo realizovaného kroku projektu.
+Inicializačný záznam musí byť uvedený v pracovnom zázname alebo v `CHANGELOG.md` ako dôkaz otvorenia brány. 
+Inicializačný záznam musí byť na konci opatrený dôkazom o dôkladnom prečítaní a naplnení všetkých pokynov tohto súboru, nasledovne: #ID (-číslo medodického pokynu v tomto súbore), R (- prečítané) =[1/0], W (-vykonané/zapísané) =[1/0]. Tento záznam nemá vplyv na stav brány vývojového alebo realizovaného kroku projektu.
 
 ## 14. Ukončenie pracovného kroku
 
