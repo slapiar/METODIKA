@@ -75,7 +75,7 @@ jobs:
         working-directory: codei
         run: |
           set +e
-          vendor/bin/phpunit tests/unit/FirstAcceptanceServiceTest.php > phpunit-krok10.log 2>&1
+          vendor/bin/phpunit --no-coverage tests/unit/FirstAcceptanceServiceTest.php > phpunit-krok10.log 2>&1
           status=$?
           cat phpunit-krok10.log
           exit "$status"
