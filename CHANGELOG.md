@@ -8,6 +8,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-25
 
+### Spresnenie významu `GATE=CLOSED`
+
+- metodický úkon otvoril INI záznam [`postupy/WORK/INI/2026-07-25_07-17_INI_Spresnenie_vyznamu_Gate_closed.md`](postupy/WORK/INI/2026-07-25_07-17_INI_Spresnenie_vyznamu_Gate_closed.md),
+- v [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) bolo výslovne oddelené `GATE=OPEN` predchádzajúceho kroku od `GATE=CLOSED` aktuálne vykonávaného kroku,
+- `GATE=CLOSED` aktuálneho kroku neblokuje vykonanie a doloženie jeho vlastných bodov 1 až 9; blokuje až analýzu, návrh, implementáciu, test predmetu práce, zásah do prostredia alebo ďalší krok, ktoré vyžadujú otvorenú bránu,
+- register [`postupy/README.md`](postupy/README.md) bol zosúladený,
+- vykonateľný kód, testy, databáza, workflow ani produkcia sa nemenili.
+
 ### Záväzný plán dňa a metodické otvorenie práce
 
 - po samostatnej inicializačnej bráne vznikol riadny záväzný plán [`postupy/PLAN/2026-07-25_05-18_Plan_prace.md`](postupy/PLAN/2026-07-25_05-18_Plan_prace.md),
