@@ -276,7 +276,7 @@ Návrh môže vzniknúť až po otvorení inicializačnej brány. Nemožno najpr
 
 Implementácia nesmie predbehnúť metodiku, inicializačnú bránu, analýzu ani potvrdené významové vzťahy. Databázová a softvérová štruktúra musí byť ich dôsledkom, nie náhradou.
 
-Pred prvým zápisom sa ešte raz musí overiť, že:
+Pred prvým zápisom sa ešte raz musí overiť, GATE predošlého kroku že:
 
 ```text
 GATE=OPEN
