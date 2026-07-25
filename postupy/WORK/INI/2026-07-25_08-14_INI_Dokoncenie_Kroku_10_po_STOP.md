@@ -96,6 +96,45 @@ GATE=OPEN
 POVOLENÝ_ĎALŠÍ_ÚKON=analýza aktuálnych dotknutých zdrojov a návrh najmenšej funkčnej opravy v presných hraniciach Kroku 10
 ```
 
+## Výsledok vykonania Kroku 10
+
+```text
+KROK_10=SPLNENÉ
+FUNKČNÝ_COMMIT=c90ae562a859de9fe0b2174f39e924c7f7bc6a4e
+VALIDOVANÝ_PR_SHA=ca765c737bc5dffb90361fb89b22f5b00e6b97f8
+WORKFLOW_RUN=30148480939
+WORKFLOW_JOB=89654680309
+VALIDÁCIA=SUCCESS
+PRVÝ_TOK=RESERVATION_CREATED
+DRUHÝ_TOK=ALREADY_EXISTS
+DUPLICITNÝ_HISTORY_RUN=false
+CLEANUP=true
+```
+
+Vykonané a overené:
+
+- analýza potvrdila nekontrolovaný výsledok `insert()` pri `DBDebug=false` a nepresný postcheck iba podľa `REQUEST_REFERENCE`,
+- návrh obmedzil zásah na repository adapter, regresný príkaz a jeho validačný workflow,
+- implementácia kontroluje `insert()`, rozlišuje kód `1062` a povoľuje `CREATED` iba po presnej zhode `REQUEST_REFERENCE + payload_fingerprint + derivation_reference`,
+- výsledné súbory boli spätne načítané priamo z `main`,
+- regresná Validácia prešla nad PHP 8.4, Composerom 2, MariaDB 11.4, migráciami M1–M8 a dvoma nezávislými MySQLi spojeniami,
+- pracovný výsledok je zaznamenaný v `postupy/WORK/2026-07-25_09-01_Krok_10_Najmensia_funkcna_oprava_rezervacie.md`,
+- checkpoint je v `postupy/2026-07-25_09-05_CHECKPOINT-KROK-10-PRESNA-REZERVACIA.md`,
+- záväzný plán, register `postupy/README.md` a `CHANGELOG.md` boli zosúladené,
+- Krok 11 nebol otvorený.
+
+## Ukončenie pracovného kroku
+
+```text
+čo sa vykonalo = najmenšia funkčná oprava presnej rezervácie prvého prijatia
+čo sa zmenilo = repository adapter + regresný príkaz + trvalý validačný workflow
+čo zostáva otvorené = úplná lokálna a integračná Validácia Kroku 11
+pretrvávajúce riziko = úplný end-to-end diagnostický tok ešte nebol validovaný v rozsahu Kroku 11
+rollback = revert commitu c90ae562a859de9fe0b2174f39e924c7f7bc6a4e
+inicializačný záznam = tento súbor
+nasledujúci logický krok = Krok 11, iba po vlastnej novej inicializačnej bráne
+```
+
 ## Dôkaz prečítania a vykonania metodických pokynov
 
 ```text
@@ -107,13 +146,16 @@ POVOLENÝ_ĎALŠÍ_ÚKON=analýza aktuálnych dotknutých zdrojov a návrh najme
 #ID=5  R=1 W=1
 #ID=6  R=1 W=1
 #ID=7  R=1 W=1
-#ID=8  R=1 W=0
-#ID=9  R=1 W=0
-#ID=10 R=1 W=0
-#ID=11 R=1 W=0
-#ID=12 R=1 W=0
-#ID=13 R=1 W=0
-#ID=14 R=1 W=0
+#ID=8  R=1 W=1
+#ID=9  R=1 W=1
+#ID=10 R=1 W=1
+#ID=11 R=1 W=1
+#ID=12 R=1 W=1
+#ID=13 R=1 W=1
+#ID=14 R=1 W=1
 ```
 
-Hodnoty `W=0` označujú úkony, ktoré nasledujú až po otvorení projektovej brány.
+```text
+JEDINÝ_NASLEDUJÚCI_POVOLENÝ_KROK=KROK_11
+KROK_11_GATE=CLOSED
+```
