@@ -31,6 +31,11 @@ $routes->post(
     'DiagnosticsGateStepController::create',
     ['filter' => 'csrf']
 );
+$routes->post(
+    'diagnostics/database/create-test-evidence',
+    'DiagnosticsGateEvidenceController::create',
+    ['filter' => 'csrf']
+);
 
 $routes->group('api/gate', function($routes) {
 
