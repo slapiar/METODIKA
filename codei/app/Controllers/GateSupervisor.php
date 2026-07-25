@@ -133,5 +133,4 @@ class GateSupervisor extends BaseController
         $sessionModel->orderBy('created_at', 'DESC')->findAll()
     );
 }
-
-
+}
