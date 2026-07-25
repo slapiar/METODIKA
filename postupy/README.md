@@ -32,6 +32,10 @@ Prívlastok `ZÁVÄZNÝ` nemení stav dokumentu na autoritatívnu definíciu. Ur
 
 | Dokument | Stav | Autoritatívny cieľ alebo poznámka |
 |---|---|---|
+| `PLAN/2026-07-25_05-18_Plan_prace.md` | PRACOVNÝ — **ZÁVÄZNÝ** | Riadny plán práce na 2026-07-25. Kroky 1 až 9 sú `SPLNENÉ`; jediným nasledujúcim povoleným krokom je Krok 10. Nahradil a po pokyne používateľa odstránil predbežný plán. |
+| `WORK/INI/2026-07-25_05-17_INI_Zavazny_plan_2026-07-25.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre vytvorenie riadneho záväzného plánu na 2026-07-25. |
+| `WORK/2026-07-25_05-20_Vytvorenie_zavazneho_planu.md` | PRACOVNÝ | Pracovný záznam vytvorenia, spätného načítania a evidenčného uzatvárania dnešného plánu. |
+| `WORK/INI/2026-07-25_05-33_INI_Uzavretie_planu_a_otvorenie_prace.md` | PRACOVNÝ | Dôkazový záznam otvorenia brány pre odstránenie predbežného plánu, dokončenie evidencie a metodické otvorenie práce podľa dnešného plánu. |
 | `WORK/2026-07-24_15-50_Krok_9_Audit_bariery_load_timeoutu.md` | PRACOVNÝ | Uzavretý záznam Kroku 9 s výsledkom `SPLNENÉ`: dvojprocesový test rozlíšil raw stav od projekcie `load()`, potvrdil ochranu pred falošným timeoutom a zdôvodnil ponechanie `load()` bez zmeny. |
 | `WORK/2026-07-24_13-45_Krok_8_Oprava_diagnostickeho_rozlisenia.md` | PRACOVNÝ | Uzavretý záznam Kroku 8 s výsledkom `SPLNENÉ`: diagnostické zlyhania sú rozlíšené podľa fázy a triedy chyby; interný log nesie úplný kontext a verejný dokument iba bezpečný kód. |
 | `WORK/2026-07-24_13-25_Krok_7_Reprodukcia_korenovej_priciny_mimo_produkcie.md` | PRACOVNÝ | Uzavretý záznam Kroku 7 s výsledkom `SPLNENÉ`: koreňová príčina bola reprodukovaná v izolovanej MariaDB 11.4 cez reálnu MySQLi/InnoDB cestu, s potvrdeným rollbackom a cleanupom. |
