@@ -8,6 +8,14 @@ on:
       - 'codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php'
       - 'codei/app/Commands/ReproduceFirstAcceptanceRootCause.php'
       - 'codei/tests/unit/FirstAcceptanceServiceTest.php'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/krok-7-root-cause-reproduction.yml'
+      - 'codei/app/Infrastructure/Persistence/QuestionDerivation/RequestReferenceRepository.php'
+      - 'codei/app/Commands/ReproduceFirstAcceptanceRootCause.php'
+      - 'codei/tests/unit/FirstAcceptanceServiceTest.php'
 
 permissions:
   contents: read
