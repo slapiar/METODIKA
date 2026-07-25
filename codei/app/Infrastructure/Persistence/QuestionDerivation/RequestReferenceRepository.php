@@ -44,7 +44,7 @@ final class RequestReferenceRepository implements RequestReferenceRepositoryPort
         $timestamp = $this->formatDateTime($reservedAt);
 
         try {
-            $this->db->table('question_derivation_request_reservations')->insert([
+            $inserted = $this->db->table('question_derivation_request_reservations')->insert([
                 'request_reference' => $requestReference,
                 'payload_fingerprint' => $payloadFingerprint,
                 'derivation_reference' => $derivationReference,
@@ -57,17 +57,35 @@ final class RequestReferenceRepository implements RequestReferenceRepositoryPort
                 throw $exception;
             }
 
-            $existing = $this->findByRequestReference($requestReference);
-            if ($existing === null) {
-                throw new RuntimeException('Kolízia rezervácie neviedla k nájdeniu existujúcej REQUEST_REFERENCE.', 0, $exception);
+            return $this->alreadyExistingReservation($requestReference, $exception);
+        }
+
+        if ($inserted !== true) {
+            $error = $this->db->error();
+            $errorCode = (int) ($error['code'] ?? 0);
+
+            if ($errorCode !== 1062) {
+                throw new DatabaseException(
+                    'Vytvorenie rezervácie prvého prijatia zlyhalo bez databázovej výnimky.',
+                    $errorCode,
+                );
             }
 
-            return new ReservationResult(ReservationResult::ALREADY_EXISTS, $existing);
+            return $this->alreadyExistingReservation($requestReference);
         }
 
         $created = $this->findByRequestReference($requestReference);
         if ($created === null) {
             throw new RuntimeException('Vytvorenú rezerváciu sa nepodarilo spätne načítať.');
+        }
+
+        if (
+            $created->payloadFingerprint !== $payloadFingerprint
+            || $created->derivationReference !== $derivationReference
+        ) {
+            throw new RuntimeException(
+                'Vytvorená rezervácia nezodpovedá presnej korelácii REQUEST_REFERENCE, payload_fingerprint a derivation_reference.',
+            );
         }
 
         return new ReservationResult(ReservationResult::CREATED, $created);
@@ -176,6 +194,22 @@ SQL,
         )->getRowArray();
 
         return is_array($row) ? $row : null;
+    }
+
+    private function alreadyExistingReservation(
+        string $requestReference,
+        ?DatabaseException $exception = null,
+    ): ReservationResult {
+        $existing = $this->findByRequestReference($requestReference);
+        if ($existing === null) {
+            throw new RuntimeException(
+                'Kolízia rezervácie neviedla k nájdeniu existujúcej REQUEST_REFERENCE.',
+                0,
+                $exception,
+            );
+        }
+
+        return new ReservationResult(ReservationResult::ALREADY_EXISTS, $existing);
     }
 
     private function updateState(
