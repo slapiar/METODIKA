@@ -21,6 +21,8 @@ overované ≠ overené
 overenie bez dôkazu = NEOVERENÉ
 predpoklad ≠ skutočný stav
 existencia nástroja ≠ pripravenosť prostredia
+pamäť ≠ aktuálny vzdialený stav
+register ≠ úplný obsah zdroja
 ```
 
 Pred každým samostatným pracovným krokom, metodickým úkonom, opravou, migráciou, testom, diagnostikou, nasadením alebo inou činnosťou sa vytvorí explicitný inicializačný záznam v:
@@ -97,6 +99,40 @@ Overovanie chýbajúceho predpokladu nesmie samo vykonať predmet práce, ktorý
 
 # Povinný postup
 
+## 0. Povinné nové načítanie vzdialeného autoritatívneho repozitára
+
+Pred otvorením každého nového kroku sa musí vykonať nové čítanie vzdialeného autoritatívneho repozitára a jeho autoritatívnej vetvy. Toto overenie sa nesmie nahradiť pamäťou, predchádzajúcou konverzáciou, internou sumarizáciou, registrom, lokálnou kópiou ani údajom z predchádzajúceho kroku.
+
+Povinne sa načíta a zaznamená najmenej:
+
+- aktuálny vzdialený HEAD autoritatívnej vetvy,
+- relevantná história zmien od posledného uzavretého kroku,
+- aktuálny denný plán v celom rozsahu,
+- všetky INI, WORK a checkpoint záznamy, na ktoré krok nadväzuje,
+- aktuálny obsah všetkých zdrojových, konfiguračných, databázových a metodických súborov dotknutých krokom,
+- aktuálny register a `CHANGELOG.md`, ak sú relevantné pre určenie stavu,
+- rozdiel medzi vzdialeným repozitárom, lokálnym pracovným stavom, produkciou a historickým release.
+
+Platí:
+
+```text
+načítaný názov súboru ≠ načítaný úplný obsah
+načítaný register ≠ načítané evidované dokumenty
+starší blob alebo commit ≠ aktuálny vzdialený stav
+pamäť o výsledku ≠ dôkaz uložený v repozitári
+lokálny HEAD ≠ vzdialený autoritatívny HEAD
+```
+
+Ak ktorýkoľvek potrebný dokument alebo zdroj nebol načítaný v úplnom rozsahu, údaj je neúplný, obsah si odporuje alebo sa vzdialený stav líši od pamäte či predchádzajúcej sumarizácie, platí:
+
+```text
+GATE=CLOSED
+BLOKUJÚCI_BOD=neúplne načítaný alebo rozporný vzdialený stav
+POVOLENÝ_ĎALŠÍ_ÚKON=iba dokončenie čítania a odstránenie rozporu
+```
+
+Ďalší krok sa nesmie otvoriť, kým nie sú kompletné údaje načítané priamo z autoritatívneho vzdialeného zdroja a rozpor nie je výslovne vyriešený dôkazom. Pri rozpore má aktuálny obsah autoritatívneho vzdialeného repozitára prednosť pred pamäťou, konverzáciou, registrom aj starším záznamom; starší záznam však zostáva historickým dôkazom a nesmie sa potichu prepisovať.
+
 ## 1. Obnova univerzálnej metodiky
 
 Znovu načítať aktuálny obsah univerzálnej metodiky a autoritatívnych dokumentov. Nespoliehať sa iba na pamäť predchádzajúcej práce.
@@ -152,6 +188,8 @@ Prečítať:
 - aktuálny stav priamo v zdrojoch.
 
 Predchádzajúca konverzácia alebo interná pamäť slúži iba ako navigácia k zdrojom. Nenahrádza ich nové načítanie.
+
+Register slúži ako navigácia a evidencia stavu. Nenahrádza úplné čítanie dokumentov, na ktoré odkazuje, ani kontrolu ich aktuálneho vzdialeného obsahu.
 
 ## 6. Overenie skutočného stavu
 
@@ -318,12 +356,13 @@ Predčasne vytvorený artefakt sa nesmie automaticky považovať za platný výs
 
 # Základné pravidlo
 
-> Najprv dôkazom otvoriť inicializačnú bránu, potom obnoviť kontext, analyzovať a až následne navrhnúť alebo vykonať zmenu.
+> Najprv načítať úplný aktuálny vzdialený stav, potom dôkazom otvoriť inicializačnú bránu, obnoviť kontext, analyzovať a až následne navrhnúť alebo vykonať zmenu.
 
 Skrátené poradie:
 
 ```text
 INI záznam
+→ aktuálny vzdialený repozitár a úplné údaje
 → metodika
 → projekt
 → autoritatívny zdroj
