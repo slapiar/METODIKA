@@ -8,6 +8,18 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-25
 
+### Krok 11 — otvorenie validačnej brány existujúcimi dôkazmi
+
+- vznikol a bol dokončený samostatný inicializačný záznam [`postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md`](postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md),
+- nová brána Kroku 11 nepreberá stav `GATE=OPEN` predchádzajúceho kroku; používa však už existujúce praktické dôkazy z Krokov 7 až 10 po overení, že ich technické predpoklady zostali nezmenené,
+- porovnanie funkčného commitu `c90ae562a859de9fe0b2174f39e924c7f7bc6a4e` s HEAD pred otvorením brány `23cdcee06dd25427ecfab96cd5ea0ec4a0e4ec02` potvrdilo iba metodické a dokumentačné zmeny; vykonateľný kód, testy, migrácie, `composer.lock` a workflowy sa nezmenili,
+- potrebné prístupy dokladajú administrátorské oprávnenia repozitára, úspešný zápis a read-back, opakovaný environment job `89652985988` a úspešná PR Validácia runom `30148480939`, jobom `89654680309`,
+- prostredie dokladajú existujúce úspešné behy nad PHP 8.4, Composerom 2, `pcntl_fork`, MySQLi, izolovanou MariaDB 11.4, migráciami M1–M8, rollbackom a cleanupom vrátane runu Kroku 9 `30098298849`,
+- dostupnosť závislostí bola doložená presnou mapou všetkých deviatich blokov Kroku 11; známe medzery, najmä samostatná logout regresia a skutočne paralelný HTTP variant, sú predmetom analýzy a Validácie Kroku 11, nie chýbajúcim predpokladom otvorenia,
+- všetkých deväť inicializačných bodov je `ÁNO`; `GATE=OPEN`,
+- povolená je iba analýza a následná úplná lokálna a integračná Validácia Kroku 11; release, produkčný run a otvorenie Kroku 12 zostávajú zakázané,
+- register [`postupy/README.md`](postupy/README.md) bol zosúladený; vykonateľný kód, testy, databázová schéma, workflowy a produkčné prostredie sa týmto metodickým úkonom nemenili.
+
 ### Náprava chýbajúcej tabuľky metodických úkonov
 
 - pri kontrole uzavretia Kroku 10 sa zistilo, že jeho INI záznam obsahoval iba netabuľkový blok `#ID / R / W`, hoci základné pravidlo [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) prikazuje vypísať na obrazovku tabuľku stavu čítania a vykonávania pokynov a uložiť ju na koniec INI záznamu,
