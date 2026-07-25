@@ -3,7 +3,7 @@
 ## Stav brány
 
 ```text
-GATE=CLOSED
+GATE=OPEN
 ```
 
 ## Dôvod novej inicializácie
@@ -14,14 +14,37 @@ Pôvodná brána Kroku 11 bola otvorená nad autoritatívnym HEAD:
 39f054bd54d931cc6cc68b1d4c4cc3d65a30d1b0
 ```
 
-Po otvorení brány a počas Validácie pribudol na autoritatívnej vetve `main` nový commit:
+Po otvorení brány a počas práce pribudli na autoritatívnej vetve `main` dva súvisiace commity:
 
 ```text
 a0018df22ecdcb3017939dc2077e442468c88080
 Doplnenie o stránku supervízora metodiky 1
+
+60937e7922c672f84c9591850347fe797679c9e9
+Oprava supervízora 1
 ```
 
-Podľa bodu 10 dokumentu `postupy/Inicializácia práce.md` zmena HEAD po otvorení brány ruší jej platnosť a vyžaduje novú inicializáciu.
+Podľa bodu 10 dokumentu `postupy/Inicializácia práce.md` zmena HEAD po otvorení brány zrušila platnosť pôvodnej brány a vyžiadala túto novú inicializáciu.
+
+## Historická korekcia neúplného prvého zápisu
+
+Pri prvom vytvorení tohto INI bol ako aktuálny HEAD zapísaný medziHEAD `a0018df2...`. Toto tvrdenie bolo neúplné: v čase zápisu už existoval nadväzujúci opravný commit `60937e79...`.
+
+Správna autoritatívna postupnosť je:
+
+```text
+39f054bd54d931cc6cc68b1d4c4cc3d65a30d1b0
+→ a0018df22ecdcb3017939dc2077e442468c88080
+→ 60937e7922c672f84c9591850347fe797679c9e9
+→ 5270774365dcb59b4e4951fc72fd7d07b0764332
+```
+
+```text
+HEAD_PRED_TÝMTO_INI=60937e7922c672f84c9591850347fe797679c9e9
+HEAD_PO_VYTVORENÍ_INI=5270774365dcb59b4e4951fc72fd7d07b0764332
+```
+
+Pôvodný neúplný údaj sa nepoužíva ako dôkaz ďalšej práce.
 
 ## Stav rozpracovaných artefaktov
 
@@ -35,52 +58,73 @@ RELEASE=ZAKÁZANÝ
 KROK_12_GATE=CLOSED
 ```
 
-Na pracovnej vetve vznikli testovacie artefakty:
+PR #3 obsahuje užitočné testovacie artefakty, ale nie je čistým kandidátom na pokračovanie:
 
-- `.github/workflows/krok-11-full-validation.yml`,
-- `codei/tests/integration/krok11-http-e2e.sh`,
-- `codei/tests/session/DiagnosticsAuthenticationFlowTest.php`,
-- rozpracovaný presný patch zastaraných očakávaní v `DiagnosticsControllerTest.php`.
+- je založený na starom base,
+- prvý validačný beh preukázal tri zastarané očakávania v existujúcom session teste,
+- na vetve pribudol jednorazový pomocný patch workflow, ktorý nevytvoril výsledný patch commit,
+- PR preto nebude zlúčený v tomto stave.
 
-Žiadny z týchto artefaktov sa po zmene autoritatívneho HEAD automaticky nepovažuje za platný výsledok Kroku 11. O ich ponechaní, úprave, rebase alebo odstránení sa rozhodne až po úplnom načítaní a overení nového stavu.
+Po otvorení tejto brány sa PR #3 uzavrie ako prekonaný a testovacie artefakty sa prenesú na čistú vetvu vytvorenú z aktuálneho `main`.
 
-## Aktuálny vzdialený stav
+## Úplný výsledný stav supervízorských zmien
 
-```text
-projekt=METODIKA
-repozitár=slapiar/METODIKA
-autoritatívna_vetva=main
-aktuálny_HEAD=a0018df22ecdcb3017939dc2077e442468c88080
-technický_koreň=/codei
-čas_overenia=2026-07-25 10:33 Europe/Bratislava
-```
+Čistý rozdiel `39f054bd... → 60937e79...` tvorí šesť súborov:
 
-Rozdiel oproti HEAD pôvodnej brány tvorí jeden commit a šesť súborov:
+| Súbor | Výsledný stav | Vplyv na Krok 11 |
+|---|---|---|
+| `codei/app/Config/Boot/development.php` | funkčne pôvodný obsah; iba formátová zmena | žiadny |
+| `codei/app/Config/Boot/production.php` | funkčne pôvodný obsah; iba formátová zmena | žiadny |
+| `codei/app/Config/Database.php` | predvolený host `localhost → 127.0.0.1` | kompatibilný; validačné workflowy už používajú `127.0.0.1` explicitne |
+| `codei/app/Config/Routes.php` | pôvodné diagnostické routes zachované; pridaná skupina `api/gate` | diagnostická cesta Kroku 11 nezmenená |
+| `codei/app/Controllers/GateSupervisor.php` | nový samostatný kontrolér | mimo rozsahu Kroku 11; diagnostické endpointy ho nepoužívajú |
+| `codei/app/app/Models/IniStepRegisterModel.php` | nový model pod samostatnou chybnou cestou | mimo rozsahu Kroku 11; nie je závislosťou diagnostickej Validácie |
 
-| Súbor | Stav | Zmena |
-|---|---|---:|
-| `codei/app/Config/Boot/development.php` | modified | +4 / −0 |
-| `codei/app/Config/Boot/production.php` | modified | +3 / −0 |
-| `codei/app/Config/Database.php` | modified | +1 / −1 |
-| `codei/app/Config/Routes.php` | modified | +5 / −0 |
-| `codei/app/Controllers/GateSupervisor.php` | added | +116 / −0 |
-| `codei/app/app/Models/IniStepRegisterModel.php` | added | +36 / −0 |
+Statické čítanie zároveň preukázalo otvorené nedostatky nového supervízorského modulu:
 
-Zmeny sa dotýkajú bootovania prostredia, databázovej konfigurácie, routovania a nových aplikačných komponentov. Preto priamo zasahujú do predpokladov environmentálneho, session, databázového a HTTP E2E overenia Kroku 11.
+- `IniSessionModel` sa v aktuálnom repozitári nenachádza,
+- `IniStepRegisterModel` je uložený pod `codei/app/app/Models/`, nie pod očakávaným `codei/app/Models/`,
+- nenašla sa migrácia ani schéma tabuľky `ini_step_register`,
+- nové `api/gate` routes nemajú v tomto commite doloženú samostatnú autorizáciu ani testy.
+
+Tieto zistenia sa v Kroku 11 neopravujú. Sú oddeleným predmetom budúceho auditu; nesmú sa zamiešať do Validácie diagnostickej súbežnej cesty.
+
+## Kontinuita prostredia a závislostí Kroku 11
+
+Od pôvodného validovaného základu sa nezmenili:
+
+- `composer.json` ani `composer.lock`,
+- migrácie M1–M8,
+- databázová schéma otázkového odvodzovania,
+- `DiagnosticsController`, `DiagnosticsConcurrencyStartController`, run store, validator ani persistence služby,
+- existujúce unit, session a integračné testy diagnostickej cesty,
+- workflowy Krokov 7 až 10,
+- cleanup a rollback kontrakty.
+
+Existujúce praktické dôkazy preto zostávajú použiteľné:
+
+- PHP 8.4 a Composer 2,
+- `intl`, `mbstring`, `mysqli`, `pcntl` a `MYSQLI_ASYNC`,
+- izolovaná MariaDB 11.4 a InnoDB,
+- migrácie M1–M8 a overenie schémy,
+- dve nezávislé databázové spojenia,
+- dvojprocesový file-store test,
+- transakčný rollback,
+- databázový a súborový cleanup.
 
 ## Inicializačná tabuľka
 
 | Bod | Stav | Čo bolo overené | Konkrétny výsledok a dôkaz | Zostáva neoverené |
 |---|---|---|---|---|
-| 1. Metodika načítaná | ÁNO | Úplný aktuálny obsah `postupy/Inicializácia práce.md`, najmä bod 10 a STOP pravidlo | blob `262fa71b93fd8059426f8e0fc430a2d9cb623e79`; zmenený HEAD ruší pôvodnú bránu | nič |
-| 2. Projekt a autoritatívny zdroj overený | ÁNO | Projekt METODIKA, repozitár `slapiar/METODIKA`, vetva `main`, koreň `/codei` | aktuálny vzdialený repozitár a projektový register | nič |
-| 3. Vetva a HEAD overené | ÁNO | Nový autoritatívny HEAD a rozdiel od pôvodnej brány | `39f054bd... → a0018df2...`; jeden commit, šesť dotknutých súborov | nič |
-| 4. Potrebné prístupy prakticky overené | ÁNO | GitHub čítanie, zápis a administrátorské oprávnenie | vytvorenie tohto INI; predchádzajúce praktické čítanie, zápis a Actions operácie | spätné načítanie tohto INI |
-| 5. Prostredie prakticky overené | NEOVERENÉ | Predchádzajúce dôkazy prostredia boli platné pre starší boot a konfiguráciu | nový commit mení oba boot súbory a `Database.php` | úplný obsah zmien; načítanie `.env`; aktuálny PHP/Composer/MariaDB beh; migrácie; izolácia; rollback; cleanup |
-| 6. Závislosti kroku dostupné | NEOVERENÉ | Zistený zoznam šiestich zmenených súborov a existencia PR #3 | nové routes, kontrolér a model menia zdrojový stav testovaný Krokom 11 | úplný obsah všetkých nových a súvisiacich súborov; modelové a databázové závislosti; syntax; kompatibilita s PR #3 |
-| 7. Predmet a hranice zásahu určené | ÁNO | Predmetom je iba obnova platnosti inicializácie Kroku 11 po zmene HEAD | bez testu, návrhu, rebase, merge, release alebo produkcie pred `GATE=OPEN` | nič |
-| 8. Kritérium úspechu určené | ÁNO | Najprv potvrdiť úplný nový stav a kompatibilitu všetkých deviatich blokov; následne zachovať pôvodné binárne kritérium Kroku 11 | `DB_UNIQUENESS=true AND OUTCOMES=CREATED+ALREADY_EXISTS AND CLEANUP=true AND STATE=COMPLETED_SUCCESS` | praktické splnenie až po novej otvorenej bráne |
-| 9. Rollback určený | ÁNO | Rozpracovaný PR sa nezlučuje; starý validačný beh sa nepoužije; podľa dôkazu sa vetva rebaseuje, opraví alebo odstráni | produkčný commit Kroku 10 sa automaticky nevracia | presné rozhodnutie o PR #3 po overení bodov 5 a 6 |
+| 1. Metodika načítaná | ÁNO | Úplný aktuálny obsah `postupy/Inicializácia práce.md`, bod 10 a STOP pravidlo | blob `262fa71b93fd8059426f8e0fc430a2d9cb623e79` | nič |
+| 2. Projekt a autoritatívny zdroj overený | ÁNO | Projekt METODIKA, `slapiar/METODIKA`, vetva `main`, koreň `/codei` | aktuálny vzdialený repozitár a projektový register | nič |
+| 3. Vetva a HEAD overené | ÁNO | Úplná následnosť od pôvodnej brány po nový INI | `39f054bd... → a0018df2... → 60937e79... → 52707743...` | HEAD znovu skontrolovať bezprostredne pred prvým zápisom na novú vetvu |
+| 4. Potrebné prístupy prakticky overené | ÁNO | GitHub čítanie, zápis, read-back a Actions oprávnenia | vytvorenie a spätné načítanie tohto INI; predchádzajúce joby a PR operácie | nič |
+| 5. Prostredie prakticky overené | ÁNO | Výsledné boot a DB zmeny, kontinuita Composeru, MariaDB, migrácií, izolácie, rollbacku a cleanupu | boot po oprave funkčne pôvodný; DB host je zhodný s explicitným workflow nastavením; dôkazy Krokov 7 až 10 zostávajú vecne platné | nový spoločný validačný beh je predmetom Kroku 11, nie predpokladom tejto brány |
+| 6. Závislosti kroku dostupné | ÁNO | Všetkých deväť diagnostických blokov a ich aktuálne zdroje; kompatibilita so supervízorskou zmenou | diagnostické zdroje, testy, migrácie a workflowy nezmenené; nové `api/gate` komponenty sú oddelené a mimo rozsahu | ich vlastný audit nepatrí do Kroku 11 |
+| 7. Predmet a hranice zásahu určené | ÁNO | Iba úplná lokálna a integračná Validácia diagnostickej súbežnej cesty | bez opráv supervízora, release, nasadenia alebo produkcie | nič |
+| 8. Kritérium úspechu určené | ÁNO | Deväť blokov a spoločné binárne kritérium | `DB_UNIQUENESS=true AND OUTCOMES=CREATED+ALREADY_EXISTS AND CLEANUP=true AND STATE=COMPLETED_SUCCESS` | praktické splnenie v novom autoritatívnom behu |
+| 9. Rollback určený | ÁNO | PR #3 sa uzavrie bez merge; vznikne čistá vetva z aktuálneho `main`; pri neúspechu sa odstránia iba testovacie artefakty a dáta | produkčný commit Kroku 10 sa automaticky nevracia | nič |
 
 ## Vyhodnotenie brány
 
@@ -89,30 +133,37 @@ Zmeny sa dotýkajú bootovania prostredia, databázovej konfigurácie, routovani
 2=ÁNO
 3=ÁNO
 4=ÁNO
-5=NEOVERENÉ
-6=NEOVERENÉ
+5=ÁNO
+6=ÁNO
 7=ÁNO
 8=ÁNO
 9=ÁNO
-GATE=CLOSED
+GATE=OPEN
 ```
 
+## Jediný povolený nasledujúci úkon
+
 ```text
-BLOKUJÚCI_BOD=5. Prostredie a 6. Závislosti kroku
-CHÝBAJÚCI_DÔKAZ=úplné načítanie a praktické overenie zmien commitu a0018df2... a ich kompatibility s deviatimi blokmi Kroku 11 a PR #3
-POVOLENÝ_ĎALŠÍ_ÚKON=iba čítanie a overovanie nového autoritatívneho stavu bez testu predmetu Kroku 11, bez zmeny kódu, konfigurácie, pracovnej vetvy alebo produkcie
+1. znovu overiť aktuálny HEAD main,
+2. uzavrieť PR #3 ako prekonaný bez merge,
+3. vytvoriť čistú pracovnú vetvu z aktuálneho main,
+4. preniesť iba tri zamýšľané testovacie artefakty a presnú opravu troch zastaraných testovacích očakávaní,
+5. spätne načítať diff,
+6. spustiť úplnú Validáciu Kroku 11.
 ```
+
+Zakázané zostávajú opravy supervízorského modulu, release, nasadenie, produkčný run a otvorenie Kroku 12.
 
 ## STOP záznam zmeny predpokladu
 
 ```text
 STOP
 PORUŠENÝ_BOD=10. Implementácia až po analýze — po otvorení brány sa zmenil autoritatívny HEAD
-ČO_BOLO_VYKONANÉ_PRED_ZISTENÍM_ZMENY=analýza deviatich blokov, vytvorenie troch testovacích artefaktov, PR #3 a prvý neúspešný validačný beh nad starým base
+ČO_BOLO_VYKONANÉ_PRED_ZISTENÍM_ZMENY=analýza deviatich blokov, vytvorenie testovacích artefaktov, PR #3 a prvý neúspešný validačný beh nad starým base
 KTORÁ_BRÁNA_MALA_CHYBE_ZABRÁNIŤ=opätovná kontrola HEAD pred zápisom a Validáciou
-PREČO_NEZABRÁNILA=nový commit pribudol na main súbežne až po otvorení brány a po začatí práce na oddelenej vetve
-STAV_VZNIKNUTÝCH_ARTEFAKTOV=na rozhodnutie; nie sú automaticky neplatné, ale nie sú autoritatívne validované
-ROLLBACK_ALEBO_NÁPRAVA=nepoužiť výsledky behov zo starého base; nezhlučovať PR #3; úplne načítať nový stav; vytvoriť novú bránu; až po GATE=OPEN rozhodnúť o rebase, oprave alebo odstránení artefaktov
+PREČO_NEZABRÁNILA=supervízorské commity pribudli na main súbežne po otvorení pôvodnej brány
+STAV_VZNIKNUTÝCH_ARTEFAKTOV=PR #3 je prekonaný; tri testovacie artefakty a presné zistenia sú použiteľné po prenesení na čistý aktuálny základ
+ROLLBACK_ALEBO_NÁPRAVA=PR #3 nezlučovať; vytvoriť čistú vetvu z aktuálneho main; znovu validovať celý výsledný SHA
 ```
 
 ## Tabuľka stavu čítania a vykonávania metodických pokynov
@@ -124,13 +175,13 @@ ROLLBACK_ALEBO_NÁPRAVA=nepoužiť výsledky behov zo starého base; nezhlučova
 | 2 | Identifikácia projektu | 1 | 1 |
 | 3 | Určenie autoritatívneho zdroja | 1 | 1 |
 | 4 | Praktické overenie prístupov | 1 | 1 |
-| 5 | Obnova projektového kontextu | 1 | 0 |
-| 6 | Overenie skutočného stavu | 1 | 0 |
+| 5 | Obnova projektového kontextu | 1 | 1 |
+| 6 | Overenie skutočného stavu | 1 | 1 |
 | 7 | Vymedzenie predmetu a rozsahu práce | 1 | 1 |
 | 8 | Analýza pred návrhom | 1 | 0 |
 | 9 | Návrh najmenšieho bezpečného riešenia | 1 | 0 |
 | 10 | Implementácia až po analýze | 1 | 0 |
-| 11 | Spätné načítanie po zápise | 1 | 0 |
+| 11 | Spätné načítanie po zápise | 1 | 1 |
 | 12 | Validácia výsledku | 1 | 0 |
 | 13 | Záznam metodického úkonu | 1 | 1 |
 | 14 | Ukončenie pracovného kroku | 1 | 0 |
