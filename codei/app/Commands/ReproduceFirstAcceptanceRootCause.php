@@ -20,7 +20,7 @@ final class ReproduceFirstAcceptanceRootCause extends BaseCommand
 {
     protected $group = 'METODIKA';
     protected $name = 'metodika:reproduce-first-acceptance-root-cause';
-    protected $description = 'Mimo produkcie reprodukuje nekontrolovaný neúspešný insert rezervácie pri DBDebug=false.';
+    protected $description = 'Mimo produkcie overuje regresiu rezervácie pri DBDebug=false a duplicitnej REQUEST_REFERENCE.';
     protected $usage = 'metodika:reproduce-first-acceptance-root-cause';
 
     public function run(array $params)
@@ -31,7 +31,7 @@ final class ReproduceFirstAcceptanceRootCause extends BaseCommand
 
         try {
             if (ENVIRONMENT === 'production') {
-                throw new RuntimeException('Reprodukčný príkaz sa nesmie spustiť v produkčnom prostredí.');
+                throw new RuntimeException('Regresný príkaz sa nesmie spustiť v produkčnom prostredí.');
             }
 
             if (getenv('METODIKA_ROOT_CAUSE_REPRO_ENABLED') !== '1') {
@@ -62,38 +62,33 @@ final class ReproduceFirstAcceptanceRootCause extends BaseCommand
             $this->assertStoredCounts($dbA, $requestReference, 1, 1, 2);
 
             CLI::write('Fáza B: rovnaká REQUEST_REFERENCE, odlišná derivation_reference, DBDebug=false.', 'yellow');
+            $resultB = FirstAcceptanceServiceFactory::fromConnection($dbB)->accept($payloadFingerprint, $runB);
 
-            $caught = null;
-            try {
-                FirstAcceptanceServiceFactory::fromConnection($dbB)->accept($payloadFingerprint, $runB);
-            } catch (Throwable $exception) {
-                $caught = $exception;
+            if ($resultB->outcome !== ReservationResult::ALREADY_EXISTS) {
+                throw new RuntimeException('Spojenie B nevrátilo ALREADY_EXISTS.');
             }
 
-            if (! $caught instanceof RuntimeException) {
-                $actual = $caught instanceof Throwable ? $caught::class . ': ' . $caught->getMessage() : 'bez výnimky';
-                throw new RuntimeException('Koreňová príčina sa nereprodukovala očakávanou RuntimeException; výsledok: ' . $actual);
-            }
-
-            $expectedMessage = 'Historický beh nemožno založiť bez presnej rezervácie REQUEST_REFERENCE.';
-            if ($caught->getMessage() !== $expectedMessage) {
-                throw new RuntimeException('Vznikla iná RuntimeException: ' . $caught->getMessage(), 0, $caught);
+            if (
+                $resultB->reservation->requestReference !== $requestReference
+                || $resultB->reservation->payloadFingerprint !== $payloadFingerprint
+                || $resultB->reservation->derivationReference !== $runA->derivationReference
+            ) {
+                throw new RuntimeException('Spojenie B nevrátilo presnú rezerváciu vytvorenú spojením A.');
             }
 
             $this->assertStoredCounts($dbB, $requestReference, 1, 1, 2);
 
             CLI::newLine();
-            CLI::write('ROOT_CAUSE_REPRODUCED', 'green');
-            CLI::write('INSERT_FAILURE_PATH=DBDEBUG_FALSE_WITH_UNCHECKED_INSERT_RESULT', 'green');
-            CLI::write('POSTCHECK_PATH=REQUEST_REFERENCE_ONLY', 'green');
-            CLI::write('FAILURE_PHASE=CREATE_INITIAL_HISTORY_RUN', 'green');
-            CLI::write('EXCEPTION_CLASS=' . $caught::class, 'green');
-            CLI::write('EXCEPTION_MESSAGE=' . $caught->getMessage(), 'green');
-            CLI::write('ROLLBACK_CONFIRMED=SECOND_PARTICIPANT_LEFT_NO_ROWS', 'green');
+            CLI::write('FIRST_ACCEPTANCE_REGRESSION_CONFIRMED', 'green');
+            CLI::write('FIRST_OUTCOME=' . $resultA->outcome, 'green');
+            CLI::write('SECOND_OUTCOME=' . $resultB->outcome, 'green');
+            CLI::write('RESERVATION_OWNER_DERIVATION_REFERENCE=' . $resultB->reservation->derivationReference, 'green');
+            CLI::write('NO_DUPLICATE_INITIAL_HISTORY_RUN=true', 'green');
+            CLI::write('SECOND_PARTICIPANT_LEFT_NO_ROWS=true', 'green');
 
             return EXIT_SUCCESS;
         } catch (Throwable $exception) {
-            CLI::error('Reprodukcia zlyhala: ' . $exception->getMessage());
+            CLI::error('Regresné overenie zlyhalo: ' . $exception->getMessage());
 
             return EXIT_ERROR;
         } finally {
@@ -109,7 +104,7 @@ final class ReproduceFirstAcceptanceRootCause extends BaseCommand
     private function assertIndependentMySQLiConnections(BaseConnection $dbA, BaseConnection $dbB): void
     {
         if (! $dbA instanceof Connection || ! $dbB instanceof Connection) {
-            throw new RuntimeException('Reprodukcia vyžaduje dve MySQLi spojenia.');
+            throw new RuntimeException('Regresné overenie vyžaduje dve MySQLi spojenia.');
         }
 
         $dbA->initialize();
@@ -203,7 +198,7 @@ final class ReproduceFirstAcceptanceRootCause extends BaseCommand
             $this->assertStoredCounts($db, $requestReference, 0, 0, 0);
             CLI::write('CLEANUP_CONFIRMED', 'green');
         } catch (Throwable $cleanupException) {
-            CLI::error('Núdzové čistenie reprodukčných dát zlyhalo: ' . $cleanupException->getMessage());
+            CLI::error('Núdzové čistenie regresných dát zlyhalo: ' . $cleanupException->getMessage());
         }
     }
 }
