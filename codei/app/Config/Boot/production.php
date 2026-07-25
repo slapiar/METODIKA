@@ -9,8 +9,6 @@
  |
  | If you set 'display_errors' to '1', CI4's detailed error report will show.
  */
-$dotenv = Dotenv\Dotenv::createImmutable(ROOTPATH);
-$dotenv->load();
 
 error_reporting(E_ALL & ~E_DEPRECATED);
 // If you want to suppress more types of errors.
