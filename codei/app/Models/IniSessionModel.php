@@ -1,9 +1,3 @@
-<?php
-
-namespace App\Models;
-
-use CodeIgniter\Model;
-
 class IniSessionModel extends Model
 {
     protected $table      = 'ini_sessions';
@@ -13,9 +7,7 @@ class IniSessionModel extends Model
         'project_name',
         'agent_name',
         'gate_state',
-        'created_at',
-        'updated_at',
     ];
 
-    protected $useTimestamps = true;
+    protected $useTimestamps = false;
 }
