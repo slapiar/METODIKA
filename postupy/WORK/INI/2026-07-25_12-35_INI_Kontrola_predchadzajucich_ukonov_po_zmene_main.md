@@ -3,10 +3,7 @@
 ## Stav brány
 
 ```text
-GATE=CLOSED
-BLOKUJÚCI_BOD=3. Vetva a HEAD overené
-CHÝBAJÚCI_DÔKAZ=commit vytvorenia a vzdialený read-back tohto INI
-POVOLENÝ_ĎALŠÍ_ÚKON=iba spätné načítanie tohto INI a dokončenie bodu 3
+GATE=OPEN
 ```
 
 ## Nadväznosť
@@ -31,6 +28,7 @@ projekt=METODIKA
 repozitár=slapiar/METODIKA
 autoritatívna_vetva=main
 HEAD_PRED_INI=af6c72c94f723527775942fea078557f4d8a427d
+HEAD_PO_VYTVORENÍ_INI=fdab6cb8e7b419c81fea1b77f84e827ce300a092
 technický_koreň=/codei
 čas_overenia=2026-07-25 12:35 Europe/Bratislava
 ```
@@ -45,7 +43,8 @@ technický_koreň=/codei
 - `CHANGELOG.md` na novom autoritatívnom základe, blob `243ce42e9373479e5a8f160802cb6a19d26610b2`,
 - `codei/app/Views/partials/header.php`, blob `09edd5d7e9017a17c77a7a6b997919b970953726`,
 - porovnanie `5929519d... → 1d7d7938...`: päť commitov, zmenené `CHANGELOG.md` a `header.php`,
-- porovnanie `af6c72c... → main`: `identical`.
+- porovnanie `af6c72c... → main`: `identical`,
+- vytvorenie tohto INI commitom `fdab6cb8e7b419c81fea1b77f84e827ce300a092` a jeho vzdialený read-back, blob `99260d6356aa5e1e8b2c98231d56868ffabfd403`.
 
 Zmena `header.php` je mimo predmetu tohto úkonu. Bola načítaná iba preto, aby bol vzdialený stav úplný; nebude sa meniť ani hodnotiť.
 
@@ -55,13 +54,34 @@ Zmena `header.php` je mimo predmetu tohto úkonu. Bola načítaná iba preto, ab
 |---|---|---|---|---|
 | 1. Metodika načítaná | ÁNO | Celý aktuálny dokument, body 0–14, STOP a základné pravidlo | blob `262fa71b93fd8059426f8e0fc430a2d9cb623e79` | nič |
 | 2. Projekt a autoritatívny zdroj overený | ÁNO | METODIKA, `slapiar/METODIKA`, `main`, `/codei` | projektový register a vzdialené metadata | nič |
-| 3. Vetva a HEAD overené | NEOVERENÉ | Aktuálny HEAD pred INI a úplný rozdiel boli potvrdené | `HEAD_PRED_INI=af6c72c94f723527775942fea078557f4d8a427d`; `af6c72c... → main=identical` | commit vytvorenia a read-back |
-| 4. Potrebné prístupy prakticky overené | ÁNO | Administrátorské čítanie, zápis a read-back | predchádzajúce bezpečné zápisy a read-backy; `admin=true`, `push=true` | nič |
+| 3. Vetva a HEAD overené | ÁNO | Aktuálny HEAD pred INI, commit vytvorenia a vzdialený read-back | `af6c72c... → fdab6cb8...`; read-back blob `99260d6356aa5e1e8b2c98231d56868ffabfd403` | iba bezprostredná kontrola HEAD pred implementačným zápisom |
+| 4. Potrebné prístupy prakticky overené | ÁNO | Administrátorské čítanie, zápis a read-back | `admin=true`, `push=true`; bezpečné zápisy a vzdialené read-backy | nič |
 | 5. Prostredie prakticky overené | ÁNO | Pre tento dokumentačný úkon je potrebné iba vzdialené GitHub prostredie | čítanie, zápis a read-back fungujú | nič |
 | 6. Závislosti kroku dostupné | ÁNO | Metodika, register, changelog, WORK a INI priestor | všetky cieľové súbory sú dostupné | nič |
 | 7. Predmet a hranice zásahu určené | ÁNO | Iba metodika a jej povinná evidencia | bez zmeny vykonateľného kódu, databázy, workflowu, produkcie a bez uzavretia Kroku 11 | nič |
 | 8. Kritérium úspechu určené | ÁNO | Jednoznačné pravidlo, read-back, register, changelog a WORK záznam | existujúci dôkaz sa nesmie vyhlásiť za platný bez kontroly kontinuity | vykonanie po otvorení brány |
 | 9. Rollback určený | ÁNO | Vrátiť iba commity tohto metodického úkonu | história sa opravuje novou udalosťou | nič |
+
+## Vyhodnotenie brány
+
+```text
+1=ÁNO
+2=ÁNO
+3=ÁNO
+4=ÁNO
+5=ÁNO
+6=ÁNO
+7=ÁNO
+8=ÁNO
+9=ÁNO
+GATE=OPEN
+```
+
+## Jediný povolený nasledujúci úkon
+
+```text
+Bezprostredne overiť aktuálny HEAD, doplniť najmenšie záväzné pravidlo do postupy/Inicializácia práce.md, spätne načítať výsledok a v tom istom pracovnom kroku aktualizovať postupy/README.md, CHANGELOG.md a pracovný záznam.
+```
 
 ## Tabuľka stavu čítania a vykonávania metodických pokynov
 
@@ -70,7 +90,7 @@ Zmena `header.php` je mimo predmetu tohto úkonu. Bola načítaná iba preto, ab
 | 0 | Povinné nové načítanie vzdialeného autoritatívneho repozitára | 1 | 1 |
 | 1 | Obnova univerzálnej metodiky | 1 | 1 |
 | 2 | Identifikácia projektu | 1 | 1 |
-| 3 | Určenie autoritatívneho zdroja | 1 | 0 |
+| 3 | Určenie autoritatívneho zdroja | 1 | 1 |
 | 4 | Praktické overenie prístupov | 1 | 1 |
 | 5 | Obnova projektového kontextu | 1 | 1 |
 | 6 | Overenie skutočného stavu | 1 | 1 |
@@ -78,7 +98,7 @@ Zmena `header.php` je mimo predmetu tohto úkonu. Bola načítaná iba preto, ab
 | 8 | Analýza pred návrhom | 1 | 0 |
 | 9 | Návrh najmenšieho bezpečného riešenia | 1 | 0 |
 | 10 | Implementácia až po analýze | 1 | 0 |
-| 11 | Spätné načítanie po zápise | 1 | 0 |
+| 11 | Spätné načítanie po zápise | 1 | 1 |
 | 12 | Validácia výsledku | 1 | 0 |
 | 13 | Záznam metodického úkonu | 1 | 0 |
 | 14 | Ukončenie pracovného kroku | 1 | 0 |
