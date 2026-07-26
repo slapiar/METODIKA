@@ -4,7 +4,7 @@
 
 ```text
 GATE=CLOSED
-DÔVOD=AKTÍVNE_SÚBEŽNÉ_ZMENY_AUTORITATÍVNEHO_MAIN
+DÔVOD=FÁZA_11_A_NEÚPLNÁ_PRODUKČNÝ_STAV_RUNTIME_A_KONTINUITA_ZÁVISLOSTÍ_NEOVERENÉ
 ```
 
 ## Záväzný pokyn používateľa
@@ -64,13 +64,13 @@ codei/app/Config/Routes.php
 
 Doplnil samostatnú route supervízora a nemenil text existujúcich diagnostických routes. Napriek tomu ide o vykonateľný súbor zahrnutý v závislostiach Kroku 11, preto sa jeho kontinuita musí vyhodnotiť až nad stabilným HEAD.
 
-Posledný vzdialený HEAD zachytený bezprostredne pred týmto STOP zápisom:
+Posledný vzdialený HEAD zachytený bezprostredne pred pôvodným STOP zápisom:
 
 ```text
 91bed025c70d53f1413195c52cb9651dd50cc349
 ```
 
-Počas samotnej kontroly sa `main` posunul opakovane. Preto nemožno pravdivo potvrdiť, že HEAD zostane stabilný medzi otvorením brány a prvým testom alebo funkčným zápisom.
+Počas pôvodnej kontroly sa `main` posúval opakovane. Preto vtedy nebolo možné pravdivo potvrdiť, že HEAD zostane stabilný medzi otvorením brány a prvým testom alebo funkčným zápisom.
 
 ## Súbežne vzniknuté INI záznamy
 
@@ -110,15 +110,15 @@ Pripravený nový konsolidačný obsah registra a changelogu nebol commitnutý, 
 BOD_4=ÁNO
 ```
 
-Potvrdené zostávajú administrátorské oprávnenia, čítanie, zápis, read-back a historické Actions runy.
+Potvrdené zostávajú administrátorské oprávnenia, čítanie, zápis a read-back. Aktuálne metadata repozitára potvrdili `admin=true`, `push=true`, `pull=true`.
 
 ### Bod 5 — prostredie
 
 ```text
-BOD_5=ÁNO
+BOD_5=NEOVERENÉ
 ```
 
-Existujúce praktické dôkazy naďalej potvrdzujú PHP 8.4, Composer 2, MariaDB 11.4/InnoDB, MySQLi, `pcntl_fork`, migrácie M1–M8, dve spojenia, rollback a cleanup. Nový environmentálny test nie je potrebný.
+Historické praktické dôkazy naďalej potvrdzujú PHP 8.4, Composer 2, MariaDB 11.4/InnoDB, MySQLi, `pcntl_fork`, migrácie M1–M8, dve spojenia, rollback a cleanup. Nový environmentálny test sa podľa záväzného pokynu nevytvára. Aktuálne praktické verzie nasadenej produkcie a aktuálny stav migrácií však v tomto pracovnom spojení neboli bezpečne načítané, preto sa nesmú označiť ako aktuálne overené.
 
 ### Bod 6 — závislosti a aktuálny stav
 
@@ -126,30 +126,30 @@ Existujúce praktické dôkazy naďalej potvrdzujú PHP 8.4, Composer 2, MariaDB
 BOD_6=NEOVERENÉ
 ```
 
-Dostupnosť deviatich blokov je známa. Neoverená zostáva iba finálna kontinuita ich vykonateľných závislostí voči stabilnému HEAD, pretože `Routes.php` a ďalšie supervízorské súbory sa počas kontroly menili.
+Dostupnosť deviatich blokov je známa. Aktuálny diff potvrdzuje zmeny spoločných vykonateľných závislostí vrátane `Routes.php`, Boot konfigurácie, diagnostických kontrolérov, Gate Supervisora, modelov, views a klientskych súborov. Finálna kontinuita deviatich blokov preto ešte nie je potvrdená.
 
 ## Inicializačná tabuľka
 
 | Bod | Stav | Dôkaz | Zostáva neoverené |
 |---|---|---|---|
-| 1. Metodika načítaná | ÁNO | aktuálny dokument vrátane pravidla využitia existujúcich dôkazov | nič |
+| 1. Metodika načítaná | ÁNO | `postupy/Inicializácia práce.md` v2.0, blob `44729126508a0c9151fb2358badcb1445a425bd6` | nič |
 | 2. Projekt a autoritatívny zdroj | ÁNO | METODIKA, `slapiar/METODIKA`, `main`, `/codei` | nič |
-| 3. Vetva a HEAD | NEOVERENÉ | HEAD sa počas kontroly opakovane posúval; posledný zachytený `91bed025...` | stabilný finálny HEAD a read-back po skončení súbežných zápisov |
-| 4. Prístupy | ÁNO | admin/push/read/write/read-back a Actions | nič |
-| 5. Prostredie | ÁNO | existujúce runy Krokov 7 až 10; nezmenené runtime predpoklady | nič |
-| 6. Závislosti | NEOVERENÉ | všetkých deväť blokov existuje; zmenil sa spoločný `Routes.php` | finálny diff od posledného technického dôkazu po stabilný HEAD |
-| 7. Rozsah | ÁNO | iba Validácia diagnostickej súbežnej cesty | nič |
-| 8. Kritérium úspechu | ÁNO | deväť blokov a spoločné binárne kritérium | praktické splnenie je predmetom Kroku 11 |
-| 9. Rollback | ÁNO | odstránenie iba testovacích dát a dočasných artefaktov | nič |
+| 3. Vetva a HEAD | ÁNO | vzdialený snapshot `f7e67cab460b96d5fdcb3f606b6a2a3ecc2d4747` bol stabilný počas čítacieho okna; následný zápis mení iba tento INI | nový read-back po tomto zápise |
+| 4. Prístupy | ÁNO | admin/push/read/write/read-back | nič |
+| 5. Prostredie | NEOVERENÉ | historické praktické dôkazy Krokov 7 až 10 zachované; nový test zakázaný | aktuálny praktický produkčný runtime a stav migrácií |
+| 6. Závislosti | NEOVERENÉ | `c90ae562... → f7e67cab...` = 112 commitov; `d418e72... → f7e67cab...` = 90 commitov; spoločné vykonateľné súbory zmenené | úplná kontinuita všetkých deviatich blokov voči aktuálnemu HEAD |
+| 7. Rozsah | ÁNO | iba Fáza 11.A — čítanie, obnova dôkazov, zmrazenie stavu a aktualizácia tohto INI | nič |
+| 8. Kritérium úspechu | ÁNO | každý stav doložený alebo označený `NEZISTENÉ`; Gate sa otvorí až po deviatich hodnotách ÁNO | praktické splnenie Kroku 11 |
+| 9. Rollback | ÁNO | odstránenie iba vlastných metodických zápisov; žiadny zásah do kódu, dát ani produkcie | nič |
 
 ## Vyhodnotenie brány
 
 ```text
 1=ÁNO
 2=ÁNO
-3=NEOVERENÉ
+3=ÁNO
 4=ÁNO
-5=ÁNO
+5=NEOVERENÉ
 6=NEOVERENÉ
 7=ÁNO
 8=ÁNO
@@ -161,35 +161,33 @@ GATE=CLOSED
 
 ```text
 STOP
-PORUŠENÝ_PREDPOKLAD=stabilný autoritatívny HEAD pred analýzou a testom Kroku 11
-ČO_NEB0LO_VYKONANÉ=nebol spustený nový environmentálny test, validačná matica ani funkčná zmena Kroku 11
-ČO_BOLO_OCHRÁNENÉ=existujúce dôkazy Krokov 7 až 10, úplná história CHANGELOG a cudzie súbežné commity
-DÔVOD_ZASTAVENIA=main sa počas kontroly opakovane menil vrátane spoločného vykonateľného Routes.php
+PORUŠENÝ_PREDPOKLAD=úplný bezpečne čitateľný produkčný stav a aktuálna kontinuita všetkých závislostí pred otvorením Kroku 11
+ČO_NEBOLO_VYKONANÉ=nebol spustený environmentálny test, validačná matica, test, funkčná zmena, release ani produkčný run
+ČO_BOLO_OCHRÁNENÉ=existujúce dôkazy Krokov 7 až 10, vykonateľný kód, databáza, release balíky a produkcia
+DÔVOD_ZASTAVENIA=produkčný runtime, nasadená verzia, flagy, testovacie dáta, dočasné súbory a databázový stav neboli v dostupnom spojení prakticky a bezpečne načítané; kontinuita zmenených závislostí ešte nie je úplne potvrdená
 ```
 
 ## Jediný povolený nasledujúci úkon
 
-Po ukončení súbežného zapisujúceho pracovného prúdu:
-
 ```text
-1. znovu načítať aktuálny HEAD main,
-2. porovnať ho s funkčným commitom Kroku 10 a poslednými platnými dôkazmi,
-3. presne overiť zmeny Routes.php a všetkých závislostí deviatich blokov,
-4. aktualizovať tento istý INI,
-5. po deviatich hodnotách ÁNO otvoriť GATE,
-6. až potom analyzovať a navrhnúť validačnú zostavu Kroku 11.
+1. bezpečne a iba čítaním získať aktuálny produkčný stav požadovaný Fázou 11.A,
+2. oddeliť a doložiť stav nasadenej verzie, zdrojového commitu, flagov, databázy, testovacích session/step/Evidence a run-store/temp/lock súborov,
+3. z praktického dôkazu potvrdiť aktuálny produkčný runtime a migrácie,
+4. dokončiť kontrolu kontinuity všetkých deviatich blokov voči stabilnému HEAD,
+5. aktualizovať tento istý INI,
+6. až po deviatich hodnotách ÁNO otvoriť GATE.
 ```
 
-Nevytvára sa nový INI ani nový environmentálny test.
+Nevytvára sa nový INI Kroku 11 ani nový environmentálny test.
 
 ## Tabuľka stavu čítania a vykonávania metodických pokynov
 
 | ID | Metodický pokyn | R | W |
 |---:|---|:---:|:---:|
-| 0 | Povinné nové načítanie vzdialeného autoritatívneho repozitára | 1 | 0 |
+| 0 | Povinné nové načítanie vzdialeného autoritatívneho repozitára | 1 | 1 |
 | 1 | Obnova univerzálnej metodiky | 1 | 1 |
 | 2 | Identifikácia projektu | 1 | 1 |
-| 3 | Určenie autoritatívneho zdroja | 1 | 0 |
+| 3 | Určenie autoritatívneho zdroja | 1 | 1 |
 | 4 | Praktické overenie prístupov | 1 | 1 |
 | 5 | Obnova projektového kontextu | 1 | 1 |
 | 6 | Overenie skutočného stavu | 1 | 0 |
@@ -199,5 +197,81 @@ Nevytvára sa nový INI ani nový environmentálny test.
 | 10 | Implementácia až po analýze | 1 | 0 |
 | 11 | Spätné načítanie po zápise | 1 | 0 |
 | 12 | Validácia výsledku Kroku 11 | 1 | 0 |
-| 13 | Záznam metodického úkonu | 1 | 0 |
+| 13 | Záznam metodického úkonu | 1 | 1 |
 | 14 | Ukončenie pracovného kroku | 1 | 0 |
+
+---
+
+## Checkpoint Fázy 11.A — 2026-07-26 07:22 Europe/Bratislava
+
+### Zmrazený stav repozitára pred zápisom
+
+```text
+REPOSITORY=slapiar/METODIKA
+BRANCH=main
+SNAPSHOT_HEAD=f7e67cab460b96d5fdcb3f606b6a2a3ecc2d4747
+HEAD_STABILNÝ_POČAS_ČÍTACIEHO_OKNA=true
+WORKFLOW_RUNS_PRE_SNAPSHOT_HEAD=0
+```
+
+### Rozdiely voči základom
+
+```text
+c90ae562a859de9fe0b2174f39e924c7f7bc6a4e → f7e67cab460b96d5fdcb3f606b6a2a3ecc2d4747
+STATUS=ahead
+COMMITS=112
+
+ d418e72c162bde324af7546c937af979bd75182e → f7e67cab460b96d5fdcb3f606b6a2a3ecc2d4747
+STATUS=ahead
+COMMITS=90
+```
+
+V oboch porovnaniach sú zmenené vykonateľné a konfiguračné súbory. Patria medzi ne najmä Boot konfigurácia, `Routes.php`, diagnostické kontroléry, Gate Supervisor, modely, views, JavaScript, CSS a zvukové súbory. Porovnania nezaznamenali zmenu existujúcich testovacích súborov ani databázových migrácií; táto neprítomnosť zmeny však sama nepotvrdzuje funkčnú kontinuitu nových modulov.
+
+### Stav releaseov v repozitári
+
+```text
+RELEASE_VERSION=1.1.15
+RELEASE_VERSION_BLOB=645377eea8d0ff0cc974600d76e48ea516c4c8c0
+RELEASE_1_1_9_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+RELEASE_1_1_15_BLOB=aeaf80b31f299cbf824834590bd58435e216e99d
+RELEASE_1_1_15_COMMIT=019a5c8fb741b640192dd89536be1091ef11e437
+RELEASES_1_1_10_AŽ_1_1_15=PRÍTOMNÉ_V_REPOZITÁRI
+```
+
+Existencia čísla a ZIP súboru v repozitári nie je dôkazom nasadenia ani úspešnej produkčnej Validácie.
+
+### Stav repozitárovej produkčnej konfigurácie
+
+- `codei/app/Config/Boot/production.php` načítava `ExternalEnvironment`, vypína zobrazovanie chýb a nastavuje `CI_DEBUG=false`.
+- Aktuálny `Routes.php` obsahuje pôvodné diagnostické routes aj Gate Dashboard, Gate Supervisor a nové session/step/Evidence routes.
+- `DiagnosticsController` číta flagy `METODIKA_DIAGNOSTICS_ENABLED` a `METODIKA_CONCURRENCY_WEB_ENABLED` z runtime prostredia.
+- Hodnoty runtime flagov sa zo zdrojového repozitára nedajú určiť.
+
+### Oddelená dôkazová mapa
+
+| Oblasť | Stav | Dôkaz |
+|---|---|---|
+| Repozitár | DOLOŽENÉ | stabilný snapshot `f7e67cab...`, dva úplné compare výsledky |
+| Release balíky v repozitári | DOLOŽENÉ | `RELEASE_VERSION=1.1.15`, ZIP 1.1.9 a 1.1.15 majú blob SHA, 1.1.10–1.1.15 sú prítomné |
+| Nasadená produkčná verzia | NEZISTENÉ | chýba bezpečný praktický produkčný dôkaz |
+| Zdrojový commit nasadenia | NEZISTENÉ | chýba deployment manifest alebo produkčný read-back |
+| Feature flagy | NEZISTENÉ | runtime hodnoty nie sú v repozitári |
+| Produkčný runtime | NEZISTENÉ | historické dôkazy sú zachované, aktuálny praktický dôkaz chýba |
+| Stav migrácií na produkcii | NEZISTENÉ | repozitár nepreukazuje vykonaný produkčný stav |
+| Databázové testovacie riadky | NEZISTENÉ | chýba bezpečný read-only DB dôkaz |
+| Session/step/Evidence dáta | NEZISTENÉ | chýba bezpečný read-only produkčný dôkaz |
+| Run-store JSON/lock/temp | NEZISTENÉ | chýba bezpečný read-only súborový dôkaz |
+| Produkčný cleanup | NEZISTENÉ | nezistené sa nepovažuje za nulu |
+
+### Výsledok checkpointu
+
+```text
+FÁZA_11_A=ZAČATÁ_A_NEÚPLNÁ
+GATE_KROKU_11=CLOSED
+KROK_11_TESTY=NESPUSTENÉ
+KÓD=BEZ_ZMENY
+RELEASE=BEZ_ZMENY
+PRODUKCIA=BEZ_ZÁSAHU
+NEXT_ALLOWED_ACTION=IBA_DOKONČENIE_BEZPEČNÉHO_ČÍTACIEHO_DÔKAZU_FÁZY_11_A
+```
