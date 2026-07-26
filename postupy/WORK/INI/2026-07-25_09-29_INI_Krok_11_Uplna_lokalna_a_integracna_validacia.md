@@ -4,7 +4,7 @@
 
 ```text
 GATE=CLOSED
-DÔVOD=FÁZA_11_A_NEÚPLNÁ_PRODUKČNÝ_STAV_RUNTIME_A_KONTINUITA_ZÁVISLOSTÍ_NEOVERENÉ
+DÔVOD=FÁZA_11_A_ZASTAVENÁ_ROZHODOVACOU_BRÁNOU_AKTUÁLNY_PRODUKČNÝ_RUNTIME_A_STAV_MIGRÁCIÍ_NEOVERENÉ
 ```
 
 ## Záväzný pokyn používateľa
@@ -118,15 +118,19 @@ Potvrdené zostávajú administrátorské oprávnenia, čítanie, zápis a read-
 BOD_5=NEOVERENÉ
 ```
 
-Historické praktické dôkazy naďalej potvrdzujú PHP 8.4, Composer 2, MariaDB 11.4/InnoDB, MySQLi, `pcntl_fork`, migrácie M1–M8, dve spojenia, rollback a cleanup. Nový environmentálny test sa podľa záväzného pokynu nevytvára. Aktuálne praktické verzie nasadenej produkcie a aktuálny stav migrácií však v tomto pracovnom spojení neboli bezpečne načítané, preto sa nesmú označiť ako aktuálne overené.
+Historické praktické dôkazy naďalej potvrdzujú PHP 8.4, Composer 2, MariaDB 11.4/InnoDB, MySQLi, `pcntl_fork`, migrácie M1–M8, dve spojenia, rollback a cleanup. Nový environmentálny test sa podľa záväzného pokynu nevytvára.
+
+Aktuálna verejná diagnostická URL je v repozitári zdokumentovaná, ale v dostupnom pracovnom spojení nebolo možné získať bezpečný aktuálny produkčný read-back. Preto zostávajú aktuálne praktické verzie produkčného PHP, databázy a stav migrácií `NEZISTENÉ`; historický dôkaz sa nevydáva za súčasný stav.
 
 ### Bod 6 — závislosti a aktuálny stav
 
 ```text
-BOD_6=NEOVERENÉ
+BOD_6=ÁNO
 ```
 
-Dostupnosť deviatich blokov je známa. Aktuálny diff potvrdzuje zmeny spoločných vykonateľných závislostí vrátane `Routes.php`, Boot konfigurácie, diagnostických kontrolérov, Gate Supervisora, modelov, views a klientskych súborov. Finálna kontinuita deviatich blokov preto ešte nie je potvrdená.
+Kontinuita všetkých deviatich blokov bola dokončená nad stabilným HEAD `6f5adb84b4c9a45ccc30a9c2e4922d0a85c8dc9d`. Porovnanie `f7e67cab... → 6f5adb84...` obsahuje 15 commitov a iba metodické alebo evidenčné súbory; po predchádzajúcom technickom snapshote sa `/codei`, testy, migrácie, `RELEASE_VERSION` ani ZIP balíky nezmenili.
+
+Všetkých deväť blokov má na aktuálnom HEAD čitateľné vykonateľné závislosti. Zistené testovacie medzery — najmä skutočne paralelný HTTP dôkaz a samostatná logout regresia — sú predmetom návrhu a Validácie Kroku 11, nie chýbajúcou dostupnosťou závislostí. Nový Gate/session/step/Evidence modul je dostupný, ale jeho zámer, bezpečnostné hranice, placeholdery a testové pokrytie zostávajú na klasifikáciu vo Fáze 11.B.
 
 ## Inicializačná tabuľka
 
@@ -134,10 +138,10 @@ Dostupnosť deviatich blokov je známa. Aktuálny diff potvrdzuje zmeny spoločn
 |---|---|---|---|
 | 1. Metodika načítaná | ÁNO | `postupy/Inicializácia práce.md` v2.0, blob `44729126508a0c9151fb2358badcb1445a425bd6` | nič |
 | 2. Projekt a autoritatívny zdroj | ÁNO | METODIKA, `slapiar/METODIKA`, `main`, `/codei` | nič |
-| 3. Vetva a HEAD | ÁNO | vzdialený snapshot `f7e67cab460b96d5fdcb3f606b6a2a3ecc2d4747` bol stabilný počas čítacieho okna; následný zápis mení iba tento INI | nový read-back po tomto zápise |
+| 3. Vetva a HEAD | ÁNO | vzdialený snapshot `6f5adb84b4c9a45ccc30a9c2e4922d0a85c8dc9d` bol stabilný počas celého čítacieho okna; následný zápis mení iba tento INI | nový read-back po tomto zápise |
 | 4. Prístupy | ÁNO | admin/push/read/write/read-back | nič |
-| 5. Prostredie | NEOVERENÉ | historické praktické dôkazy Krokov 7 až 10 zachované; nový test zakázaný | aktuálny praktický produkčný runtime a stav migrácií |
-| 6. Závislosti | NEOVERENÉ | `c90ae562... → f7e67cab...` = 112 commitov; `d418e72... → f7e67cab...` = 90 commitov; spoločné vykonateľné súbory zmenené | úplná kontinuita všetkých deviatich blokov voči aktuálnemu HEAD |
+| 5. Prostredie | NEOVERENÉ | historické praktické dôkazy Krokov 7 až 10 zachované; aktuálny produkčný read-back nebol v dostupnom spojení získaný; nový test zakázaný | aktuálny praktický produkčný runtime a stav migrácií |
+| 6. Závislosti | ÁNO | `c90ae562... → 6f5adb84...` = 127 commitov; `d418e72... → 6f5adb84...` = 105 commitov; `f7e67cab... → 6f5adb84...` = 15 commitov iba v dokumentácii; úplná mapa deviatich blokov je nižšie | funkčné výsledky patria až do Validácie po otvorení brány |
 | 7. Rozsah | ÁNO | iba Fáza 11.A — čítanie, obnova dôkazov, zmrazenie stavu a aktualizácia tohto INI | nič |
 | 8. Kritérium úspechu | ÁNO | každý stav doložený alebo označený `NEZISTENÉ`; Gate sa otvorí až po deviatich hodnotách ÁNO | praktické splnenie Kroku 11 |
 | 9. Rollback | ÁNO | odstránenie iba vlastných metodických zápisov; žiadny zásah do kódu, dát ani produkcie | nič |
@@ -150,7 +154,7 @@ Dostupnosť deviatich blokov je známa. Aktuálny diff potvrdzuje zmeny spoločn
 3=ÁNO
 4=ÁNO
 5=NEOVERENÉ
-6=NEOVERENÉ
+6=ÁNO
 7=ÁNO
 8=ÁNO
 9=ÁNO
@@ -161,21 +165,22 @@ GATE=CLOSED
 
 ```text
 STOP
-PORUŠENÝ_PREDPOKLAD=úplný bezpečne čitateľný produkčný stav a aktuálna kontinuita všetkých závislostí pred otvorením Kroku 11
+PORUŠENÝ_PREDPOKLAD=aktuálny praktický produkčný runtime a stav migrácií pred otvorením Kroku 11
 ČO_NEBOLO_VYKONANÉ=nebol spustený environmentálny test, validačná matica, test, funkčná zmena, release ani produkčný run
 ČO_BOLO_OCHRÁNENÉ=existujúce dôkazy Krokov 7 až 10, vykonateľný kód, databáza, release balíky a produkcia
-DÔVOD_ZASTAVENIA=produkčný runtime, nasadená verzia, flagy, testovacie dáta, dočasné súbory a databázový stav neboli v dostupnom spojení prakticky a bezpečne načítané; kontinuita zmenených závislostí ešte nie je úplne potvrdená
+DÔVOD_ZASTAVENIA=repozitárová a závislostná kontinuita je dokončená, ale aktuálny produkčný runtime a stav migrácií neboli v dostupnom spojení prakticky a bezpečne načítané
 ```
 
 ## Jediný povolený nasledujúci úkon
 
 ```text
-1. bezpečne a iba čítaním získať aktuálny produkčný stav požadovaný Fázou 11.A,
-2. oddeliť a doložiť stav nasadenej verzie, zdrojového commitu, flagov, databázy, testovacích session/step/Evidence a run-store/temp/lock súborov,
-3. z praktického dôkazu potvrdiť aktuálny produkčný runtime a migrácie,
-4. dokončiť kontrolu kontinuity všetkých deviatich blokov voči stabilnému HEAD,
-5. aktualizovať tento istý INI,
-6. až po deviatich hodnotách ÁNO otvoriť GATE.
+1. získať bezpečný aktuálny čítací produkčný dôkaz bez zmeny produkcie,
+2. potvrdiť z neho nasadenú verziu a zdrojový commit, ak sú dostupné,
+3. potvrdiť aktuálny produkčný runtime, stav migrácií a runtime flagy,
+4. bezpečne odlíšiť a načítať aktuálny stav testovacích session/step/Evidence, databázových riadkov a run-store JSON/lock/temp súborov,
+5. nezistené hodnoty ponechať výslovne ako NEZISTENÉ, nie ako nulu,
+6. aktualizovať tento istý INI,
+7. až po deviatich hodnotách ÁNO otvoriť GATE a pokračovať Fázou 11.B.
 ```
 
 Nevytvára sa nový INI Kroku 11 ani nový environmentálny test.
@@ -190,9 +195,9 @@ Nevytvára sa nový INI Kroku 11 ani nový environmentálny test.
 | 3 | Určenie autoritatívneho zdroja | 1 | 1 |
 | 4 | Praktické overenie prístupov | 1 | 1 |
 | 5 | Obnova projektového kontextu | 1 | 1 |
-| 6 | Overenie skutočného stavu | 1 | 0 |
+| 6 | Overenie skutočného stavu | 1 | 1 |
 | 7 | Vymedzenie predmetu a rozsahu práce | 1 | 1 |
-| 8 | Analýza pred návrhom | 1 | 0 |
+| 8 | Analýza pred návrhom | 1 | 1 |
 | 9 | Návrh najmenšieho bezpečného riešenia | 1 | 0 |
 | 10 | Implementácia až po analýze | 1 | 0 |
 | 11 | Spätné načítanie po zápise | 1 | 0 |
@@ -274,4 +279,98 @@ KÓD=BEZ_ZMENY
 RELEASE=BEZ_ZMENY
 PRODUKCIA=BEZ_ZÁSAHU
 NEXT_ALLOWED_ACTION=IBA_DOKONČENIE_BEZPEČNÉHO_ČÍTACIEHO_DÔKAZU_FÁZY_11_A
+```
+
+---
+
+## Checkpoint Fázy 11.A — 2026-07-26 08:24 Europe/Bratislava
+
+### Aktuálny stabilný snapshot
+
+```text
+REPOSITORY=slapiar/METODIKA
+BRANCH=main
+SNAPSHOT_HEAD=6f5adb84b4c9a45ccc30a9c2e4922d0a85c8dc9d
+HEAD_STABILNÝ_POČAS_ČÍTACIEHO_OKNA=true
+PREDCHÁDZAJÚCI_TECHNICKÝ_SNAPSHOT=f7e67cab460b96d5fdcb3f606b6a2a3ecc2d4747
+F7E67CAB_AŽ_6F5ADB84=15_COMMITOV_IBA_METODIKA_A_EVIDENCIA
+CODEI_OD_F7E67CAB=BEZ_ZMENY
+TESTY_OD_F7E67CAB=BEZ_ZMENY
+MIGRÁCIE_OD_F7E67CAB=BEZ_ZMENY
+RELEASE_OD_F7E67CAB=BEZ_ZMENY
+```
+
+### Úplné rozdiely voči technickým základom
+
+```text
+c90ae562a859de9fe0b2174f39e924c7f7bc6a4e → 6f5adb84b4c9a45ccc30a9c2e4922d0a85c8dc9d
+STATUS=ahead
+COMMITS=127
+
+d418e72c162bde324af7546c937af979bd75182e → 6f5adb84b4c9a45ccc30a9c2e4922d0a85c8dc9d
+STATUS=ahead
+COMMITS=105
+```
+
+Zmenený technický súborový rozsah zostáva rovnaký ako pri predchádzajúcom snapshote. Zahŕňa Boot konfigurácie, databázovú konfiguráciu, `Routes.php`, diagnostické a Gate kontroléry, modely, views, JavaScript, CSS, zvuky, `RELEASE_VERSION` a ZIP balíky 1.1.10–1.1.15. Dva zvukové súbory majú v repozitárovej ceste koncové medzery. Existujúce testy ani migrácie sa v technickom rozdiele nezmenili.
+
+### Kontinuitná mapa deviatich blokov Kroku 11
+
+| Blok | Vykonateľná závislosť na HEAD | Existujúci dôkaz/test | Kontinuita | Otvorená medzera pre neskoršiu Validáciu |
+|---:|---|---|---|---|
+| 1. Run store a validator | `DiagnosticsConcurrencyRunStore`, `DiagnosticsConcurrencyRunDocumentValidator`, stavový model | unit testy store, validatora a stavov | POTVRDENÁ | testy v tomto kroku ešte neboli spustené |
+| 2. `FirstAcceptanceService` | služba, porty, factory a databázové adaptéry | `FirstAcceptanceServiceTest` | POTVRDENÁ | praktická integračná Validácia patrí až po otvorení brány |
+| 3. Diagnostické chybové fázy | `DiagnosticsConcurrencyFailureReporter`, vonkajšie fázy v `DiagnosticsController` | session test bezpečných kódov bez raw výnimky | POTVRDENÁ | úplná matica všetkých fáz sa ešte nespustila |
+| 4. Session a security endpointy | login/database/logout, START, HIT, RESULT a diagnostické session/step/Evidence routes | existujúce diagnostics session/security testy | POTVRDENÁ S ROZŠÍRENÝM RIZIKOM | nové Gate API routes nemajú spoločnú explicitnú autorizáciu ani vlastné testy; niektoré nové chyby vracajú raw interné údaje |
+| 5. Integračný DB rollback | `metodika:verify-first-acceptance-transaction` | dva reálne rollback scenáre a núdzový cleanup | POTVRDENÁ | aktuálne spustenie patrí až do Validácie |
+| 6. Skutočná DB súbežnosť | `metodika:verify-concurrent-first-acceptance` | dve nezávislé MySQLi spojenia, async INSERT, kolízia 1062, cleanup | POTVRDENÁ | aktuálne spustenie patrí až do Validácie |
+| 7. `START → HIT A/B → RESULT` | routovaný `DiagnosticsConcurrencyStartController`, HIT a RESULT v `DiagnosticsController`, UI | session E2E test existuje | POTVRDENÁ S TESTOVOU MEDZEROU | feature test ručne predpripraví participanta A; nejde o skutočne paralelný HTTP dôkaz M12/M17 |
+| 8. Tombstone a sweep | redakcia tombstone, `readOnceConsumedAt`, `deleteAfter`, cleanup JSON/lock/temp | session a unit testy tombstone, resultu, sweepu a idempotentného cleanupu | POTVRDENÁ | úplný praktický nulový stav sa ešte neoveril |
+| 9. Login/database/logout regresia | tri routes a session autentifikácia s TTL | login a database regresné testy existujú | POTVRDENÁ S TESTOVOU MEDZEROU | samostatný logout regresný test sa v repozitári nenašiel |
+
+### Oddelenie dostupnosti od Validácie
+
+```text
+ZÁVISLOSTI_DEVÄŤ_BLOKOV=DOSTUPNÉ
+KONTINUITA_VOČI_STABILNÉMU_HEAD=POTVRDENÁ
+BOD_6=ÁNO
+TESTY_AKTUÁLNE_NESPUSTENÉ=true
+FUNKČNÁ_SPRÁVNOSŤ_NOVÉHO_GATE_MODULU=NEPOTVRDENÁ
+ZÁMER_GATE_SUPERVISORA=NA_KLASIFIKÁCIU_V_11_B
+```
+
+Nový Gate modul obsahuje pevné testovacie identifikátory session a kroku, placeholder metódy, verejné API routes bez spoločného explicitného filtra a diagnostické chybové odpovede s internými údajmi. Samostatné testy `GateSupervisor`, `DiagnosticsGateStepController` ani `DiagnosticsGateEvidenceController` sa nenašli. Tieto zistenia sa iba evidujú; žiadny kód sa v zatvorenej bráne nemení.
+
+### Aktualizovaná produkčná dôkazová mapa
+
+| Oblasť | Aktuálny stav | Historický alebo repozitárový dôkaz | Chýbajúci aktuálny dôkaz |
+|---|---|---|---|
+| Repozitár | DOLOŽENÉ | stabilný HEAD `6f5adb84...`, úplné compare výsledky | nič |
+| Release balíky v repozitári | DOLOŽENÉ | `RELEASE_VERSION=1.1.15`, balíky 1.1.10–1.1.15 prítomné | dôkaz nasadenia |
+| Nasadená produkčná verzia | NEZISTENÉ | footer vie čítať release marker, ale produkčný read-back nebol získaný | bezpečný aktuálny HTTP alebo serverový read-back |
+| Zdrojový commit nasadenia | NEZISTENÉ | v repozitári nie je aktuálny deployment manifest | produkčný manifest alebo zhodný súborový read-back |
+| Feature flagy | NEZISTENÉ | zdrojový kód ich číta z runtime prostredia | aktuálne runtime hodnoty |
+| Produkčný runtime | NEZISTENÉ | historicky PHP 8.4 a MariaDB 11.4; nejde o dnešný dôkaz | aktuálny praktický výpis bez zmeny prostredia |
+| Stav migrácií na produkcii | NEZISTENÉ | historicky M1–M8 vykonané | aktuálny `migrate:status` alebo ekvivalentný čítací dôkaz |
+| Databázové testovacie riadky | NEZISTENÉ | historické testy mali cleanup | aktuálne bezpečné počty jednoznačne testovacích riadkov |
+| Session dáta | NEZISTENÉ | 2026-07-25 bola používateľom doložená session `id=1` | dnešný read-only stav |
+| Step dáta | NEZISTENÉ | 2026-07-25 bol používateľom doložený krok `id=1` | dnešný read-only stav |
+| Evidence dáta | NEZISTENÉ | historický INI ponechal zápis Evidence ako následný test | dnešný read-only stav |
+| Run-store JSON/lock/temp | NEZISTENÉ | repozitár určuje adresár a formáty | dnešný bezpečný súborový výpis |
+| Produkčný cleanup | NEZISTENÉ | nezistené sa nepovažuje za nulu | spoločný aktuálny DB a súborový postcheck |
+
+### Výsledok druhého checkpointu
+
+```text
+FÁZA_11_A=ZASTAVENÁ_ROZHODOVACOU_BRÁNOU_PO_DOKONČENÍ_REPOZITÁROVEJ_A_KONTINUITNEJ_MAPY
+BOD_5=NEOVERENÉ
+BOD_6=ÁNO
+GATE_KROKU_11=CLOSED
+KROK_11_TESTY=NESPUSTENÉ
+KÓD=BEZ_ZMENY
+DATABÁZA=BEZ_ZÁSAHU
+RELEASE=BEZ_ZMENY
+PRODUKCIA=BEZ_ZÁSAHU
+FÁZA_11_B=NEOTVORENÁ
+NEXT_ALLOWED_ACTION=IBA_ZÍSKANIE_BEZPEČNÉHO_AKTUÁLNEHO_PRODUKČNÉHO_DÔKAZU_A_AKTUALIZÁCIA_TOHTO_INI
 ```
