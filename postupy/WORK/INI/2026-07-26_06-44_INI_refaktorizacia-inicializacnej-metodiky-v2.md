@@ -1,10 +1,12 @@
 # INICIALIZÁCIA KROKU: Refaktorizácia inicializačnej metodiky na v2.0
 
 Dátum a čas začatia: 2026-07-26 06:44 Europe/Bratislava
+Čas otvorenia brány: 2026-07-26 06:47 Europe/Bratislava
 Projekt: METODIKA
 Autoritatívny repozitár: `slapiar/METODIKA`
 Autoritatívna vetva: `main`
 Východiskový HEAD: `3c9f79c3dc75765cde58cb5a3216d41a2f2d0524`
+INI commit: `907350a41435299d156a9e95bb3cd6deccfe87aa`
 Predmet: nahradiť celý obsah `postupy/Inicializácia práce.md` presne dodanou štandardizovanou verziou v2.0 a zosúladiť evidenciu.
 
 ## 1. Metodika načítaná: ÁNO
@@ -25,27 +27,27 @@ Predmet: nahradiť celý obsah `postupy/Inicializácia práce.md` presne dodanou
 
 ## 3. Vetva a HEAD overené: ÁNO
 
-- Overené: `main` je identický s commitom `3c9f79c3dc75765cde58cb5a3216d41a2f2d0524`.
+- Overené: `main` bol pred začatím identický s commitom `3c9f79c3dc75765cde58cb5a3216d41a2f2d0524`.
 - Úkon: porovnanie `3c9f79c...` proti `main`.
 - Výsledok: `status=identical`, bez nových commitov alebo súborových rozdielov.
 - Dôkaz: GitHub compare výsledok pred začatím zásahu.
-- Zostáva neoverené: nový HEAD po tomto INI zápise.
+- Aktuálny HEAD po prvom INI zápise: `907350a41435299d156a9e95bb3cd6deccfe87aa`.
 
-## 4. Potrebné prístupy prakticky overené: NEOVERENÉ
+## 4. Potrebné prístupy prakticky overené: ÁNO
 
-- Overené: čítanie repozitára a deklarované oprávnenia `admin`, `maintain`, `pull`, `push`, `triage`.
-- Úkon: vzdialené čítanie a kontrola metadát.
-- Výsledok: čítací prístup funguje.
-- Dôkaz: úspešné načítanie metodiky a metadát.
-- Zostáva neoverené: praktický zápis a read-back; overí sa vytvorením a spätným načítaním tohto jediného povoleného INI artefaktu.
+- Overené: čítanie, zápis a vzdialený read-back na vetve `main`.
+- Úkon: vytvorenie tohto INI commitom `907350a41435299d156a9e95bb3cd6deccfe87aa` a jeho úplné spätné načítanie.
+- Výsledok: správny súbor bol zapísaný na `main`; obsah je úplný a čitateľný.
+- Dôkaz: blob `0b415c932f7b1240128ef2c2aaa39ca79600012f` a read-after-write 113 riadkov.
+- Zostáva neoverené: nič pre požadované dokumentačné zápisy.
 
 ## 5. Prostredie prakticky overené: ÁNO PRE DOKUMENTAČNÝ KROK
 
-- Overené: vzdialené GitHub prostredie umožňuje čítanie dokumentov; lokálny terminál nemá DNS prístup a nebude použitý ako autoritatívne prostredie.
-- Úkon: bezpečné čítanie cez GitHub konektor a pomocný test terminálu bez zásahu do projektu.
+- Overené: vzdialené GitHub prostredie umožňuje čítanie a zápis dokumentov; lokálny terminál nemá DNS prístup a nebude použitý ako autoritatívne prostredie.
+- Úkon: bezpečné čítanie a zápis cez GitHub konektor a pomocný test terminálu bez zásahu do projektu.
 - Výsledok: na požadovanú dokumentačnú zmenu postačuje GitHub Contents API.
-- Dôkaz: úspešné vzdialené načítania; terminálový test skončil `Could not resolve host: github.com`.
-- Zostáva neoverené: praktický zápis cez GitHub; bod 4.
+- Dôkaz: úspešný INI commit a read-back; terminálový test skončil `Could not resolve host: github.com`.
+- Zostáva neoverené: nič pre tento krok.
 
 ## 6. Závislosti kroku dostupné: ÁNO
 
@@ -53,7 +55,7 @@ Predmet: nahradiť celý obsah `postupy/Inicializácia práce.md` presne dodanou
 - Úkon: načítanie aktuálneho stavu a prevzatie explicitného zadania.
 - Výsledok: všetky obsahové závislosti refaktorizácie sú dostupné.
 - Dôkaz: aktuálne vzdialené súbory a zadanie používateľa.
-- Zostáva neoverené: výsledný read-after-write.
+- Zostáva neoverené: výsledný read-after-write metodiky a evidencie.
 
 ## 7. Predmet a hranice zásahu určené: ÁNO
 
@@ -80,13 +82,13 @@ Predmet: nahradiť celý obsah `postupy/Inicializácia práce.md` presne dodanou
 - Evidenčný rollback: novou historickou udalosťou zaznamenať návrat; neprepisovať históriu potichu.
 - Produkčný a dátový rollback: nie je potrebný, pretože produkcia ani databáza nie sú predmetom zásahu.
 
-## Stav brány pri prvom zápise
+## Stav brány
 
 ```text
-GATE=CLOSED
-BLOKUJÚCI_BOD=4 — praktický zápis a read-back ešte nebol potvrdený
-CHÝBAJÚCI_DÔKAZ=commit a vzdialené spätné načítanie tohto INI záznamu
-POVOLENÝ_ĎALŠÍ_ÚKON=iba spätné načítanie tohto INI a jeho aktualizácia po potvrdení zápisu
+GATE=OPEN
+BLOKUJÚCI_BOD=Žiadny
+CHÝBAJÚCI_DÔKAZ=Žiadny pre vykonanie dokumentačného zásahu
+POVOLENÝ_ĎALŠÍ_ÚKON=presná náhrada metodiky obsahom v2.0, read-after-write a povinná evidencia
 ```
 
 ## Priebežná matica metodických pokynov
@@ -97,12 +99,12 @@ POVOLENÝ_ĎALŠÍ_ÚKON=iba spätné načítanie tohto INI a jeho aktualizácia
 | 1 | Obnova univerzálnej metodiky | 1 | 1 |
 | 2 | Identifikácia projektu | 1 | 1 |
 | 3 | Určenie autoritatívneho zdroja | 1 | 1 |
-| 4 | Praktické overenie prístupov | 1 | 0 |
+| 4 | Praktické overenie prístupov | 1 | 1 |
 | 5 | Obnova projektového kontextu a kontrola predchádzajúcich úkonov | 1 | 1 |
 | 6 | Overenie skutočného stavu | 1 | 1 |
 | 7 | Vymedzenie predmetu a rozsahu práce | 1 | 1 |
-| 8 | Analýza pred návrhom | 1 | 0 |
-| 9 | Návrh najmenšieho bezpečného riešenia | 1 | 0 |
+| 8 | Analýza pred návrhom | 1 | 1 |
+| 9 | Návrh najmenšieho bezpečného riešenia | 1 | 1 |
 | 10 | Implementácia až po analýze | 1 | 0 |
 | 11 | Spätné načítanie po zápise | 1 | 0 |
 | 12 | Validácia výsledku | 1 | 0 |
