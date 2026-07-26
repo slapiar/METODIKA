@@ -1,7 +1,5 @@
 # Inicializácia práce
 
-Skúška spojenia s github repozitárom. 
-
 ## Stav dokumentu
 
 ```text
@@ -12,421 +10,89 @@ Tento postup vznikol syntézou existujúcich záväzných pravidiel v `README.md
 
 ---
 
-# Všeobecne záväzná inicializačná brána
+## 1. INICIALIZAČNÁ BRÁNA (Gatekeeper)
 
-Tento dokument nie je iba text určený na prečítanie. Je to nepriechodná vykonávacia brána.
+Pred vykonaním akejkoľvek práce vytvorte súbor v `postupy/WORK/INI/YYYY-MM-DD_HH-MM_INI_<popis>.md`.
+Je to **jediný** povolený artefakt pred otvorením brány (`GATE=OPEN`).
 
-```text
-prečítané ≠ splnené
-tvrdené ≠ overené
-overované ≠ overené
-overenie bez dôkazu = NEOVERENÉ
-predpoklad ≠ skutočný stav
-existencia nástroja ≠ pripravenosť prostredia
-pamäť ≠ aktuálny vzdialený stav
-register ≠ úplný obsah zdroja
-```
-
-Pred každým samostatným pracovným krokom, metodickým úkonom, opravou, migráciou, testom, diagnostikou, nasadením alebo inou činnosťou sa vytvorí explicitný inicializačný záznam v:
+### Šablóna INI záznamu:
 
 ```text
-postupy/WORK/INI/
+# INICIALIZÁCIA KROKU: [Názov kroku]
+
+## Kontrolná matica (Dôkaz je povinný, inak = NEOVERENÉ)
+1. Metodika načítaná: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [commit/súbor/blob ID]
+2. Projekt a autoritatívny zdroj: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [URL/repozitár/cesta]
+3. Vetva a HEAD: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [hash commitu]
+4. Prístupy (read/write): [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [výsledok testu prístupu]
+5. Prostredie a runtime: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [verzia, stav env]
+6. Závislosti kroku: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [dostupnosť balíkov/služieb]
+7. Predmet a hranice zásahu: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [súbory v rozsahu]
+8. Kritérium úspechu: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [akceptačné kritériá]
+9. Rollback plán: [ÁNO/NIE/NEOVERENÉ] | Dôkaz: [postup návratu]
+
+## Stav Brány
+GATE = [OPEN / CLOSED]
+BLOKUJÚCI_BOD = [Číslo bodu / Žiadny]
+POVOLENÝ_ĎALŠÍ_ÚKON = [Iba overenie chýbajúceho bodu OR Pokračovanie na krok 2]
+
+## Matica plnenia pokynov
+| ID pokynu | R (Prečítané) | W (Zapísané) |
+|---|---|---|
+| ID-01 až ID-14 | 1 | 1 |
 ```
-
-Názov súboru musí obsahovať:
-
-```text
-YYYY-MM-DD_HH-MM_INI_<skratka-kroku-alebo-popis-cinnosti>.md
-```
-
-Inicializačný záznam je prvým a jediným dovoleným pracovným artefaktom pred otvorením brány. Jeho vytvorenie nie je implementáciou ani návrhom riešenia; zaznamenáva iba výsledok povinného overovania.
-
-Ak sa brána neotvorí, inicializačný záznam zostáva jediným novým súborom daného pokusu. Nesmie po ňom nasledovať návrh, implementácia, príkaz ani zmena prostredia.
-
-## Povinný obsah inicializačného záznamu
-
-```text
-INICIALIZÁCIA KROKU X
-
-1. Metodika načítaná: ÁNO / NIE / NEOVERENÉ
-2. Projekt a autoritatívny zdroj overený: ÁNO / NIE / NEOVERENÉ
-3. Vetva a HEAD overené: ÁNO / NIE / NEOVERENÉ
-4. Potrebné prístupy prakticky overené: ÁNO / NIE / NEOVERENÉ
-5. Prostredie prakticky overené: ÁNO / NIE / NEOVERENÉ
-6. Závislosti kroku dostupné: ÁNO / NIE / NEOVERENÉ
-7. Predmet a hranice zásahu určené: ÁNO / NIE / NEOVERENÉ
-8. Kritérium úspechu určené: ÁNO / NIE / NEOVERENÉ
-9. Rollback určený: ÁNO / NIE / NEOVERENÉ
-
-GATE = OPEN iba vtedy, keď všetko = ÁNO
-```
-
-Pri každom bode musí byť uvedené:
-
-- čo bolo overené,
-- akým konkrétnym úkonom to bolo overené,
-- aký výsledok overenie prinieslo,
-- kde je dôkaz dostupný,
-- čo zostáva neoverené.
-
-Samotné slovo `ÁNO` bez uvedeného dôkazu sa posudzuje ako `NEOVERENÉ`.
-
-## Nepriechodnosť brány
-
-Ak je čo i len jeden bod `NIE` alebo `NEOVERENÉ`, nesmie vzniknúť:
-
-- návrh riešenia,
-- nový pracovný súbor okrem samotného INI záznamu,
-- úprava existujúceho pracovného súboru,
-- commit pracovnej zmeny,
-- príkaz určený na vykonanie používateľom,
-- spustenie testu, diagnostiky, migrácie alebo cleanupu,
-- zmena konfigurácie alebo prostredia,
-- zásah do databázy,
-- nasadenie,
-- pokračovanie ďalším krokom.
-
-V takom prípade sa zaznamená:
-
-```text
-GATE=CLOSED
-BLOKUJÚCI_BOD=<číslo a názov>
-CHÝBAJÚCI_DÔKAZ=<presný dôkaz>
-POVOLENÝ_ĎALŠÍ_ÚKON=<iba overenie chýbajúceho predpokladu>
-```
-
-`GATE=CLOSED` aktuálne vykonávaného kroku nezastavuje ani nezakazuje jeho vlastné inicializačné a overovacie úkony. Práve naopak: body označené `NIE` alebo `NEOVERENÉ` určujú, ktoré chýbajúce predpoklady sa musia v rámci aktuálneho kroku prakticky overiť, vykonať a doložiť, pokiaľ tým ešte nevzniká predmet práce blokovaný bránou.
-
-Pred začatím aktuálneho kroku sa kontroluje `GATE=OPEN` predchádzajúceho kroku. Po začatí aktuálneho kroku jeho vlastné `GATE=CLOSED` blokuje iba analýzu, návrh, implementáciu, test predmetu práce, zásah do prostredia alebo ďalší krok, ktoré výslovne vyžadujú otvorenú bránu. Neblokuje dokončenie povinného overovania bodov 1 až 9 potrebného na otvorenie tejto brány.
-
-Platí:
-
-```text
-GATE predchádzajúceho kroku = OPEN
-→ aktuálny krok sa môže začať
-→ jeho body NIE / NEOVERENÉ sa musia vykonať a doložiť
-→ GATE aktuálneho kroku zostáva CLOSED počas overovania
-→ po deviatich doložených hodnotách ÁNO sa otvorí
-→ až potom môže nasledovať analýza, návrh a implementácia
-```
-
-Overovanie chýbajúceho predpokladu nesmie samo vykonať predmet práce, ktorý brána blokuje.
 
 ---
 
-# Povinný postup
-
-## 0. Povinné nové načítanie vzdialeného autoritatívneho repozitára
-
-Pred otvorením každého nového kroku sa musí vykonať nové čítanie vzdialeného autoritatívneho repozitára a jeho autoritatívnej vetvy. Toto overenie sa nesmie nahradiť pamäťou, predchádzajúcou konverzáciou, internou sumarizáciou, registrom, lokálnou kópiou ani údajom z predchádzajúceho kroku.
-
-Povinne sa načíta a zaznamená najmenej:
-
-- aktuálny vzdialený HEAD autoritatívnej vetvy,
-- relevantná história zmien od posledného uzavretého kroku,
-- aktuálny denný plán v celom rozsahu,
-- všetky INI, WORK a checkpoint záznamy, na ktoré krok nadväzuje,
-- aktuálny obsah všetkých zdrojových, konfiguračných, databázových a metodických súborov dotknutých krokom,
-- aktuálny register a `CHANGELOG.md`, ak sú relevantné pre určenie stavu,
-- rozdiel medzi vzdialeným repozitárom, lokálnym pracovným stavom, produkciou a historickým release.
-
-Platí:
-
-```text
-načítaný názov súboru ≠ načítaný úplný obsah
-načítaný register ≠ načítané evidované dokumenty
-starší blob alebo commit ≠ aktuálny vzdialený stav
-pamäť o výsledku ≠ dôkaz uložený v repozitári
-lokálny HEAD ≠ vzdialený autoritatívny HEAD
-```
-
-Ak ktorýkoľvek potrebný dokument alebo zdroj nebol načítaný v úplnom rozsahu, údaj je neúplný, obsah si odporuje alebo sa vzdialený stav líši od pamäte či predchádzajúcej sumarizácie, platí:
-
-```text
-GATE=CLOSED
-BLOKUJÚCI_BOD=neúplne načítaný alebo rozporný vzdialený stav
-POVOLENÝ_ĎALŠÍ_ÚKON=iba dokončenie čítania a odstránenie rozporu
-```
-
-Ďalší krok sa nesmie otvoriť, kým nie sú kompletné údaje načítané priamo z autoritatívneho vzdialeného zdroja a rozpor nie je výslovne vyriešený dôkazom. Pri rozpore má aktuálny obsah autoritatívneho vzdialeného repozitára prednosť pred pamäťou, konverzáciou, registrom aj starším záznamom; starší záznam však zostáva historickým dôkazom a nesmie sa potichu prepisovať.
-
-## 1. Obnova univerzálnej metodiky
-
-Znovu načítať aktuálny obsah univerzálnej metodiky a autoritatívnych dokumentov. Nespoliehať sa iba na pamäť predchádzajúcej práce.
-
-Za splnenie sa nepovažuje všeobecné tvrdenie, že metodika je známa. Inicializačný záznam musí uviesť konkrétne načítané dokumenty a ich aktuálnu verziu, stav alebo blob/commit identifikátor, ak je dostupný.
-
-## 2. Identifikácia projektu
-
-Overiť projekt v `PROJEKTY/ZoznamProjektov.md` a určiť:
-
-- presný názov projektu,
-- vlastníka alebo zodpovednú osobu,
-- účel a aktuálnu prioritu,
-- či ide o nový projekt, pokračovanie, obnovu, migráciu alebo opravu.
-
-Názov repozitára, adresára alebo predchádzajúca konverzácia samy osebe nie sú dôkazom správnej identifikácie projektu.
-
-## 3. Určenie autoritatívneho zdroja
-
-Určiť:
-
-- autoritatívny repozitár,
-- autoritatívnu vetvu,
-- hlavný pracovný koreň,
-- aktuálne a historické prostredia,
-- zdroj s najvyššou prioritou pri rozdieloch.
-
-Vetva otvorená v lokálnom termináli nemusí byť autoritatívnou vetvou. Lokálny pracovný stav, GitHub, produkcia a historický release sa musia rozlíšiť.
-
-## 4. Praktické overenie prístupov
-
-Overiť reálnym čítaním alebo bezpečným zápisom iba tie prístupy, ktoré sú pre úlohu potrebné. Pridelený prístup sa nepovažuje za funkčný, kým nebol prakticky overený.
-
-Platí:
-
-```text
-oprávnenie deklarované ≠ prístup funkčný
-úspešné čítanie ≠ právo zápisu
-právo zápisu ≠ právo nasadenia
-prístup k repozitáru ≠ prístup k databáze alebo hostingu
-```
-
-Overenie musí zodpovedať druhu plánovaného úkonu. Ak sa má zapisovať, samotné čítanie nestačí; ak sa má pracovať s databázou, prístup ku GitHubu nestačí.
-
-## 5. Obnova projektového kontextu
-
-Prečítať:
-
-- projektové metodické pokyny,
-- posledný checkpoint alebo sumarizáciu,
-- históriu posledných zmien,
-- otvorené úlohy, chyby a nedokončené zásahy,
-- aktuálny stav priamo v zdrojoch.
-
-Predchádzajúca konverzácia alebo interná pamäť slúži iba ako navigácia k zdrojom. Nenahrádza ich nové načítanie.
-
-Register slúži ako navigácia a evidencia stavu. Nenahrádza úplné čítanie dokumentov, na ktoré odkazuje, ani kontrolu ich aktuálneho vzdialeného obsahu.
-
-### Povinná kontrola predchádzajúcich úkonov a obnova dôkazov
-
-Pred vykonaním každého bodu nového projektového kroku sa musí v aktuálnom vzdialenom projekte najprv overiť, či ten istý bod, úkon, dôkaz alebo výsledok už nebol vykonaný a doložený v niektorom predchádzajúcom kroku.
-
-Povinne sa preveria najmenej príslušné INI, WORK a checkpoint záznamy, commity, testy, workflowy, logy, artefakty a databázové dôkazy, ktoré môžu preukázať predchádzajúce vykonanie. Už vykonaný bod sa neopakuje iba preto, že je uvedený aj v novom kroku.
-
-Existujúci výsledok možno použiť ako východisko iba po:
-
-- jeho novom načítaní z autoritatívneho zdroja,
-- overení, že presne zodpovedá požadovanému bodu,
-- overení kontinuity jeho predpokladov voči aktuálnemu HEAD, prostrediu, konfigurácii a rozsahu,
-- zapísaní zdroja dôkazu a toho, čo zostáva neoverené.
-
-Ak existujúci dôkaz, výsledok alebo artefakt nie je priamo dostupný, musí sa najprv vykonať bezpečný pokus o jeho obnovenie alebo sprístupnenie prostredníctvom vlastnej preukázanej administrátorskej autority a dostupných projektových nástrojov. Môže ísť najmä o opätovné načítanie historického commitu alebo vetvy, získanie uloženého logu či artefaktu, obnovenie bezpečného prístupu alebo vykonanie iného vratného obnovovacieho úkonu v rozsahu oprávnenia.
-
-Platí:
-
-```text
-nový krok ≠ povinné opakovanie už vykonaného bodu
-existujúci dôkaz ≠ automaticky platný dôkaz
-existujúci dôkaz + overená kontinuita = použiteľné východisko
-nedostupné ≠ neexistujúce
-administrátorská autorita = povinnosť pokúsiť sa o bezpečnú obnovu, nie právo domýšľať výsledok
-```
-
-Administrátorská autorita sa nesmie použiť na obchádzanie bezpečnostných hraníc, rozšírenie zásahu mimo otvorenej brány ani na zmenu produkcie bez osobitne potvrdeného oprávnenia a rollbacku.
-
-Ak sa predchádzajúce vykonanie nepodarí preukázať ani bezpečne obnoviť, bod zostáva `NIE` alebo `NEOVERENÉ`. Vykonať sa môže nanovo až vtedy, keď to povoľuje otvorená brána aktuálneho kroku, záväzný plán a potvrdené hranice zásahu.
-
-## 6. Overenie skutočného stavu
-
-Nevychádzať z domnienok, placeholderov ani vymyslených údajov. Rozlíšiť najmenej:
-
-```text
-skutočnosť
-≠ pozorovanie alebo meranie
-≠ výsledok
-≠ interpretácia
-≠ tvrdenie
-≠ dôkaz
-≠ Validácia
-```
-
-Povinne sa rozlišuje aj:
-
-```text
-súbor existuje ≠ súbor je aktívny
-príkaz existuje ≠ príkaz je vykonateľný v danom prostredí
-knižnica alebo rozšírenie existuje ≠ služba alebo server je dostupný
-konfigurácia existuje ≠ konfigurácia je načítaná
-pripojenie je nakonfigurované ≠ pripojenie bolo úspešne overené
-test prešiel inde ≠ test prejde v aktuálnom prostredí
-produkčný dôkaz ≠ bezpečné testovacie prostredie
-```
-
-Pred návrhom testu alebo diagnostiky sa musí prakticky overiť celé prostredie, ktoré test potrebuje, najmä:
-
-- runtime a jeho skutočná verzia,
-- aktívne prostredie aplikácie,
-- dostupné služby a procesy,
-- databázový server a konkrétne neprodukčné spojenie,
-- schéma a migrácie,
-- potrebné premenné prostredia,
-- oprávnenia,
-- izolácia od produkcie,
-- cleanup a rollback.
-
-Existencia klienta, ovládača, PHP rozšírenia, triedy, integračného príkazu alebo konfiguračného súboru nedokazuje pripravenosť prostredia.
-
-## 7. Vymedzenie predmetu a rozsahu práce
-
-Skontrolovať priečinok `postupy/PLAN/` a vyhľadať plán práce na dnes. Pokiaľ plán na dnes neexistuje, je potrebné ho vytvoriť a zapísať do súboru podľa vzoru predošlých dní. Musí obsahovať dátumovú aj časovú značku v názve a príponu `.md`.
-
-Každý plán sa musí skladať z jednoznačných krokov, navzájom nadväzujúcich a vykonateľných bez prerušenia práce očakávaním na výsledky iných krokov alebo meraní.
-
-Z plánu a záverov prevedenej práce určiť:
-
-- čo presne je predmetom práce,
-- čo sa má vykonať,
-- čo sa vykonať nemá,
-- hranice zásahu,
-- dotknuté súbory, moduly, služby a prostredia,
-- závislosti a možné vedľajšie účinky,
-- kritérium úspechu,
-- podmienky zastavenia,
-- rollback.
-
-Ak predmet práce závisí od prostredia, služby, databázy, externého dôkazu alebo prístupu, ich dostupnosť musí byť potvrdená pred otvorením brány. Nemožno ich dopĺňať až po vytvorení riešenia.
-
-## 8. Analýza pred návrhom
-
-Najprv určiť príčinu a až potom riešenie. Posúdiť riziká, kontinuitu dotknutých SUBJECT-ov a možné následky metodického úkonu.
-
-Zachovať rozlíšenie:
-
-```text
-ACTOR ≠ AUTHORITY
-úkon ≠ oprávnenosť úkonu
-úkon ≠ jeho výsledok
-príčina ≠ úkon ≠ následok ≠ stav
-```
-
-Analýza nesmie nahradiť chýbajúce overenie prostredia domnienkou. Ak príčinu nemožno skúmať bez chýbajúceho predpokladu, brána zostáva zatvorená.
-
-## 9. Návrh najmenšieho bezpečného riešenia
-
-Zvoliť najmenší zásah, ktorý spĺňa zadanie a nemení nič mimo jeho rozsahu. Ak je potrebná možnosť návratu, určiť ju pred implementáciou.
-
-Návrh môže vzniknúť až po otvorení inicializačnej brány. Nemožno najprv vytvoriť riešenie a až potom overovať, či je prostredie schopné ho vykonať.
-
-## 10. Implementácia až po analýze
-
-Implementácia nesmie predbehnúť metodiku, inicializačnú bránu, analýzu ani potvrdené významové vzťahy. Databázová a softvérová štruktúra musí byť ich dôsledkom, nie náhradou.
-
-Pred prvým zápisom sa ešte raz musí overiť, GATE predošlého kroku že:
-
-```text
-GATE=OPEN
-```
-
-Ak sa od otvorenia brány zmenil HEAD, vetva, prostredie, prístup, plán alebo iný podstatný predpoklad, pôvodná brána stráca platnosť a musí vzniknúť nová inicializácia.
-
-## 11. Spätné načítanie po zápise
-
-Po každom zápise znovu načítať výsledný obsah a overiť:
-
-- správny súbor,
-- správnu vetvu,
-- úplnosť zápisu,
-- absenciu duplicít alebo poškodenia,
-- syntax, názvy, odkazy a interpunkciu.
-
-Zápis sa nepovažuje za dokončený, kým nebol overený výsledný stav.
-
-Spätné načítanie musí overovať skutočný vzdialený výsledok, nie iba lokálny obsah, ktorý mal byť zapísaný.
-
-## 12. Validácia výsledku
-
-Posúdiť výsledok podľa vopred určených kritérií, v konkrétnom kontexte, čase a rozsahu. Validácia nie je pravda ani vlastnosť reality.
-
-Štruktúra záznamov vykonanej práce podľa plánu musí rešpektovať štruktúru plánu a zapisuje sa po jednotlivých krokoch do `postupy/WORK/`, do súboru s dátumom, časom a názvom kroku podľa plánu.
-
-Validácia nesmie spätne vyhlásiť za splnený predpoklad, ktorý nebol overený pred návrhom alebo implementáciou.
-
-## 13. Záznam metodického úkonu
-
-Ak sa mení dokument v `postupy/` alebo `poznámky/`, v tom istom pracovnom kroku aktualizovať:
-
-- príslušný register stavov,
-- `CHANGELOG.md`,
-- autoritatívny cieľ alebo náhradu, ak sa zmenil stav dokumentu.
-
-História sa neopravuje prepísaním významu. Dopĺňa sa novou udalosťou, ktorá pôvodný stav potvrdí, nahradí, zneplatní alebo opraví.
-
-Inicializačný záznam musí byť uvedený v pracovnom zázname alebo v `CHANGELOG.md` ako dôkaz otvorenia brány. 
-Inicializačný záznam musí byť na konci opatrený dôkazom o dôkladnom prečítaní a naplnení všetkých pokynov tohto súboru, nasledovne: #ID (-číslo medodického pokynu v tomto súbore), R (- prečítané) =[1/0], W (-vykonané/zapísané) =[1/0]. Tento záznam nemá vplyv na stav brány vývojového alebo realizovaného kroku projektu.
-
-## 14. Ukončenie pracovného kroku
-
-Na konci stručne uviesť:
-
-- čo sa vykonalo,
-- čo sa zmenilo,
-- čo zostáva otvorené,
-- aké riziká pretrvávajú,
-- identifikátor commitu,
-- kde je inicializačný záznam,
-- nasledujúci logický krok.
-
-Ak išlo o významnú zmenu, vytvoriť checkpoint.
+## 2. PRAVIDLÁ INICIALIZÁCIE (GATE Logic)
+
+1. **Stav GATE:**
+   - Všetky body 1–9 sú `ÁNO` s doloženým DÔKAZOM $\rightarrow$ `GATE=OPEN`.
+   - Akýkoľvek bod `NIE` / `NEOVERENÉ` alebo chýbajúci dôkaz $\rightarrow$ `GATE=CLOSED`.
+2. **Pravidlo STOP pri `GATE=CLOSED`:**
+   - Sú zakázané: návrhy riešení, úpravy kódu, zápis iných súborov, commit, spúšťanie migrácií/nasadení.
+   - Povolené je **výhradne**: vykonávanie overovacích úkonov pre získanie chýbajúcich dôkazov bodov 1–9.
+3. **Pravidlo čítania stavu (No-Memory Rule):**
+   - Vždy sa číta **aktuálny vzdialený stav** (remote repository/HEAD).
+   - Pamäť konverzácie, lokálne medzipamäte a interné registre sa považujú za **neoverené**.
 
 ---
 
-# Povinný postup pri STOP
+## 3. FYZICKÝ PRACOVNÝ POSTUP (Po GATE=OPEN)
 
-Ak sa zistí, že práca začala bez otvorenej inicializačnej brány alebo že niektorý bod bol označený `ÁNO` bez dôkazu, musí sa okamžite zastaviť.
-
-Nesmie sa pokračovať ospravedlnením, improvizovanou opravou ani ďalším príkazom. Najprv sa zaznamená:
+Po otvorení brány postupujte striktne v tomto poradí:
 
 ```text
-STOP
-PORUŠENÝ_BOD=<číslo a názov bodu>
-ČO_BOLO_VYKONANÉ_PREDČASNE=<presný zásah>
-KTORÁ_BRÁNA_MALA_CHYBE_ZABRÁNIŤ=<bod>
-PREČO_NEZABRÁNILA=<presná príčina>
-STAV_VZNIKNUTÝCH_ARTEFAKTOV=<platný / predčasný / neplatný / na rozhodnutie>
-ROLLBACK_ALEBO_NÁPRAVA=<presný postup>
+[1. Načítanie stavu] -> [2. Analýza príčiny] -> [3. Minimálny návrh] -> [4. Implementácia] 
+   -> [5. Spätné načítanie] -> [6. Validácia] -> [7. Záznam a Registre] -> [8. Checkpoint]
 ```
 
-Predčasne vytvorený artefakt sa nesmie automaticky považovať za platný výsledok kroku. O jeho ponechaní, oprave alebo odstránení sa rozhodne až po novej, úplnej inicializácii.
+1. **Načítanie stavu a Plánu:**
+   - Overte existenciu denných plánov v `postupy/PLAN/`.
+   - Overte, či rovnaký úkon nebol vykonaný v predošlých krokoch. Ak áno, znovupoužite dôkaz (ak platí pre aktuálny HEAD).
+2. **Analýza & Návrh:**
+   - Najprv určite príčinu, až potom riešenie.
+   - Zvoľte **najmenší možný bezpečný zásah** s pripraveným rollbackom.
+3. **Implementácia a Spätné načítanie (Read-After-Write):**
+   - Po každom zápise vykonajte opätovné načítanie vzdialeného súboru a overte správnosť, úplnosť a syntax.
+4. **Záznam vykonanej práce:**
+   - Záznam zapíšte do `postupy/WORK/YYYY-MM-DD_HH-MM_<krok>.md`.
+   - V prípade zmeny metodických súborov aktualizujte `CHANGELOG.md` a príslušné registre.
+5. **Ukončenie kroku:**
+   - Uveďte: vykonané zmeny, otvorené riziká, commit ID, cestu k INI súboru a nasledujúci krok.
 
 ---
 
-# Základné pravidlo
+## 4. PROTOKOL PRI PORUŠENÍ (STOP Protocol)
 
-> Najprv načítať úplný aktuálny vzdialený stav, potom dôkazom otvoriť inicializačnú bránu, obnoviť kontext, analyzovať a až následne navrhnúť alebo vykonať zmenu. Vypísať na obrazovku tabuľku stavu čítania a vykonávania pokynov, uvedenú na konci práve vytvoreného INI záznamu.
-
-Skrátené poradie:
+Ak prácu začnete bez `GATE=OPEN` alebo s vymysleným dôkazom:
+1. Okamžite zastavte prácu (žiadne opravy „za chodu“).
+2. Do logu/konzoly zapíšte blok porušenia:
 
 ```text
-INI záznam
-→ aktuálny vzdialený repozitár a úplné údaje
-→ metodika
-→ projekt
-→ autoritatívny zdroj
-→ vetva a HEAD
-→ prístupy
-→ prostredie
-→ závislosti
-→ skutočný stav
-→ rozsah
-→ kritérium úspechu
-→ rollback
-→ GATE=OPEN
-→ analýza
-→ návrh
-→ implementácia
-→ spätné načítanie
-→ Validácia
-→ záznam
-→ checkpoint
+STOP: PORUŠENIE BEZPEČNOSTNEJ BRÁNY
+PORUŠENÝ_BOD = [Číslo bodu]
+PREDČASNÝ_ZÁSAH = [Popis]
+PRÍČINA = [Prečo brána nezabránila]
+NÁPRAVA/ROLLBACK = [Postup obnovy do bezpečného stavu]
 ```
