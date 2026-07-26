@@ -6,6 +6,24 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ---
 
+## 2026-07-26
+
+### Záväzný plán dokončenia testovacej sústavy
+
+- po úplnom novom načítaní metodiky, projektu, aktuálneho plánu, INI Kroku 11, včerajšieho STOP, checklistu 1–14, matice M01–M26, histórie a zmenených technických zdrojov vznikla plánovacia brána [`postupy/WORK/INI/2026-07-26_05-51_INI_dokoncenie-denneho-planu.md`](postupy/WORK/INI/2026-07-26_05-51_INI_dokoncenie-denneho-planu.md),
+- porovnanie technického základu Kroku 11 `d418e72c162bde324af7546c937af979bd75182e` s aktuálnym stavom pred plánom potvrdilo 71 nových commitov a 45 zmenených súborov; vykonateľný kód, konfigurácia, routes, kontrollery, model, views, JavaScript, release verzia a balíky sa zmenili, kým testovacie súbory sa nezmenili,
+- aktuálna repozitárová verzia je `1.1.15`; pre aktuálny HEAD ani posledný technický commit nebol nájdený workflow run a produkčný release, feature flagy, testovacie riadky a cleanup zostávajú `NEZISTENÉ`, nie odhadnuté,
+- vytvorený bol nový záväzný plán [`postupy/PLAN/2026-07-26_06-07_Plan_dokoncenia_testovacej_sustavy.md`](postupy/PLAN/2026-07-26_06-07_Plan_dokoncenia_testovacej_sustavy.md), ktorý zachováva Kroky 1 až 10 ako `SPLNENÉ` a riadi pokračovanie Krokov 11 až 15,
+- Krok 11 pokračuje iba v pôvodnom INI a zostáva `GATE=CLOSED`; plán ho rozdeľuje na obnovu a zmrazenie stavu, klasifikáciu 71 commitov, návrh celej testovacej sústavy naraz, jednu implementačnú dávku, jednu úplnú lokálnu a integračnú Validáciu a uzavretie,
+- až po úplnom úspechu Kroku 11 je dovolený jeden release, jedno nasadenie, jeden súvislý produkčný diagnostický priechod, úplný tombstone/sweep/cleanup a záverečná reValidácia,
+- včerajšie čiastkové session/step/Evidence artefakty zostávajú `NA_ROZHODNUTIE`; nie sú automaticky platné ani automaticky určené na odstránenie,
+- pracovný výsledok a read-back 638-riadkového plánu sú v [`postupy/WORK/2026-07-26_06-11_Vytvorenie_zavazneho_planu_dokoncenia_testovacej_sustavy.md`](postupy/WORK/2026-07-26_06-11_Vytvorenie_zavazneho_planu_dokoncenia_testovacej_sustavy.md),
+- register [`postupy/README.md`](postupy/README.md) označuje plán z 2026-07-26 ako aktuálny `PRACOVNÝ — ZÁVÄZNÝ`, plán z 2026-07-25 ako `PREKONANÝ` a pôvodný INI Kroku 11 ako jediný pokračovací záznam so zatvorenou bránou,
+- týmto plánovacím úkonom sa nemenil `/codei`, testy, workflowy, migrácie, `RELEASE_VERSION`, ZIP balíky, databáza ani produkcia,
+- jediným nasledujúcim povoleným pracovným úkonom je Fáza 11.A — obnova a zmrazenie skutočného stavu v pôvodnom INI Kroku 11.
+
+---
+
 ## 2026-07-25
 
 ### Povinná kontrola predchádzajúcich úkonov a obnova dôkazov
