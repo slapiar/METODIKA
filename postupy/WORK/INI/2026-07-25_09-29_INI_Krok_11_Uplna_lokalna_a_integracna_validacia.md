@@ -374,3 +374,79 @@ PRODUKCIA=BEZ_ZÁSAHU
 FÁZA_11_B=NEOTVORENÁ
 NEXT_ALLOWED_ACTION=IBA_ZÍSKANIE_BEZPEČNÉHO_AKTUÁLNEHO_PRODUKČNÉHO_DÔKAZU_A_AKTUALIZÁCIA_TOHTO_INI
 ```
+
+---
+
+## Checkpoint Fázy 11.A — 2026-07-26 08:42 Europe/Bratislava
+
+### Východisko pokusu
+
+```text
+REPOSITORY=slapiar/METODIKA
+BRANCH=main
+HEAD_PRED_POKUSOM=7f42d33d182ef7c2ae7e3684a3eb1175a82ee7c8
+HEAD_STABILNÝ_PRED_ZÁPISOM=true
+INI_BLOB_PRED_ZÁPISOM=67d218f33ed8a9bd5278c8181465e6607861e1fb
+ROZSAH=IBA_BEZPEČNÉ_ČÍTANIE_PRODUKCIE_A_ZÁPIS_DÔKAZOV_DO_TOHTO_INI
+```
+
+### Vykonané bezpečné čítacie pokusy
+
+1. Pokus o priame načítanie zdokumentovanej produkčnej domény a existujúcich GET ciest `/`, `/diagnostics/database`, `/diagnostics/database/login`, `/gate`, `/api/gate/sessions`, `/api/gate/session/1/steps` a `/api/gate/step/1/evidence` cez dostupnú webovú čítaciu cestu.
+2. Pokus o HTTP načítanie rovnakých ciest z izolovaného pracovného runtime.
+3. Pokus o verejné vyhľadanie a indexačné overenie produkčnej subdomény.
+4. Opätovné načítanie release mechanizmu `release.sh`, ktorý potvrdzuje, že balík obsahuje `codei/RELEASE_VERSION` a `codei/deploy/RELEASE_VERSION.txt`, ale neobsahuje dôkaz, ktorý balík je práve nasadený.
+
+### Výsledok pokusov
+
+```text
+PRIAMY_HTTP_READ_BACK=NEZÍSKANÝ
+DNS_RESOLUTION_V_IZOLOVANOM_PRACOVNOM_RUNTIME=NEÚSPEŠNÁ
+VEREJNÝ_INDEX_PRODUKČNEJ_SUBDOMÉNY=BEZ_VÝSLEDKU
+PRODUKČNÁ_HTTP_ODPOVEĎ=NEZÍSKANÁ
+PRODUKCIA_NEDOSTUPNÁ_GLOBÁLNE=NEPOTVRDENÉ
+ZÁVER=NEDOSTUPNOSŤ_PRACOVNEJ_ČÍTACEJ_CESTY_NIE_JE_DÔKAZOM_VÝPADKU_PRODUKCIE
+```
+
+Žiadny z pokusov nevykonal POST, zápis do databázy, vytvorenie session, kroku, Evidence, run-store súboru, migráciu, release ani produkčný zásah.
+
+### Produkčné hodnoty po pokuse
+
+| Oblasť | Stav po pokuse |
+|---|---|
+| Nasadená verzia | NEZISTENÉ |
+| Zdrojový commit nasadenia | NEZISTENÉ |
+| Runtime flagy | NEZISTENÉ |
+| PHP a databázový runtime | NEZISTENÉ |
+| Stav migrácií | NEZISTENÉ |
+| Databázové testovacie riadky | NEZISTENÉ |
+| Session/step/Evidence | NEZISTENÉ |
+| Run-store JSON/lock/temp | NEZISTENÉ |
+| Produkčný cleanup | NEZISTENÉ |
+
+### Rozhodnutie brány
+
+```text
+BOD_5=NEOVERENÉ
+BOD_6=ÁNO
+GATE_KROKU_11=CLOSED
+FÁZA_11_A=ZASTAVENÁ_NA_NEDOSTUPNEJ_BEZPEČNEJ_PRODUKČNEJ_ČÍTACEJ_CESTE
+FÁZA_11_B=NEOTVORENÁ
+KROK_11_TESTY=NESPUSTENÉ
+KÓD=BEZ_ZMENY
+DATABÁZA=BEZ_ZÁSAHU
+RELEASE=BEZ_ZMENY
+PRODUKCIA=BEZ_ZÁSAHU
+```
+
+### Jediný nasledujúci povolený úkon
+
+```text
+1. použiť existujúci autorizovaný read-only prístup k produkcii alebo aktuálny read-only výstup získaný prevádzkovateľom z existujúcej diagnostiky či servera,
+2. nevytvárať nový endpoint, environmentálny test ani produkčný zápis,
+3. doložiť nasadenú verziu a zdrojový commit, ak ich produkcia sprístupňuje,
+4. doložiť runtime, migrácie, flagy, testovacie DB riadky, session/step/Evidence a run-store JSON/lock/temp stav,
+5. všetko nezistené ponechať ako NEZISTENÉ,
+6. aktualizovať výhradne tento pôvodný INI,
+7. GATE otvoriť až po deviatich hodnotách ÁNO.
+```
