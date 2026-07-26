@@ -8,6 +8,16 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-26
 
+### Refaktorizácia inicializačnej metodiky na v2.0
+
+- hlavný predpis [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) bol úplne nahradený používateľom dodanou štandardizovanou verziou v2.0,
+- pôvodný rozsah 432 riadkov bol skrátený na 94 riadkov bez pridávania vlastných pravidiel; nový dokument obsahuje GATE šablónu, GATE logiku, fyzický pracovný postup a STOP protokol,
+- inicializačný dôkaz je v [`postupy/WORK/INI/2026-07-26_06-44_INI_refaktorizacia-inicializacnej-metodiky-v2.md`](postupy/WORK/INI/2026-07-26_06-44_INI_refaktorizacia-inicializacnej-metodiky-v2.md),
+- pracovný výsledok, read-after-write a rollback sú v [`postupy/WORK/2026-07-26_06-52_Refaktorizacia_inicializacnej_metodiky_v2.md`](postupy/WORK/2026-07-26_06-52_Refaktorizacia_inicializacnej_metodiky_v2.md),
+- register [`postupy/README.md`](postupy/README.md) bol zosúladený; stav dokumentu zostáva `POTVRDENÝ-NA-PRENESENIE`,
+- commit náhrady metodiky je `6e566cc0e6df6a2b9c0cfdaaa4fb7827d8a6b4df`, výsledný blob `44729126508a0c9151fb2358badcb1445a425bd6`,
+- `/codei`, testy, migrácie, databáza, release verzia, balíky a produkcia sa týmto úkonom nemenili.
+
 ### Záväzný plán dokončenia testovacej sústavy
 
 - po úplnom novom načítaní metodiky, projektu, aktuálneho plánu, INI Kroku 11, včerajšieho STOP, checklistu 1–14, matice M01–M26, histórie a zmenených technických zdrojov vznikla plánovacia brána [`postupy/WORK/INI/2026-07-26_05-51_INI_dokoncenie-denneho-planu.md`](postupy/WORK/INI/2026-07-26_05-51_INI_dokoncenie-denneho-planu.md),
