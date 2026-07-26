@@ -108,10 +108,11 @@ V rámci Fázy 11.A je pred otvorením brány Kroku 11 dovolené iba čítanie, 
 
 Odstrániť iba INI tohto načítania a tento WORK záznam podľa ich aktuálnych blob SHA. Žiadny technický ani dátový rollback nie je potrebný, pretože vykonateľný projekt ani produkcia neboli zmenené.
 
-## Commit tohto záznamu
+## Commit a read-back tohto záznamu
 
 ```text
-DOPLNÍ SA PO VZDIALENOM ZÁPISE A READ-BACKU
+COMMIT_VYTVORENIA=74b35046ee1cc595ce25c824bcdaabb27e07fb41
+BLOB_PO_PRVOM_READ_BACKU=ac6c22d23eadee6ebf821b435bf66f599256fb55
 ```
 
 ## Nasledujúci krok
