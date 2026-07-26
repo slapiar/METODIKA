@@ -21,6 +21,9 @@
     <main class="page-main">
         <div class="container">
             <?= $this->renderSection('content') ?>
+            <?php if (($activeNav ?? '') === 'diagnostics' && isset($inspection)): ?>
+                <?= view('diagnostics/_production_state') ?>
+            <?php endif; ?>
             <?php if (($activeNav ?? '') === 'diagnostics'): ?>
                 <?= view('diagnostics/_gate_step_action') ?>
             <?php endif; ?>
