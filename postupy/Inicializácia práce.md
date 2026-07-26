@@ -1,5 +1,7 @@
 # Inicializácia práce
 
+Skúška spojenia s github repozitárom. 
+
 ## Stav dokumentu
 
 ```text
