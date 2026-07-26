@@ -1,12 +1,6 @@
-# Inicializácia práce
+# METODIKA: Inicializačný a vykonávací protokol (v2.0)
 
-## Stav dokumentu
-
-```text
-POTVRDENÝ-NA-PRENESENIE
-```
-
-Tento postup vznikol syntézou existujúcich záväzných pravidiel v `README.md`, `CHECKLISTY/StartProjektu.md`, registroch stavov a pracovných metodických dokumentoch. Nezavádza nové definície. Určuje operačné poradie, ktoré sa musí vykonať pred každou prácou na projekte.
+Tento dokument definuje nepriechodnú vykonávaciu bránu (`GATE`) pred akýmkoľvek zásahom do projektu.
 
 ---
 
