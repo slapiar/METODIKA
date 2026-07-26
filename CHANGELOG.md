@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-26
 
+### Obnova inicializačnej metodiky v2.0 po chybnom merge
+
+- merge commit `1cd574cdd715b35fe0797cb597d00efdec3903ea` vytvoril v [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) hybrid starého úvodu a štandardizovaného tela v2.0,
+- chybný blob `4c69dbd23fccb5c01250ec5be86dec63dadb67ca` bol nahradený presným potvrdeným 94-riadkovým obsahom v2.0,
+- commit opravy je `0c794628db7842635b10162a8f89a2b37a3900f9` a výsledný blob je znovu `44729126508a0c9151fb2358badcb1445a425bd6`,
+- inicializačný dôkaz opravy je v [`postupy/WORK/INI/2026-07-26_07-37_INI_obnova-inicializacnej-metodiky-v2.md`](postupy/WORK/INI/2026-07-26_07-37_INI_obnova-inicializacnej-metodiky-v2.md),
+- pracovný záznam príčiny, read-after-write, Validácie a rollbacku je v [`postupy/WORK/2026-07-26_07-42_Obnova_inicializacnej_metodiky_v2_po_merge.md`](postupy/WORK/2026-07-26_07-42_Obnova_inicializacnej_metodiky_v2_po_merge.md),
+- register [`postupy/README.md`](postupy/README.md) bol zosúladený; `/codei`, testy, migrácie, databáza, release balíky ani produkcia sa nemenili.
+
 ### Refaktorizácia inicializačnej metodiky na v2.0
 
 - hlavný predpis [`postupy/Inicializácia práce.md`](postupy/Inicializácia%20práce.md) bol úplne nahradený používateľom dodanou štandardizovanou verziou v2.0,
