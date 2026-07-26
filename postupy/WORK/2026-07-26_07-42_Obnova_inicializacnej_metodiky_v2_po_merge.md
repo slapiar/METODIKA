@@ -5,8 +5,7 @@ Dátum a čas: 2026-07-26 07:42 Europe/Bratislava
 ## Stav úkonu
 
 ```text
-SPLNENÉ — HLAVNÝ SÚBOR OBNOVENÝ
-EVIDENCIA=ROZPRACOVANÁ
+SPLNENÉ
 ```
 
 ## Zadanie
@@ -45,9 +44,21 @@ Vzdialené spätné načítanie potvrdilo:
 - úplnú GATE šablónu, GATE logiku, fyzický pracovný postup a STOP protokol,
 - odstránenie starého úvodu a merge hybridu.
 
+## Evidencia
+
+- tento WORK záznam bol vytvorený commitom `5a117db4d0fd66511a71d9cd359819ad5584a931`,
+- register `postupy/README.md` bol aktualizovaný commitom `be9265e43cc274bbd01eef371218ea9e4f325587`,
+- kontrolný diff registra potvrdil iba `3 additions / 1 deletion`, teda dve nové evidenčné položky a opravu jednej existujúcej poznámky,
+- `CHANGELOG.md` bol aktualizovaný commitom `5d962cbacb3fc3408c1fe25bf673f0b60afa17dc`,
+- kontrolný diff changelogu potvrdil iba `9 additions / 0 deletions`; staršia história zostala úplná.
+
 ## Hranice
 
 Nezmenili sa `/codei`, testy, migrácie, databáza, release verzia, ZIP balíky ani produkcia.
+
+## Otvorené riziká
+
+Žiadne nové riziko opravy. Historickým rizikom zostáva iba opätovné nesprávne vyriešenie merge konfliktu proti staršej 432-riadkovej verzii; správnym referenčným výsledkom je blob `44729126508a0c9151fb2358badcb1445a425bd6`.
 
 ## Rollback
 
@@ -55,4 +66,4 @@ Obnoviť chybný merge blob `4c69dbd23fccb5c01250ec5be86dec63dadb67ca` iba v pr�
 
 ## Nasledujúci krok
 
-Dokončiť povinnú evidenciu opravy v `postupy/README.md`, `CHANGELOG.md` a uzavrieť pôvodný INI záznam opravy.
+Vrátiť sa k aktuálnemu záväznému plánu. Krok 11 zostáva `GATE=CLOSED`; povolené je iba pokračovanie Fázy 11.A v pôvodnom INI Kroku 11.
