@@ -7,20 +7,22 @@ Dátum vytvorenia: 2026-07-27 11:51 Europe/Bratislava
 ```text
 PRACOVNÝ — ZÁVÄZNÝ PRE KROK 12
 KROKY_1_AŽ_11=SPLNENÉ
-AKTÍVNY_KROK=KROK_12
-GATE_KROKU_12=OPEN
+KROK_12=SPLNENÉ
+AKTÍVNY_KROK=ŽIADNY
+GATE_KROKU_12=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
 FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
 FÁZA_12_C=SPLNENÁ
 FÁZA_12_D=SPLNENÁ
 FÁZA_12_E=SPLNENÁ
-AKTÍVNA_FÁZA=12.F_UZAVRETIE_KROKU_12
+FÁZA_12_F=SPLNENÁ
+AKTÍVNA_FÁZA=ŽIADNA
 NOVÁ_VERZIA=1.1.16
 NOVÝ_RELEASE=true
 NOVÝ_ZIP=true
 PRODUKCIA_BEZ_ZÁSAHU=true
-KROK_13=ZATVORENÝ
-NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
+KROK_13=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
 ```
 
 ## Inicializačná brána
@@ -624,6 +626,57 @@ PRODUKCIA_BEZ_ZÁSAHU=true
 NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
 ```
 
+### Výsledok vykonania — 2026-07-27 13:43 Europe/Bratislava
+
+Po zlúčení checkpointu Fázy 12.E bol spätne načítaný vzdialený `main`
+`cc0e562775bf6b5b88a92da25b10648fad0ec28d` aj všetky tri relevantné
+release artefakty. Výsledný stav zostal presne:
+
+```text
+READBACK_MAIN=cc0e562775bf6b5b88a92da25b10648fad0ec28d
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+RELEASE_VERSION=1.1.16
+ZIP=releases/metodika-codei-hostinger-1.1.16.zip
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+SHA256_PO_VZDIALENOM_ZÁPISE=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+MANIFEST=813/813
+AUDITNÝ_VÝSLEDOK=PASS
+AUDIT_RUN=30260322371
+OPÄTOVNÝ_AUDIT_PO_PRENOSE=PASS
+```
+
+Rollbackové artefakty boli pri konečnom read-backu tiež nezmenené:
+
+```text
+ROLLBACK_1.1.9_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+ROLLBACK_1.1.9_SHA256=5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72
+ROLLBACK_1.1.9_AUDIT=790/790_BEZ_ROZDIELU
+HISTORICKÝ_1.1.15_BLOB=aeaf80b31f299cbf824834590bd58435e216e99d
+HISTORICKÝ_1.1.15=NEPOUŽITÝ_A_NEZMENENÝ
+ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ_A_NEVYKONANÝ
+```
+
+Konečné spoločné kritérium:
+
+```text
+KROK_12=SPLNENÉ
+JEDEN_RELEASE=true
+HASH=ZAZNAMENANÝ
+BALÍK_ZODPOVEDÁ_HEAD=true
+ZAKÁZANÉ_ARTEFAKTY=0
+ROLLBACK_BALÍK=DOSTUPNÝ
+PRODUKCIA_BEZ_ZÁSAHU=true
+FÁZA_12_F=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+KROK_13=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
+```
+
+Fáza 12.F nevykonala nasadenie, produkčnú migráciu, diagnostický run ani
+cleanup produkcie. Krok 13 sa nezačal; jediným povoleným nasledujúcim úkonom
+je jeho vlastná inicializácia a otvorenie samostatnej brány.
+
 Ak niektorá hodnota nie je pravdivá, Krok 12 zostáva otvorený alebo sa uzavrie
 riadeným STOP. Krok 13 sa neotvorí.
 
@@ -631,14 +684,12 @@ riadeným STOP. Krok 13 sa neotvorí.
 
 # 3. Povolený nasledujúci úkon
 
-Po publikovaní a vzdialenom read-backu checkpointu Fázy 12.E:
+Po publikovaní a vzdialenom read-backu konečného checkpointu Fázy 12.F:
 
 ```text
-FÁZA_12_C=SPLNENÁ
-FÁZA_12_D=SPLNENÁ
-FÁZA_12_E=SPLNENÁ
-NEXT_PHASE=12.F_UZAVRETIE_KROKU_12
-NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
+KROK_12=SPLNENÉ
+FÁZY_12_A_AŽ_12_F=SPLNENÉ
 PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
-KROK_13=ZATVORENÝ
+KROK_13=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
 ```

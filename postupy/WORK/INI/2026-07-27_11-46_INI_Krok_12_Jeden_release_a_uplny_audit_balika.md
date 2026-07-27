@@ -77,7 +77,7 @@ Dátum: 2026-07-27 11:46 Europe/Bratislava
 9=ÁNO
 GATE=OPEN
 BLOKUJÚCI_BOD=ŽIADNY
-POVOLENÝ_ĎALŠÍ_ÚKON=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
+POVOLENÝ_ĎALŠÍ_ÚKON=KROK_13_S_VLASTNÝM_INI_A_GATEM
 ```
 
 ## Povinné východiská analýzy
@@ -431,4 +431,70 @@ AKTÍVNA_FÁZA=12.F_UZAVRETIE_KROKU_12
 NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 PRODUKCIA_BEZ_ZÁSAHU=true
 KROK_13=ZATVORENÝ
+```
+
+## Checkpoint Fázy 12.F — uzavretie Kroku 12
+
+Dátum zápisu: 2026-07-27 13:43 Europe/Bratislava
+
+### Výsledok piatich povinných úkonov
+
+1. Výsledný commit a všetky release artefakty spätne načítané: ÁNO
+
+   ```text
+   READBACK_MAIN=cc0e562775bf6b5b88a92da25b10648fad0ec28d
+   CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+   RELEASE_VERSION=1.1.16
+   ROLLBACK_1.1.9_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+   HISTORICKÝ_1.1.15_BLOB=aeaf80b31f299cbf824834590bd58435e216e99d
+   RELEASE_1.1.16_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+   ```
+
+2. SHA-256 po vzdialenom zápise overený: ÁNO
+
+   ```text
+   SHA256_PO_VZDIALENOM_ZÁPISE=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+   SHA256_ZHODA_S_AUDITOM=true
+   ```
+
+3. INI, WORK záznam, oba plány, register a changelog aktualizované: ÁNO
+
+4. Konečný checkpoint s commitom, verziou, ZIP blobom a SHA-256 vytvorený: ÁNO
+
+   ```text
+   ZDROJOVÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+   RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+   RELEASE_VERSION=1.1.16
+   ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+   SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+   MANIFEST=813/813
+   AUDITNÝ_VÝSLEDOK=PASS
+   ```
+
+5. Produkcia zostala bez zásahu: ÁNO
+
+   Fáza 12.F nevykonala nasadenie, migráciu, produkčný diagnostický run,
+   cleanup ani zmenu feature flagov.
+
+### Konečné uzavretie
+
+```text
+KROK_12=SPLNENÉ
+FÁZA_12_A=SPLNENÁ
+FÁZA_12_B=SPLNENÁ
+FÁZA_12_C=SPLNENÁ
+FÁZA_12_D=SPLNENÁ
+FÁZA_12_E=SPLNENÁ
+FÁZA_12_F=SPLNENÁ
+JEDEN_RELEASE=true
+HASH=ZAZNAMENANÝ
+BALÍK_ZODPOVEDÁ_HEAD=true
+ZAKÁZANÉ_ARTEFAKTY=0
+ROLLBACK_BALÍK=DOSTUPNÝ
+PRODUKCIA_BEZ_ZÁSAHU=true
+STOP_DÔVOD=ŽIADNY
+GATE=OPEN
+GATE_KROKU_12=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+KROK_13=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
 ```

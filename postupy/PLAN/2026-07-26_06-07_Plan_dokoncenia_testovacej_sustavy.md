@@ -6,8 +6,8 @@ Dátum vytvorenia: 2026-07-26 06:07 Europe/Bratislava
 
 ```text
 PRACOVNÝ — ZÁVÄZNÝ
-KROKY_1_AŽ_11=SPLNENÉ
-AKTÍVNY_KROK=KROK_12
+KROKY_1_AŽ_12=SPLNENÉ
+AKTÍVNY_KROK=ŽIADNY
 KROK_11=UZAVRETÝ
 GATE_KROKU_11=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
 VALIDOVANÝ_TECHNICKÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
@@ -15,16 +15,19 @@ VALIDAČNÝ_RUN=30252640028
 MERGE_COMMIT=4cb2fe0a9dc1ff3a94c450dbe1dc33c38b574b0c
 RELEASE=1.1.15_BEZ_ZMENY
 PRODUKCIA=BEZ_ZÁSAHU
-GATE_KROKU_12=OPEN
+GATE_KROKU_12=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
 FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
 FÁZA_12_C=SPLNENÁ
 FÁZA_12_D=SPLNENÁ
 FÁZA_12_E=SPLNENÁ
+FÁZA_12_F=SPLNENÁ
 RELEASE=1.1.16
 RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
 RELEASE_SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
-NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
+PRODUKCIA=BEZ_ZÁSAHU
+KROK_13=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
 ```
 
 ## Inicializácia plánovacieho úkonu
@@ -663,13 +666,14 @@ Jeho podrobný záväzný vykonávací plán je:
 `postupy/PLAN/2026-07-27_11-51_Plan_Kroku_12_release_a_audit_balika.md`
 
 ```text
-KROK_12=AKTÍVNY
-GATE_KROKU_12=OPEN
+KROK_12=SPLNENÉ
+GATE_KROKU_12=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
 FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
 FÁZA_12_C=SPLNENÁ
 FÁZA_12_D=SPLNENÁ
 FÁZA_12_E=SPLNENÁ
+FÁZA_12_F=SPLNENÁ
 MAIN_CHECKPOINTU_12_A=771b0c2b69e3f1e1d7b74604b672275823bc9f95
 CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
 RELEASE_VERSION=1.1.16
@@ -684,10 +688,11 @@ ZAKÁZANÉ_ARTEFAKTY=0
 ROLLBACK_BALÍK_1.1.9=DOSTUPNÝ_A_ZDROJOVO_ZHODNÝ
 HISTORICKÝ_BALÍK_1.1.15=NEPOUŽITÝ_A_NEZMENENÝ
 ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ
-NEXT_PHASE=12.F_UZAVRETIE_KROKU_12
-NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
+FINAL_READBACK_MAIN=cc0e562775bf6b5b88a92da25b10648fad0ec28d
+SHA256_PO_VZDIALENOM_ZÁPISE=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
 PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
-KROK_13=ZATVORENÝ
+KROK_13=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
 ```
 
 Fáza 12.A zmrazila auditnú základňu, potvrdila zhodu aktuálneho `/codei`
@@ -717,6 +722,12 @@ manifest 813/813 a auditný výsledok `PASS`. Prednasadzovací rollback release
 dávky je doložený návratom verzie na `1.1.15` a odstránením iba ZIP-u
 `1.1.16`; nebol vykonaný. Produkčné nasadenie a Krok 13 zostávajú zakázané.
 Po vzdialenom read-backu checkpointu bezprostredne nasleduje Fáza 12.F.
+
+Fáza 12.F spätne načítala commit `cc0e5627...`, všetky release artefakty a
+znovu vypočítala SHA-256 ZIP-u `1.1.16` po vzdialenom zápise. Hodnota zostala
+`04742c8b...`, `/codei` zostal `4ec1d840...` a všetky spoločné kritériá Kroku
+12 sú splnené. Krok 12 je uzavretý bez zásahu do produkcie. Krok 13 ešte nie
+je otvorený; jediným nasledujúcim povoleným úkonom je jeho vlastný INI a GATE.
 
 # Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
 

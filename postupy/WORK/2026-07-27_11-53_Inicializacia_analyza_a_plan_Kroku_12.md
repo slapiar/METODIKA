@@ -500,3 +500,81 @@ AKTÍVNA_FÁZA=12.F_UZAVRETIE_KROKU_12
 NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 KROK_13=ZATVORENÝ
 ```
+
+---
+
+## Checkpoint Fázy 12.F — uzavretie Kroku 12
+
+Dátum vykonania: 2026-07-27 13:43 Europe/Bratislava
+
+### Spätné načítanie výsledného stavu
+
+Po zlúčení Fázy 12.E bol vzdialený `main` spätne načítaný na commite:
+
+`cc0e562775bf6b5b88a92da25b10648fad0ec28d`
+
+Na tomto stave boli znovu načítané `RELEASE_VERSION`, strom `/codei` a
+release ZIP-y `1.1.9`, `1.1.15` a `1.1.16`.
+
+```text
+READBACK_MAIN=cc0e562775bf6b5b88a92da25b10648fad0ec28d
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+RELEASE_VERSION=1.1.16
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+SHA256_PO_VZDIALENOM_ZÁPISE=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+```
+
+SHA-256 bol vypočítaný priamo z blobu ZIP-u na novom vzdialenom `main`;
+zhoduje sa s hodnotou z úplného auditu aj auditu po prenose.
+
+### Konečný checkpoint release
+
+```text
+ZDROJOVÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+RELEASE_VERSION=1.1.16
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+MANIFEST=813/813
+OBSAHOVÉ_ROZDIELY=0
+AUDITNÝ_VÝSLEDOK=PASS
+ZAKÁZANÉ_ARTEFAKTY=0
+TAJOMSTVÁ=0
+NEPLATNÉ_CESTY=0
+```
+
+### Rollback a hranice
+
+```text
+ROLLBACK_1.1.9_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+ROLLBACK_1.1.9_SHA256=5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72
+ROLLBACK_1.1.9_AUDIT=790/790_BEZ_ROZDIELU
+HISTORICKÝ_1.1.15=NEPOUŽITÝ_A_NEZMENENÝ
+ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ_A_NEVYKONANÝ
+/codei=BEZ_ZMENY
+RELEASE_VERSION=1.1.16_BEZ_ZMENY
+RELEASE_ZIPY=BEZ_ZMENY
+PRODUKCIA=BEZ_ZÁSAHU
+```
+
+Fáza 12.F nevykonala nasadenie, migráciu, produkčný diagnostický run,
+produkčný cleanup ani zmenu feature flagov.
+
+### Konečný výsledok
+
+```text
+KROK_12=SPLNENÉ
+FÁZY_12_A_AŽ_12_F=SPLNENÉ
+JEDEN_RELEASE=true
+HASH=ZAZNAMENANÝ
+BALÍK_ZODPOVEDÁ_HEAD=true
+ZAKÁZANÉ_ARTEFAKTY=0
+ROLLBACK_BALÍK=DOSTUPNÝ
+PRODUKCIA_BEZ_ZÁSAHU=true
+STOP_DÔVOD=ŽIADNY
+GATE_KROKU_12=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+KROK_13=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
+```
