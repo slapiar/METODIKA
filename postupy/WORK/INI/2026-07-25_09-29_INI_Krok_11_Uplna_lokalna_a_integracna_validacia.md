@@ -512,3 +512,55 @@ PRODUKCIA=BEZ_ZÁSAHU
 5. aktualizovať výhradne tento pôvodný INI,
 6. GATE otvoriť až po deviatich hodnotách ÁNO.
 ```
+
+---
+
+## Checkpoint Fázy 11.A — 2026-07-27 09:41 Europe/Bratislava
+
+### Úspešný produkčný GET read-back cez pracovný prehliadač
+
+```text
+HEAD_PRED_ČÍTANÍM=4ab0581e023a704b774eb3b7162e9eb29da38d2f
+PRODUKČNÁ_DOMÉNA_DOSTUPNÁ=true
+HTTP_GET_ONLY=true
+POST_ODOSLANÝ=false
+PRODUKCIA_ZMENENÁ=false
+```
+
+Pozorovania:
+
+1. `GET /diagnostics/database` vrátil produkčnú stránku `404` s odkazom na `/diagnostics/database/login`.
+2. `GET /diagnostics/database/login` úspešne načítal prihlasovaciu bránu diagnostiky.
+3. Footer produkčnej stránky priamo zobrazil `v1.1.15`.
+4. Stránka uviedla, že prístup je povolený iba po serverovom overení diagnostického tokenu.
+5. Stránka uviedla, že diagnostika je iba čítacia a migrácie neboli spustené týmto načítaním.
+6. `GET /gate` úspešne načítal produkčný dashboard `INI Gatekeeper – Sessions`; tabuľka neobsahovala žiadny viditeľný dátový riadok.
+7. Priamy pokus prehliadača otvoriť `/api/gate/sessions` bol zablokovaný klientom ako `ERR_BLOCKED_BY_CLIENT`; tento výsledok nie je dôkazom produkčnej HTTP odpovede ani nulového počtu session.
+
+### Aktualizovaná dôkazová mapa
+
+| Oblasť | Stav | Dôkaz |
+|---|---|---|
+| Produkčná dostupnosť | DOLOŽENÉ | úspešne načítaná prihlasovacia stránka diagnostiky a GATE dashboard |
+| Nasadená verzia | DOLOŽENÉ | produkčný footer `v1.1.15` |
+| Zdrojový commit nasadenia | NEZISTENÉ | footer nezobrazuje commit |
+| Diagnostická brána | DOLOŽENÉ | vyžaduje serverové overenie diagnostického tokenu |
+| Feature flagy | NEZISTENÉ | za autorizovaným read-only vstupom |
+| Produkčný runtime | NEZISTENÉ | za autorizovaným read-only vstupom |
+| Stav migrácií | NEZISTENÉ | za autorizovaným read-only vstupom; pri GET neboli migrácie spustené |
+| Session/step/Evidence | ČIASTOČNE DOLOŽENÉ | dashboard bez viditeľného riadku; API read-back nezískaný |
+| DB testovacie riadky | NEZISTENÉ | za autorizovaným read-only vstupom |
+| Run-store JSON/lock/temp | NEZISTENÉ | za autorizovaným read-only vstupom |
+| Produkčný cleanup | NEZISTENÉ | nulový stav nemožno odvodiť iba z prázdnej viditeľnej tabuľky |
+
+### Stav brány
+
+```text
+BOD_5=NEOVERENÉ
+GATE_KROKU_11=CLOSED
+FÁZA_11_A=POKRAČUJE
+FÁZA_11_B=NEOTVORENÁ
+NEXT_ALLOWED_ACTION=AUTORIZOVANÉ_READ_ONLY_PRIHLÁSENIE_EXISTUJÚCIM_DIAGNOSTICKÝM_TOKENOM
+```
+
+Na dokončenie povoleného čítania sa použije iba existujúci diagnostický token v produkčnej prihlasovacej bráne. Token sa nezapisuje do repozitára, INI, chatu ani pracovných výstupov.
