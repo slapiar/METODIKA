@@ -681,3 +681,27 @@ BLOKUJÚCI_BOD=ŽIADNY
 FÁZA_11_A=UZAVRETÁ_S_VÝSLOVNE_ODDELENÝMI_NEZISTENÝMI_PRODUKČNÝMI_HODNOTAMI
 NEXT_ALLOWED_ACTION=FÁZA_11_B_KLASIFIKÁCIA_ZMIEN_A_PREDČASNÝCH_ARTEFAKTOV
 ```
+
+---
+
+## Checkpoint Fáz 11.B a 11.C — 2026-07-27 10:07 Europe/Bratislava
+
+Klasifikácia všetkých zmenených skupín a úplná testovacia špecifikácia boli uzavreté v jedinom pracovnom zázname:
+
+`postupy/WORK/2026-07-27_10-20_Krok_11_Klasifikacia_a_testovacia_specifikacia.md`
+
+Povinný read-after-write potvrdil blob `00ae68afa312e4d211f09a09a6d62bb34e8c41f9` na HEAD `dc7b297d191a48df99bda6d68f086cb15fada9e3`.
+
+```text
+FÁZA_11_B=SPLNENÁ
+FÁZA_11_C=SPLNENÁ
+GATE=OPEN
+KÓD=BEZ_ZMENY
+TESTY=NESPUSTENÉ
+DATABÁZA=BEZ_ZÁSAHU
+RELEASE=BEZ_ZMENY
+PRODUKCIA=BEZ_ZÁSAHU
+NEXT_ALLOWED_ACTION=FÁZA_11_D_JEDNA_SÚVISIACA_IMPLEMENTAČNÁ_DÁVKA
+```
+
+Rozsah Fázy 11.D je záväzne obmedzený pracovným záznamom: najmenšia bezpečnostná oprava diagnostického GATE, odstránenie chybných pracovných artefaktov, doplnenie chýbajúcich testov a žiadny release ani produkčný zásah.
