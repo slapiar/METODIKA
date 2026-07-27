@@ -69,13 +69,21 @@ jobs:
           php --version
           composer --version
           git --version
-          zip -v | sed -n '1p'
-          unzip -v | sed -n '1p'
-          sha256sum --version | sed -n '1p'
           php -m | grep -E '^(curl|intl|mbstring|mysqli|pcntl|xml)$'
 
+          ZIP_VERSION="$(zip -v | sed -n 's/^This is Zip \([^ ]*\).*/\1/p')"
+          UNZIP_VERSION="$(unzip -v | sed -n 's/^UnZip \([^ ]*\).*/\1/p')"
+          SHA256SUM_VERSION="$(sha256sum --version | sed -n '1s/.* //p')"
+
+          test -n "$ZIP_VERSION"
+          test -n "$UNZIP_VERSION"
+          test -n "$SHA256SUM_VERSION"
           test "$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;')" = "8.4"
           composer --version | grep -Eq '^Composer version 2\.'
+
+          printf 'ZIP_VERSION=%s\n' "$ZIP_VERSION"
+          printf 'UNZIP_VERSION=%s\n' "$UNZIP_VERSION"
+          printf 'SHA256SUM_VERSION=%s\n' "$SHA256SUM_VERSION"
 
           test "$(git rev-parse HEAD:codei)" = "4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c"
           test "$(tr -d '[:space:]' < RELEASE_VERSION)" = "1.1.15"
