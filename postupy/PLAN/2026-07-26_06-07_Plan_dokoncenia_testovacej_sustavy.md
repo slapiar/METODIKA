@@ -15,7 +15,10 @@ VALIDAČNÝ_RUN=30252640028
 MERGE_COMMIT=4cb2fe0a9dc1ff3a94c450dbe1dc33c38b574b0c
 RELEASE=1.1.15_BEZ_ZMENY
 PRODUKCIA=BEZ_ZÁSAHU
-NEXT_ALLOWED_ACTION=NOVÝ_INI_KROKU_12
+GATE_KROKU_12=OPEN
+FÁZA_12_A=SPLNENÁ
+FÁZA_12_B=SPLNENÁ
+NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_B
 ```
 
 ## Inicializácia plánovacieho úkonu
@@ -657,11 +660,13 @@ Jeho podrobný záväzný vykonávací plán je:
 KROK_12=AKTÍVNY
 GATE_KROKU_12=OPEN
 FÁZA_12_A=SPLNENÁ
+FÁZA_12_B=SPLNENÁ
 MAIN_CHECKPOINTU_12_A=771b0c2b69e3f1e1d7b74604b672275823bc9f95
 CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
 RELEASE_VERSION=1.1.15_BEZ_ZMENY
 NOVÝ_ZIP=false
-NEXT_ALLOWED_ACTION=FÁZA_12_B_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_A
+RELEASE_ENVIRONMENT_RUN=30258778406
+NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_B
 PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
 KROK_13=ZATVORENÝ
 ```
@@ -672,9 +677,13 @@ voči jeho zdrojovému commitu bez jedinej manifestovej alebo obsahovej
 odchýlky. Historický ZIP `1.1.15` bol jednorazovo klasifikovaný, zostal
 nedotknutý a ďalej sa nepoužíva ako aktívna release ani rollbacková základňa.
 
-Fáza 12.B smie začať až po publikovaní a vzdialenom read-backu checkpointu
-Fázy 12.A. V nej sa ešte nesmie zmeniť `RELEASE_VERSION`, vytvoriť ZIP,
-nasadiť release ani otvoriť Krok 13.
+Fáza 12.B bola vykonaná runom `30258778406`. Ten doložil presný checkout,
+Ubuntu 24.04.4, PHP 8.4.23, Composer 2.10.2, povinné nástroje, zhodný strom
+`/codei` a čistý pracovný strom bez zmeny verzie alebo vytvorenia ZIP-u.
+
+Fáza 12.C smie začať až po publikovaní a vzdialenom read-backu checkpointu
+Fázy 12.B. Vykoná presne jedno spustenie `./release.sh patch`; produkčné
+nasadenie a otvorenie Kroku 13 zostávajú zakázané.
 
 # Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
 

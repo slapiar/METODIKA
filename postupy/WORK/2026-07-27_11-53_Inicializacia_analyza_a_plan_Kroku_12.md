@@ -225,3 +225,74 @@ AKTÍVNA_FÁZA=12.B_PRÍPRAVA_IZOLOVANÉHO_RELEASE_PROSTREDIA
 NEXT_ALLOWED_ACTION=FÁZA_12_B_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_A
 KROK_13=ZATVORENÝ
 ```
+
+---
+
+## Checkpoint Fázy 12.B — príprava izolovaného release prostredia
+
+Dátum vykonania: 2026-07-27 12:34 Europe/Bratislava
+
+Fáza bola vykonaná novým jednoúčelovým workflowom:
+
+`.github/workflows/krok-12-release-environment.yml`
+
+Workflow používa iba čítacie oprávnenie `contents: read`, načíta presný head
+pracovnej vetvy a pred aj po príprave runtime kontroluje zmrazený technický
+strom, blob release skriptu, verziu, neprítomnosť nového ZIP-u a čistotu
+pracovného stromu.
+
+### Praktický dôkaz runtime
+
+GitHub Actions run `30258778406`, job `89953499069`, nad commitom
+`97800c03180769fbb006856dc8ba91162d44d94e` skončil `success`.
+
+```text
+RUNNER=ubuntu-24.04
+OS=Ubuntu_24.04.4_LTS
+PHP=8.4.23
+COMPOSER=2.10.2
+GIT=2.54.0
+ZIP=3.0
+UNZIP=6.00
+SHA256SUM=GNU_coreutils_9.4
+PHP_EXTENSIONS=curl,intl,mbstring,mysqli,pcntl,xml
+```
+
+Setup PHP a Composeru je rovnaký ako vo finálnom validačnom workflowe Kroku
+11: `shivammathur/setup-php@v2`, PHP 8.4, Composer 2, rovnaké rozšírenia a
+`coverage: none`.
+
+### Kontinuita zdroja a hranice
+
+```text
+EXPECTED_HEAD=97800c03180769fbb006856dc8ba91162d44d94e
+ACTUAL_HEAD=97800c03180769fbb006856dc8ba91162d44d94e
+CHECKOUT_EXACT=true
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+VALIDOVANÝ_CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+CODEI_ZHODA=true
+RELEASE_SH_BLOB=e365e7ec087ed81c350a7998ab5ac79450aed1c1
+WORKTREE_CLEAN=true
+WORKTREE_CLEAN_AFTER_SETUP=true
+RELEASE_VERSION=1.1.15_BEZ_ZMENY
+RELEASE_SCRIPT_SPUSTENÝ=false
+NOVÝ_RELEASE=false
+NOVÝ_ZIP=false
+PRODUKCIA=BEZ_ZÁSAHU
+```
+
+### Rollback Fázy 12.B
+
+Vrátiť jednoúčelový workflow a tento evidenčný checkpoint. Technický strom,
+verzia, release ZIP-y a produkcia sa nemenili.
+
+### Záver Fázy 12.B
+
+```text
+FÁZA_12_B=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+RUNTIME_DOLOŽENÝ_PRIAMO_V_RUN_LOGU=true
+AKTÍVNA_FÁZA=12.C_JEDINÉ_VYTVORENIE_RELEASE
+NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_B
+KROK_13=ZATVORENÝ
+```

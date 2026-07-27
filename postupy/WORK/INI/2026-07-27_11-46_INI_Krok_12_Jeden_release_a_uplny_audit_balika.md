@@ -77,7 +77,7 @@ Dátum: 2026-07-27 11:46 Europe/Bratislava
 9=ÁNO
 GATE=OPEN
 BLOKUJÚCI_BOD=ŽIADNY
-POVOLENÝ_ĎALŠÍ_ÚKON=PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_FÁZA_12_B
+POVOLENÝ_ĎALŠÍ_ÚKON=PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_FÁZA_12_C
 ```
 
 ## Povinné východiská analýzy
@@ -192,4 +192,71 @@ PRODUKCIA_BEZ_ZÁSAHU=true
 AKTÍVNA_FÁZA=12.B_PRÍPRAVA_IZOLOVANÉHO_RELEASE_PROSTREDIA
 NEXT_ALLOWED_ACTION=FÁZA_12_B_PO_VZDIALENOM_READ_BACKU_TOHTO_CHECKPOINTU
 KROK_13=ZATVORENÝ
+```
+
+## Checkpoint Fázy 12.B — príprava izolovaného release prostredia
+
+Dátum vykonania: 2026-07-27 12:34 Europe/Bratislava
+
+### Výsledok šiestich povinných úkonov
+
+1. Projektový runner `ubuntu-24.04` použitý: ÁNO
+   Dôkaz: GitHub Actions run `30258778406`, job `89953499069`,
+   operačný systém Ubuntu `24.04.4 LTS`.
+
+2. PHP 8.4 a Composer 2 pripravené rovnakým spôsobom ako v Kroku 11: ÁNO
+   Dôkaz: `shivammathur/setup-php@v2`, PHP `8.4.23`, Composer `2.10.2`,
+   rozšírenia `curl`, `intl`, `mbstring`, `mysqli`, `pcntl`, `xml`.
+
+3. Povinné nástroje a ich verzie overené: ÁNO
+   Dôkaz:
+
+   ```text
+   PHP=8.4.23
+   COMPOSER=2.10.2
+   GIT=2.54.0
+   ZIP=3.0
+   UNZIP=6.00
+   SHA256SUM=GNU_coreutils_9.4
+   ```
+
+4. Presný zdrojový commit pracovnej vetvy načítaný: ÁNO
+   Dôkaz: očakávaný aj skutočný checkout
+   `97800c03180769fbb006856dc8ba91162d44d94e`.
+
+5. Strom `/codei` pred balením zhodný s validovaným stromom: ÁNO
+   Dôkaz:
+   `4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c`,
+   pred aj po príprave runtime.
+
+6. Pracovný strom čistý: ÁNO
+   Dôkaz: `WORKTREE_CLEAN=true` a `WORKTREE_CLEAN_AFTER_SETUP=true`.
+
+### Hranice Fázy 12.B
+
+```text
+WORKFLOW=.github/workflows/krok-12-release-environment.yml
+WORKFLOW_RUN=30258778406
+WORKFLOW_JOB=89953499069
+RUN_RESULT=success
+RELEASE_SCRIPT_SPUSTENÝ=false
+RELEASE_VERSION=1.1.15_BEZ_ZMENY
+NOVÝ_RELEASE=false
+NOVÝ_ZIP=false
+/codei=BEZ_ZMENY
+PRODUKCIA_BEZ_ZÁSAHU=true
+KROK_13=ZATVORENÝ
+```
+
+### Záver Fázy 12.B
+
+```text
+FÁZA_12_B=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+RUNTIME_DOLOŽENÝ_PRIAMO_V_RUN_LOGU=true
+CHECKOUT_EXACT=true
+CODEI_ZHODA=true
+WORKTREE_CLEAN=true
+AKTÍVNA_FÁZA=12.C_JEDINÉ_VYTVORENIE_RELEASE
+NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_TOHTO_CHECKPOINTU
 ```

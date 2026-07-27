@@ -1,0 +1,98 @@
+# Izolovaná príprava release prostredia pre Fázu 12.B.
+# Tento workflow nesmie meniť verziu ani vytvoriť release ZIP.
+name: Krok 12 - priprava release prostredia
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/krok-12-release-environment.yml'
+      - 'postupy/**'
+      - 'CHANGELOG.md'
+
+permissions:
+  contents: read
+
+jobs:
+  prepare-release-environment:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout exact source commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - name: Verify checkout and frozen source
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          EXPECTED_HEAD="${{ github.event.pull_request.head.sha || github.sha }}"
+          ACTUAL_HEAD="$(git rev-parse HEAD)"
+          CODEI_TREE="$(git rev-parse HEAD:codei)"
+          RELEASE_SCRIPT_BLOB="$(git rev-parse HEAD:release.sh)"
+          CURRENT_VERSION="$(tr -d '[:space:]' < RELEASE_VERSION)"
+
+          printf 'EXPECTED_HEAD=%s\n' "$EXPECTED_HEAD"
+          printf 'ACTUAL_HEAD=%s\n' "$ACTUAL_HEAD"
+          printf 'CODEI_TREE=%s\n' "$CODEI_TREE"
+          printf 'RELEASE_SCRIPT_BLOB=%s\n' "$RELEASE_SCRIPT_BLOB"
+          printf 'RELEASE_VERSION=%s\n' "$CURRENT_VERSION"
+
+          test "$ACTUAL_HEAD" = "$EXPECTED_HEAD"
+          test "$CODEI_TREE" = "4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c"
+          test "$RELEASE_SCRIPT_BLOB" = "e365e7ec087ed81c350a7998ab5ac79450aed1c1"
+          test "$CURRENT_VERSION" = "1.1.15"
+          test ! -e releases/metodika-codei-hostinger-1.1.16.zip
+          test -z "$(git status --porcelain)"
+
+          printf 'CHECKOUT_EXACT=true\n'
+          printf 'CODEI_TREE_MATCH=true\n'
+          printf 'WORKTREE_CLEAN=true\n'
+          printf 'NEW_RELEASE_EXISTS=false\n'
+
+      - name: Setup PHP 8.4 and Composer 2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: curl, intl, mbstring, mysqli, pcntl, xml
+          tools: composer:v2
+          coverage: none
+
+      - name: Verify isolated release runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          php --version
+          composer --version
+          git --version
+          php -m | grep -E '^(curl|intl|mbstring|mysqli|pcntl|xml)$'
+
+          ZIP_VERSION="$(zip -v | sed -n 's/^This is Zip \([^ ]*\).*/\1/p')"
+          UNZIP_VERSION="$(unzip -v | sed -n 's/^UnZip \([^ ]*\).*/\1/p')"
+          SHA256SUM_VERSION="$(sha256sum --version | sed -n '1s/.* //p')"
+
+          test -n "$ZIP_VERSION"
+          test -n "$UNZIP_VERSION"
+          test -n "$SHA256SUM_VERSION"
+          test "$(php -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;')" = "8.4"
+          composer --version | grep -Eq '^Composer version 2\.'
+
+          printf 'ZIP_VERSION=%s\n' "$ZIP_VERSION"
+          printf 'UNZIP_VERSION=%s\n' "$UNZIP_VERSION"
+          printf 'SHA256SUM_VERSION=%s\n' "$SHA256SUM_VERSION"
+
+          test "$(git rev-parse HEAD:codei)" = "4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c"
+          test "$(tr -d '[:space:]' < RELEASE_VERSION)" = "1.1.15"
+          test ! -e releases/metodika-codei-hostinger-1.1.16.zip
+          test -z "$(git status --porcelain)"
+
+          printf 'PHP_8_4_READY=true\n'
+          printf 'COMPOSER_2_READY=true\n'
+          printf 'REQUIRED_TOOLS_READY=true\n'
+          printf 'CODEI_TREE_MATCH_AFTER_SETUP=true\n'
+          printf 'WORKTREE_CLEAN_AFTER_SETUP=true\n'
+          printf 'PHASE_12_B_READY=true\n'

@@ -10,7 +10,8 @@ KROKY_1_AŽ_11=SPLNENÉ
 AKTÍVNY_KROK=KROK_12
 GATE_KROKU_12=OPEN
 FÁZA_12_A=SPLNENÁ
-AKTÍVNA_FÁZA=12.B_PRÍPRAVA_IZOLOVANÉHO_RELEASE_PROSTREDIA
+FÁZA_12_B=SPLNENÁ
+AKTÍVNA_FÁZA=12.C_JEDINÉ_VYTVORENIE_RELEASE
 NOVÁ_VERZIA=1.1.16
 NOVÝ_RELEASE_ZATIAĽ=false
 NOVÝ_ZIP_ZATIAĽ=false
@@ -263,6 +264,52 @@ Runtime je doložený priamo vo výstupe runu a zdrojový strom sa nezmenil.
 - pracovný strom obsahuje neočakávanú zmenu,
 - `/codei` sa nezhoduje s validovaným stromom.
 
+### Výsledok vykonania — 2026-07-27 12:34 Europe/Bratislava
+
+Fáza bola vykonaná jednoúčelovým workflowom
+`.github/workflows/krok-12-release-environment.yml` na pracovnom commite
+`97800c03180769fbb006856dc8ba91162d44d94e`.
+
+GitHub Actions run `30258778406`, job `89953499069`, skončil `success`.
+Výstup runu priamo doložil:
+
+```text
+RUNNER_IMAGE=ubuntu-24.04
+OPERATING_SYSTEM=Ubuntu_24.04.4_LTS
+CHECKED_OUT_HEAD=97800c03180769fbb006856dc8ba91162d44d94e
+CHECKOUT_EXACT=true
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+CODEI_TREE_MATCH=true
+RELEASE_SCRIPT_BLOB=e365e7ec087ed81c350a7998ab5ac79450aed1c1
+PHP=8.4.23
+COMPOSER=2.10.2
+GIT=2.54.0
+ZIP=3.0
+UNZIP=6.00
+SHA256SUM=GNU_coreutils_9.4
+PHP_EXTENSIONS=curl,intl,mbstring,mysqli,pcntl,xml
+WORKTREE_CLEAN=true
+WORKTREE_CLEAN_AFTER_SETUP=true
+RELEASE_VERSION=1.1.15
+NEW_RELEASE_EXISTS=false
+PHASE_12_B_READY=true
+```
+
+Workflow použil rovnaký `shivammathur/setup-php@v2` kontrakt ako finálna
+validácia Kroku 11: PHP 8.4, Composer 2, rovnaké povinné rozšírenia a vypnuté
+coverage. `release.sh` nebol spustený.
+
+```text
+FÁZA_12_B=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+NOVÝ_RELEASE=false
+NOVÝ_ZIP=false
+RELEASE_VERSION=1.1.15_BEZ_ZMENY
+CODEI_ZHODA=true
+PRODUKCIA_BEZ_ZÁSAHU=true
+NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_TOHTO_CHECKPOINTU
+```
+
 ## Fáza 12.C — Jediné vytvorenie release
 
 1. Spustiť autoritatívny príkaz:
@@ -394,11 +441,11 @@ riadeným STOP. Krok 13 sa neotvorí.
 
 # 3. Povolený nasledujúci úkon
 
-Po publikovaní a vzdialenom read-backu checkpointu Fázy 12.A:
+Po publikovaní a vzdialenom read-backu checkpointu Fázy 12.B:
 
 ```text
-Vykonať iba Fázu 12.B — prípravu izolovaného release prostredia.
-Ešte nevytvárať release ani ZIP.
-Nenasadzovať.
+Vykonať iba Fázu 12.C — jediné vytvorenie release.
+Spustiť autoritatívny príkaz ./release.sh patch presne raz.
+Ešte nenasadzovať.
 Neotvárať Krok 13.
 ```
