@@ -626,9 +626,11 @@ PLÁN=SPLNENÝ
 
 ---
 
-# Stav predčasných artefaktov
+# Historický stav predčasných artefaktov pred ukončením Fázy 11.B
 
-Do ukončenia Fázy 11.B platí:
+Nasledujúci blok platil iba do ukončenia Fázy 11.B. Konečná klasifikácia
+a rozhodnutie sú zapísané v
+`postupy/WORK/2026-07-27_10-20_Krok_11_Klasifikacia_a_testovacia_specifikacia.md`.
 
 ```text
 postupy/WORK/INI/2026-07-25_17-33_INI_testovaci-krok-session-1.md
@@ -641,19 +643,27 @@ AUTOMATICKY_NA_ODSTRÁNENIE=false
 POVOLENÉ=iba čítanie, dôkazová klasifikácia a bezpečné zistenie produkčného stavu
 ```
 
-# Jediný nasledujúci povolený pracovný úkon
+# Aktuálny nasledujúci povolený pracovný úkon
 
-Po úplnom evidenčnom uzavretí dnešného plánovacieho kroku:
+Krok 11 je splnený. Krok 12 bol otvorený samostatným INI:
+
+`postupy/WORK/INI/2026-07-27_11-46_INI_Krok_12_Jeden_release_a_uplny_audit_balika.md`
+
+Jeho podrobný záväzný vykonávací plán je:
+
+`postupy/PLAN/2026-07-27_11-51_Plan_Kroku_12_release_a_audit_balika.md`
 
 ```text
-Pokračovať výhradne v pôvodnom INI Kroku 11.
-Vykonať iba Fázu 11.A — obnovu a zmrazenie skutočného stavu.
-Neotvárať implementáciu, testovaciu sústavu, release ani produkčný run.
+KROK_12=AKTÍVNY
+GATE_KROKU_12=OPEN
+NEXT_ALLOWED_ACTION=FÁZA_12_A_ZMRAZENIE_AUDITNEJ_ZÁKLADNE
+PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
+KROK_13=ZATVORENÝ
 ```
 
-# Podmienka ukončenia dnešného pracovného zadania
+# Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
 
-Dnešné zadanie „dokončiť plán“ je splnené po:
+Pôvodné zadanie „dokončiť plán“ bolo splnené po:
 
 1. vytvorení tohto plánu,
 2. vzdialenom read-backu,
