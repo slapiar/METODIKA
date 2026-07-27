@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Krok 12 — Fáza 12.B: príprava izolovaného release prostredia
+
+- vznikol jednoúčelový workflow [`.github/workflows/krok-12-release-environment.yml`](.github/workflows/krok-12-release-environment.yml) s oprávnením iba `contents: read`; workflow nespúšťa `release.sh`, nemení verziu a nevytvára ZIP,
+- GitHub Actions run `30258778406`, job `89953499069`, nad presne načítaným commitom `97800c03180769fbb006856dc8ba91162d44d94e` skončil `success`,
+- runner doložil Ubuntu 24.04.4 LTS, PHP 8.4.23, Composer 2.10.2, Git 2.54.0, Zip 3.0, UnZip 6.00, `sha256sum` z GNU coreutils 9.4 a rozšírenia `curl`, `intl`, `mbstring`, `mysqli`, `pcntl`, `xml`,
+- pred aj po príprave runtime bol potvrdený strom `/codei` `4ec1d840...`, blob `release.sh` `e365e7e...`, čistý pracovný strom, `RELEASE_VERSION=1.1.15` a neprítomnosť ZIP-u `1.1.16`,
+- checkpoint Fázy 12.B je zapísaný v INI, podrobnom aj rámcovom pláne a WORK zázname; produkcia zostala bez zásahu,
+- jediným ďalším povoleným úkonom po publikovaní a vzdialenom read-backu checkpointu je Fáza 12.C — presne jedno vytvorenie release príkazom `./release.sh patch`; nasadenie a Krok 13 zostávajú zakázané.
+
 ### Krok 12 — Fáza 12.A: zmrazenie auditnej základne
 
 - vzdialený `main` zostal počas kontroly stabilný na `771b0c2b69e3f1e1d7b74604b672275823bc9f95`; aktuálny strom `/codei` `4ec1d840...` je zhodný s finálne validovaným stromom Kroku 11,
