@@ -18,7 +18,12 @@ PRODUKCIA=BEZ_ZÁSAHU
 GATE_KROKU_12=OPEN
 FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
-NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_B
+FÁZA_12_C=SPLNENÁ
+FÁZA_12_D=SPLNENÁ
+RELEASE=1.1.16
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+RELEASE_SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+NEXT_ALLOWED_ACTION=ČAKAŤ_NA_POKYN_PRED_FÁZOU_12_E
 ```
 
 ## Inicializácia plánovacieho úkonu
@@ -661,12 +666,21 @@ KROK_12=AKTÍVNY
 GATE_KROKU_12=OPEN
 FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
+FÁZA_12_C=SPLNENÁ
+FÁZA_12_D=SPLNENÁ
 MAIN_CHECKPOINTU_12_A=771b0c2b69e3f1e1d7b74604b672275823bc9f95
 CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
-RELEASE_VERSION=1.1.15_BEZ_ZMENY
-NOVÝ_ZIP=false
+RELEASE_VERSION=1.1.16
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+NOVÝ_ZIP=true
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+ZIP_SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
 RELEASE_ENVIRONMENT_RUN=30258778406
-NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_B
+RELEASE_AUDIT_RUN=30260322371
+BALÍK_ZODPOVEDÁ_HEAD=true
+ZAKÁZANÉ_ARTEFAKTY=0
+NEXT_PHASE=12.E_ROLLBACK_A_DÔKAZOVÁ_VÄZBA
+NEXT_ALLOWED_ACTION=ČAKAŤ_NA_VÝSLOVNÝ_POKYN_PRED_FÁZOU_12_E
 PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
 KROK_13=ZATVORENÝ
 ```
@@ -681,9 +695,19 @@ Fáza 12.B bola vykonaná runom `30258778406`. Ten doložil presný checkout,
 Ubuntu 24.04.4, PHP 8.4.23, Composer 2.10.2, povinné nástroje, zhodný strom
 `/codei` a čistý pracovný strom bez zmeny verzie alebo vytvorenia ZIP-u.
 
-Fáza 12.C smie začať až po publikovaní a vzdialenom read-backu checkpointu
-Fázy 12.B. Vykoná presne jedno spustenie `./release.sh patch`; produkčné
-nasadenie a otvorenie Kroku 13 zostávajú zakázané.
+Fáza 12.C vytvorila jediný release `1.1.16` v commite `fb243698...`.
+Release commit zmenil presne verziu a jeden nový ZIP; `/codei` zostal
+`4ec1d840...`. Konzolový výstup jediného spustenia nebol zachovaný a skript
+nebol druhýkrát opakovaný.
+
+Fáza 12.D potvrdila úplnú manifestovú aj obsahovú zhodu 813/813 súborov,
+SHA-256 `04742c8b...`, nulové zakázané artefakty, tajomstvá, neplatné cesty
+a symlinky. Nezávislý auditný run `30260322371` aj opätovný audit stiahnutého
+Actions artefaktu skončili `PASS`.
+
+Fáza 12.E ešte nebola vykonaná. Podľa výslovného pokynu Autority sa po
+publikovaní a vzdialenom read-backu checkpointu Fáz 12.C–12.D čaká pred jej
+začatím. Produkčné nasadenie a Krok 13 zostávajú zakázané.
 
 # Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
 

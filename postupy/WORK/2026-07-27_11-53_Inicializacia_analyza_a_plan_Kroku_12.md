@@ -296,3 +296,124 @@ AKTÍVNA_FÁZA=12.C_JEDINÉ_VYTVORENIE_RELEASE
 NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_B
 KROK_13=ZATVORENÝ
 ```
+
+---
+
+## Checkpoint Fázy 12.C — jediné vytvorenie release
+
+Dátum vykonania a publikovania: 2026-07-27 12:51 Europe/Bratislava
+
+Používateľ spustil `./release.sh patch` raz bez `--auto-push`. Release vznikol
+najprv iba miestne a na GitHub bol následne publikovaný samostatným commitom:
+
+```text
+RELEASE_BASE_COMMIT=2eed8228392665e2b2e8d01bc2e94f2b1ed17e41
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+RELEASE_VERSION=1.1.16
+ZIP=releases/metodika-codei-hostinger-1.1.16.zip
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+POČET_COMMITOV_OD_CHECKPOINTU_12_B=1
+POČET_ZMENENÝCH_CIEST=2
+POČET_NOVÝCH_ZIPOV=1
+JEDEN_RELEASE=true
+```
+
+Release commit mení výhradne `RELEASE_VERSION` a nový ZIP. `/codei` sa
+nezmenil. Pôvodný konzolový výstup jediného spustenia nebol zachovaný; skript
+sa kvôli jeho dodatočnému získaniu druhýkrát nespustil.
+
+```text
+PÔVODNÝ_VÝSTUP_RELEASE_SH=NEZACHOVANÝ
+DÔVOD=NEBOL_ZACHYTENÝ_PRI_JEDINOM_SPUSTENÍ
+DODATOČNÉ_OPAKOVANIE_RELEASE_SH=ZAKÁZANÉ_A_NEVYKONANÉ
+EVIDOVANÁ_ODCHÝLKA=true
+FÁZA_12_C=SPLNENÁ
+PRODUKCIA=BEZ_ZÁSAHU
+```
+
+---
+
+## Checkpoint Fázy 12.D — úplný audit ZIP-u
+
+Dátum dokončenia auditu: 2026-07-27 13:16 Europe/Bratislava
+
+Balík bol najprv lokálne úplne porovnaný so zdrojovým stromom a potom
+nezávisle auditovaný workflowom:
+
+`.github/workflows/krok-12-release-audit.yml`
+
+Prvý beh potvrdil audit `PASS`, ale upload dôkazov nezahrnul skrytý adresár
+`.audit-output`. Oprava na `audit-output` zasiahla iba workflow. Úspešný run:
+
+```text
+WORKFLOW_RUN=30260322371
+WORKFLOW_JOB=89958429604
+AUDIT_HEAD=75f35c5b6521f30dcc84097d405fef6efd0df3fc
+RUN_RESULT=success
+ARTIFACT_ID=8650598126
+ARTIFACT_NAME=metodika-1.1.16-audit
+ARTIFACT_SIZE_BYTES=1240982
+ARTIFACT_DIGEST_SHA256=147a79e1d7f75f7e145a3ec007e6041cf5f6eaff4f4ac5a6a164bdf68b9d3d37
+```
+
+Výsledný auditný artefakt bol stiahnutý a vnútorný release ZIP bol opätovne
+auditovaný po prenose:
+
+```text
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+ZIP_SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+OČAKÁVANÉ_SÚBORY=813
+SKUTOČNÉ_SÚBORY=813
+CHÝBAJÚCE=0
+NEOČAKÁVANÉ=0
+OBSAHOVÉ_ROZDIELY=0
+MANIFEST_ZHODA=true
+OBSAHOVÁ_ZHODA=true
+RELEASE_MARKERY=1.1.16+1.1.16
+CRC_OK=true
+JEDINÝ_KOREŇ_CODEI=true
+DUPLICITY=0
+SYMLINKY=0
+ZAKÁZANÉ_ARTEFAKTY=0
+TAJOMSTVÁ=0
+NEPLATNÉ_CESTY=0
+NEOČAKÁVANÉ_BINÁRNE_ARTEFAKTY=0
+OPÄTOVNÝ_AUDIT_PO_PRENOSE=PASS
+BALÍK_ZODPOVEDÁ_HEAD=true
+```
+
+Dva textové indikátory boli preskúmané ako neškodná dynamická premenná
+databázového ovládača a jazyková hláška frameworku; neobsahujú tajomstvo ani
+platné prihlasovacie údaje.
+
+### Hranice a rollback evidenčného úkonu
+
+```text
+/codei=BEZ_ZMENY
+RELEASE_ZIP=BEZ_ZMENY
+RELEASE_VERSION=1.1.16_BEZ_ZMENY
+PRODUKCIA=BEZ_ZÁSAHU
+FÁZA_12_E=NEVYKONANÁ
+KROK_13=ZATVORENÝ
+```
+
+Rollbackom tohto evidenčného úkonu je vrátenie auditného workflowu a
+checkpointových zápisov. Release commit sa týmto rollbackom nemení.
+
+### Záver Fáz 12.C–12.D
+
+```text
+FÁZA_12_C=SPLNENÁ
+FÁZA_12_D=SPLNENÁ
+HASH=ZAZNAMENANÝ
+BALÍK_ZODPOVEDÁ_HEAD=true
+ZAKÁZANÉ_ARTEFAKTY=0
+STOP_DÔVOD=ŽIADNY
+AKTÍVNA_FÁZA=CHECKPOINT_PO_12_D
+NEXT_PHASE=12.E_ROLLBACK_A_DÔKAZOVÁ_VÄZBA
+NEXT_ALLOWED_ACTION=ČAKAŤ_NA_VÝSLOVNÝ_POKYN_PRED_FÁZOU_12_E
+PRODUKCIA_BEZ_ZÁSAHU=true
+KROK_13=ZATVORENÝ
+```

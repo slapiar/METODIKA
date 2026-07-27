@@ -8,6 +8,17 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Krok 12 — Fázy 12.C–12.D: jediný release 1.1.16 a úplný audit
+
+- jediný release commit `fb243698b3811ddf66ad772f89c2e171aa5bc3de` zmenil presne `RELEASE_VERSION` na `1.1.16` a pridal `releases/metodika-codei-hostinger-1.1.16.zip`; strom `/codei` zostal `4ec1d840...`,
+- ZIP má Git blob `24b4976831bc4f37eb80080c4b39e82d9513bf08` a SHA-256 `04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668`,
+- úplný audit potvrdil 813/813 súborov, nulové chýbajúce, neočakávané a obsahovo rozdielne súbory, oba markery `1.1.16`, nulové zakázané artefakty, tajomstvá, neplatné cesty, symlinky a neočakávané binárne artefakty,
+- nezávislý auditný workflow [`.github/workflows/krok-12-release-audit.yml`](.github/workflows/krok-12-release-audit.yml) prešiel runom `30260322371`, jobom `89958429604`; odovzdaný artefakt `8650598126` má SHA-256 digest `147a79e1...`,
+- stiahnutý Actions artefakt bol opätovne auditovaný a vnútorný ZIP si zachoval SHA-256 `04742c8b...`, manifestovú aj obsahovú zhodu a výsledok `PASS`,
+- pôvodný konzolový výstup jediného spustenia `release.sh` nebol zachovaný; táto odchýlka je zapísaná pravdivo a skript sa kvôli nej druhýkrát nespustil,
+- checkpoint Fáz 12.C–12.D je zapísaný v INI, podrobnom aj rámcovom pláne, WORK zázname a registri; produkcia zostala bez zásahu,
+- Fáza 12.E ešte nebola vykonaná; podľa výslovného pokynu Autority sa po publikovaní a vzdialenom read-backu checkpointu čaká pred jej začatím. Nasadenie a Krok 13 zostávajú zakázané.
+
 ### Krok 12 — Fáza 12.B: príprava izolovaného release prostredia
 
 - vznikol jednoúčelový workflow [`.github/workflows/krok-12-release-environment.yml`](.github/workflows/krok-12-release-environment.yml) s oprávnením iba `contents: read`; workflow nespúšťa `release.sh`, nemení verziu a nevytvára ZIP,
