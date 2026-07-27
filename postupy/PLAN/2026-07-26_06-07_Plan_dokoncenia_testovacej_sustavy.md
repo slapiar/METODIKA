@@ -25,9 +25,17 @@ FÁZA_12_F=SPLNENÁ
 RELEASE=1.1.16
 RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
 RELEASE_SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
-PRODUKCIA=BEZ_ZÁSAHU
-KROK_13=NEOTVORENÝ
-NEXT_ALLOWED_STEP=KROK_13_S_VLASTNÝM_INI_A_GATEM
+PRODUKCIA_1.1.16=NASADENÁ_S_NÁSLEDNOU_PRIAMOU_CSS_OPRAVOU
+KROK_13=UZAVRETÝ_RIADENÝM_STOP
+GATE_KROKU_13=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_RIADENOM_STOP
+TOKEN_VERIFICATION=PASS
+DATABASE_DIAGNOSTICS=PASS
+PRODUCTION_CONCURRENCY_RUN=NEVYKONANÝ_ALEBO_NEDOLOŽENÝ
+REQUIRED_PRODUCTION_RESULT=NEPOTVRDENÝ
+REPOSITORY_RELEASE=1.1.17
+RELEASE_1.1.17_COMMIT=cc9d48d95ff982b4ec7510e86e1d03f0734cf9de
+DEPLOYMENT_1.1.17=NEPOTVRDENÉ
+NEXT_ALLOWED_STEP=KROK_14_S_VLASTNÝM_INI_A_GATEM
 ```
 
 ## Inicializácia plánovacieho úkonu
@@ -728,6 +736,33 @@ znovu vypočítala SHA-256 ZIP-u `1.1.16` po vzdialenom zápise. Hodnota zostala
 `04742c8b...`, `/codei` zostal `4ec1d840...` a všetky spoločné kritériá Kroku
 12 sú splnené. Krok 12 je uzavretý bez zásahu do produkcie. Krok 13 ešte nie
 je otvorený; jediným nasledujúcim povoleným úkonom je jeho vlastný INI a GATE.
+
+# Aktualizácia po Kroku 13 — 2026-07-27
+
+Autorita nasadila release `1.1.16` priamo na Hostinger. Overenie
+diagnostickým tokenom a volanie `diagnostics/database` prešli. Nasadenie
+zároveň odkrylo dve konfiguračné a prezentačné okolnosti:
+
+1. GATE tlačidlá vyžadovali `METODIKA_GATE_ENABLED=1`;
+2. spoločný layout odkazoval na `assets/css/app.css` namiesto produkčne
+   správnej cesty `public/assets/css/app.css`.
+
+Po doplnení premennej sa tlačidlá zobrazili. Autorita opravila cestu CSS
+priamo na Hostingeri a potvrdila správny vzhľad. Trvalá oprava je v commite
+`bd94a535...`; v repozitári bol vytvorený a pushnutý release `1.1.17`
+v commite `cc9d48d9...`. Jeho produkčné nasadenie zatiaľ nie je potvrdené.
+
+Povinný súbežný produkčný scenár Kroku 13 nemá zaznamenaný `runId`, odpovede,
+logy ani výsledok `COMPLETED_SUCCESS`. Krok 13 sa preto uzatvára riadeným
+STOP, nie úspechom. Podľa výslovného predpokladu Kroku 14 je riadený STOP
+platnou prechodovou podmienkou.
+
+```text
+KROK_13=UZAVRETÝ_RIADENÝM_STOP
+GATE_KROKU_13=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_RIADENOM_STOP
+NEXT_ALLOWED_STEP=KROK_14_S_VLASTNÝM_INI_A_GATEM
+KROK_14=NEOTVORENÝ
+```
 
 # Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
 

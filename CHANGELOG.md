@@ -8,6 +8,16 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Krok 13 — uzavretie riadeným STOP po produkčnom nasadení
+
+- Autorita nasadila release `1.1.16` priamo na Hostinger; overenie diagnostickým tokenom a volanie `diagnostics/database` prešli,
+- GATE tlačidlá sa zobrazili po doplnení `METODIKA_GATE_ENABLED=1`; CSS regresiu spôsobila cesta bez segmentu `public/` v `codei/app/Views/layouts/app.php`,
+- priama oprava cesty CSS na Hostingeri obnovila správny vzhľad; trvalá oprava je v commite `bd94a535...` a opravný release `1.1.17` v commite `cc9d48d9...`,
+- úplný produkčný súbežný scenár nemá doložený `runId`, odpovede, logy ani výsledok `COMPLETED_SUCCESS`; tieto hodnoty sa zo základnej diagnostiky nedomýšľajú,
+- Krok 13 je preto uzavretý riadeným STOP a jeho brána je `OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_RIADENOM_STOP`,
+- ďalším povoleným úkonom je Krok 14 s vlastným INI a GATE; produkčné nasadenie release `1.1.17` zatiaľ nie je potvrdené,
+- úplný záznam je v [`postupy/WORK/2026-07-27_15-00_Krok_13_Riadeny_STOP_po_produkcnom_nasadeni.md`](postupy/WORK/2026-07-27_15-00_Krok_13_Riadeny_STOP_po_produkcnom_nasadeni.md) a v pôvodnom [`INI Kroku 13`](postupy/WORK/INI/2026-07-27_13-59_INI_Krok_13_Jeden_produkcny_run.md).
+
 ### Krok 12 — Fáza 12.F: konečné uzavretie
 
 - po zlúčení checkpointu 12.E bol spätne načítaný vzdialený `main` `cc0e562775bf6b5b88a92da25b10648fad0ec28d`, `/codei=4ec1d840...`, `RELEASE_VERSION=1.1.16` a všetky relevantné release artefakty,
