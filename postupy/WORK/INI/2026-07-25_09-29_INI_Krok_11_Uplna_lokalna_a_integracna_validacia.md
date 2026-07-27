@@ -619,3 +619,65 @@ GATE_KROKU_11=CLOSED
 ### Jediný povolený nasledujúci úkon
 
 Získať chýbajúce hodnoty existujúcim autorizovaným read-only výstupom bez vytvárania dát a bez spustenia testu. Ak Cloud Browser blokuje čítacie API tlačidlo, výsledok musí poskytnúť používateľ zo zobrazenej produkčnej stránky alebo existujúci serverový read-only prístup.
+
+---
+
+## Otvorenie brány Kroku 11 — 2026-07-27 09:59 Europe/Bratislava
+
+### Dôkazné prehodnotenie bodu 5 bez nového environmentálneho testu
+
+Použité boli iba existujúce praktické dôkazy:
+
+1. GitHub Actions run `30148480939`, job `89654680309`, výsledok `success`:
+   - PHP `8.4.23`,
+   - Composer `2.10.2`,
+   - rozšírenia `mysqli`, `intl`, `mbstring`, `xml`, `curl`,
+   - izolovaná MariaDB `11.4`,
+   - úspešné migrácie M1–M8,
+   - úspešné overenie schémy a regresie prvého prijatia.
+2. GitHub Actions run `30098298849`, job `89497715666`, výsledok `success`:
+   - PHP `8.4.23`,
+   - `pcntl_fork` pripravený,
+   - run-store testy `8/8`, `29` tvrdení,
+   - dvojprocesový bariérový a timeout test `1/1`, `18` tvrdení.
+3. Aktuálny autorizovaný produkčný read-back:
+   - nasadená verzia `v1.1.15`,
+   - externé prostredie načítané,
+   - databázové spojenie `OK`,
+   - MariaDB `11.8.8-MariaDB-log`,
+   - InnoDB, `utf8mb4_bin` a `DATETIME(6)` `OK`,
+   - celkový výsledok `PRIPRAVENÉ`.
+
+Nový environmentálny test nebol vytvorený ani spustený. Presný produkčný PHP runtime a produkčný zoznam vykonaných migrácií zostávajú `NEZISTENÉ`; podľa kritéria Fázy 11.A sú takto výslovne oddelené od doloženého testovacieho runtime a od aktuálne doloženého produkčného databázového runtime.
+
+### Aktualizovaná inicializačná matica
+
+| Bod | Stav | Aktuálny dôkaz |
+|---:|---|---|
+| 1. Metodika načítaná | ÁNO | `postupy/Inicializácia práce.md` v2.0 |
+| 2. Projekt a autoritatívny zdroj | ÁNO | `slapiar/METODIKA`, `main`, `/codei` |
+| 3. Vetva a HEAD | ÁNO | stabilný HEAD pred zápisom `dcc7b4c216af791b0e8c4792ceb045ea951b5fca` |
+| 4. Prístupy | ÁNO | admin/pull/push a opakovaný read-after-write |
+| 5. Prostredie a runtime | ÁNO | dva existujúce úspešné Actions dôkazy + aktuálny produkčný DB read-back |
+| 6. Závislosti | ÁNO | kontinuitná mapa deviatich blokov, existujúce balíky a vykonateľné závislosti |
+| 7. Rozsah | ÁNO | Krok 11, Fázy 11.B–11.F; bez release a produkčného runu |
+| 8. Kritérium úspechu | ÁNO | kritériá záväzného plánu pre Fázy 11.B–11.F |
+| 9. Rollback | ÁNO | vrátenie celej prípadnej implementačnej dávky; žiadny automatický návrat Kroku 10 |
+
+### Stav brány
+
+```text
+1=ÁNO
+2=ÁNO
+3=ÁNO
+4=ÁNO
+5=ÁNO
+6=ÁNO
+7=ÁNO
+8=ÁNO
+9=ÁNO
+GATE=OPEN
+BLOKUJÚCI_BOD=ŽIADNY
+FÁZA_11_A=UZAVRETÁ_S_VÝSLOVNE_ODDELENÝMI_NEZISTENÝMI_PRODUKČNÝMI_HODNOTAMI
+NEXT_ALLOWED_ACTION=FÁZA_11_B_KLASIFIKÁCIA_ZMIEN_A_PREDČASNÝCH_ARTEFAKTOV
+```
