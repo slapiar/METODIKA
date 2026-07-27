@@ -6,8 +6,9 @@
     <meta name="description" content="<?= esc($metaDescription ?? 'METODIKA') ?>">
     <?= $this->renderSection('meta') ?>
     <title><?= esc($title ?? 'METODIKA') ?></title>
-    <link rel="stylesheet" href="<?= esc(asset_url('assets/css/app.css')) ?>">
-    <?= $this->renderSection('styles') ?>
+    <link rel="stylesheet" href="<?= esc(asset_url('public/assets/css/app.css')) ?>">
+  <?=  // <link rel="stylesheet" href="<?= esc(asset_url('assets/css/app.css'))">
+    $this->renderSection('styles') ?>
 </head>
 <body class="<?= esc($pageClass ?? '') ?>">
     <?php if (($showHeader ?? true) === true): ?>
