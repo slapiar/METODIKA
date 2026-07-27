@@ -564,3 +564,58 @@ NEXT_ALLOWED_ACTION=AUTORIZOVANÉ_READ_ONLY_PRIHLÁSENIE_EXISTUJÚCIM_DIAGNOSTIC
 ```
 
 Na dokončenie povoleného čítania sa použije iba existujúci diagnostický token v produkčnej prihlasovacej bráne. Token sa nezapisuje do repozitára, INI, chatu ani pracovných výstupov.
+
+---
+
+## Checkpoint Fázy 11.A — 2026-07-27 09:54 Europe/Bratislava
+
+### Autorizovaný produkčný read-only výsledok
+
+Po manuálnom vložení diagnostického tokenu používateľom do Cloud Browsera bola načítaná existujúca čítacia diagnostika. Token nebol prečítaný, uložený ani zapísaný do chatu či repozitára.
+
+| Kontrola | Aktuálny produkčný výsledok |
+|---|---|
+| Externé prostredie načítané | ÁNO |
+| Databázové spojenie | OK |
+| Databázový server | `11.8.8-MariaDB-log` |
+| InnoDB | OK |
+| `utf8mb4_bin` | OK |
+| `DATETIME(6)` | OK |
+| Celkový výsledok | PRIPRAVENÉ |
+| Čas diagnostiky | `2026-07-27T07:52:00+00:00` |
+| Produkčná verzia | `v1.1.15` |
+
+Stránka výslovne uvádza, že diagnostika je iba čítacia a týmto načítaním neboli spustené migrácie.
+
+### Hranica ďalšieho čítania
+
+Pokus stlačiť existujúce tlačidlo `Test API /api/gate/sessions` bol zastavený bezpečnostnou politikou Cloud Browsera ešte pred vykonaním akcie.
+
+```text
+TEST_API_AKCIA_VYKONANÁ=false
+API_PRODUKČNÁ_ODPOVEĎ=NEZÍSKANÁ
+OBCHÁDZANIE_BLOKÁCIE=false
+PRODUKCIA_ZMENENÁ=false
+```
+
+Tlačidlá `Vytvoriť testovaciu session`, `Vytvoriť testovací krok`, `Vytvoriť testovací dôkaz` a `Start` neboli použité.
+
+### Stav brány po autorizovanom read-backu
+
+```text
+PRODUKČNÁ_VERZIA=ÁNO
+AKTUÁLNE_DB_PROSTREDIE=ÁNO
+DB_SPOJENIE_A_CAPABILITIES=ÁNO
+PHP_RUNTIME=NEZISTENÉ
+STAV_MIGRÁCIÍ=NEZISTENÉ
+RUNTIME_FLAGY=NEZISTENÉ
+TESTOVACIE_DB_RIADKY=NEZISTENÉ
+SESSION_STEP_EVIDENCE=ČIASTOČNE_ZISTENÉ
+RUNSTORE_JSON_LOCK_TEMP=NEZISTENÉ
+BOD_5=NEOVERENÉ
+GATE_KROKU_11=CLOSED
+```
+
+### Jediný povolený nasledujúci úkon
+
+Získať chýbajúce hodnoty existujúcim autorizovaným read-only výstupom bez vytvárania dát a bez spustenia testu. Ak Cloud Browser blokuje čítacie API tlačidlo, výsledok musí poskytnúť používateľ zo zobrazenej produkčnej stránky alebo existujúci serverový read-only prístup.
