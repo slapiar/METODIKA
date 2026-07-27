@@ -146,7 +146,7 @@ PRODUKCIA=BEZ_ZÁSAHU
 Vrátiť iba dokumentačnú dávku tohto plánovania. Technický merge Kroku 11,
 existujúce release balíky a produkcia sa nemenia.
 
-## Záver
+## Záver plánovacieho úkonu
 
 ```text
 VÝSLEDOK=SPLNENÉ
@@ -155,5 +155,73 @@ GATE_KROKU_12=OPEN
 PLÁN_KROKU_12=VYTVORENÝ
 AKTÍVNA_FÁZA=12.A
 NEXT_ALLOWED_ACTION=PUBLIKÁCIA_A_VZDIALENÝ_READ_BACK_PLÁNU_POTOM_FÁZA_12_A
+KROK_13=ZATVORENÝ
+```
+
+---
+
+## Checkpoint Fázy 12.A — zmrazenie auditnej základne
+
+Dátum vykonania: 2026-07-27 12:18 Europe/Bratislava
+
+Fáza bola vykonaná presne podľa šiestich bodov záväzného plánu.
+
+### Stabilita zdroja
+
+```text
+MAIN_PRED=771b0c2b69e3f1e1d7b74604b672275823bc9f95
+MAIN_PO=771b0c2b69e3f1e1d7b74604b672275823bc9f95
+MAIN_STABILNÝ=true
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+VALIDOVANÝ_CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+CODEI_ZHODA=true
+RELEASE_VERSION=1.1.15
+RELEASE_SH_BLOB=e365e7ec087ed81c350a7998ab5ac79450aed1c1
+```
+
+### Porovnávacie základne
+
+Od produkčného commitu release `1.1.9`
+`3b91c4e7c4fcb95000595554e361ff417fc992e4` po validovaný technický head
+`bc85d18fd0edc1a52fad81f8fac54c1ae66a7014` sa v `/codei` zmenilo 42 ciest:
+28 pribudlo a 14 sa zmenilo. Diff má 3988 pridaní a 42 odstránení.
+
+Rollbackový ZIP `1.1.9` bol opätovne rozbalený a každý jeho súbor bol
+porovnaný so zdrojovým commitom:
+
+```text
+ZIP_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+SHA256=5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72
+OČAKÁVANÉ_SÚBORY=790
+SKUTOČNÉ_SÚBORY=790
+CHÝBAJÚCE=0
+NEOČAKÁVANÉ=0
+OBSAHOVÉ_ROZDIELY=0
+```
+
+Historický ZIP `1.1.15` bol jednorazovo uzavretý ako neaktívna základňa:
+oproti očakávanému manifestu validovaného stromu má 6 chýbajúcich,
+5 neočakávaných a 17 obsahovo rozdielnych súborov. Zostal bez zmeny a nebude
+sa ďalej používať na odvodenie release ani rollbacku.
+
+### Hranice
+
+```text
+/codei=BEZ_ZMENY
+RELEASE_SH=BEZ_ZMENY
+RELEASE_VERSION=1.1.15_BEZ_ZMENY
+EXISTUJÚCE_ZIPY=BEZ_ZMENY
+NOVÝ_RELEASE=false
+NOVÝ_ZIP=false
+PRODUKCIA=BEZ_ZÁSAHU
+```
+
+### Záver Fázy 12.A
+
+```text
+FÁZA_12_A=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+AKTÍVNA_FÁZA=12.B_PRÍPRAVA_IZOLOVANÉHO_RELEASE_PROSTREDIA
+NEXT_ALLOWED_ACTION=FÁZA_12_B_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_A
 KROK_13=ZATVORENÝ
 ```

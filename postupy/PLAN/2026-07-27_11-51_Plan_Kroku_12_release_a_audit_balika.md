@@ -9,7 +9,8 @@ PRACOVNÝ — ZÁVÄZNÝ PRE KROK 12
 KROKY_1_AŽ_11=SPLNENÉ
 AKTÍVNY_KROK=KROK_12
 GATE_KROKU_12=OPEN
-AKTÍVNA_FÁZA=12.A_ZMRAZENIE_AUDITNEJ_ZÁKLADNE
+FÁZA_12_A=SPLNENÁ
+AKTÍVNA_FÁZA=12.B_PRÍPRAVA_IZOLOVANÉHO_RELEASE_PROSTREDIA
 NOVÁ_VERZIA=1.1.16
 NOVÝ_RELEASE_ZATIAĽ=false
 NOVÝ_ZIP_ZATIAĽ=false
@@ -174,6 +175,73 @@ nahradený odhadom.
 - zmení sa `RELEASE_VERSION`,
 - zmizne alebo sa zmení rollback balík `1.1.9`.
 
+### Výsledok vykonania — 2026-07-27 12:18 Europe/Bratislava
+
+Vzdialený `main` bol načítaný na začiatku aj na konci kontroly a zostal
+stabilný:
+
+```text
+MAIN_PRED=771b0c2b69e3f1e1d7b74604b672275823bc9f95
+MAIN_PO=771b0c2b69e3f1e1d7b74604b672275823bc9f95
+MAIN_STABILNÝ=true
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+VALIDOVANÝ_CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+CODEI_ZHODA=true
+RELEASE_VERSION=1.1.15
+RELEASE_SH_BLOB=e365e7ec087ed81c350a7998ab5ac79450aed1c1
+```
+
+Prvý porovnávací pohľad:
+
+```text
+ZÁKLAD=1.1.9
+PRODUKČNÝ_COMMIT=3b91c4e7c4fcb95000595554e361ff417fc992e4
+POROVNANIE=3b91c4e..._AŽ_bc85d18...
+ZMENENÉ_CESTY_V_CODEI=42
+PRIDANÉ_CESTY=28
+ZMENENÉ_CESTY=14
+SÚHRN=3988_PRIDANÍ_A_42_ODSTRÁNENÍ
+```
+
+Rollbackový ZIP `1.1.9` bol znovu prakticky overený:
+
+```text
+ZIP_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+SHA256=5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72
+OČAKÁVANÉ_SÚBORY=790
+SKUTOČNÉ_SÚBORY=790
+CHÝBAJÚCE_SÚBORY=0
+NEOČAKÁVANÉ_SÚBORY=0
+OBSAHOVÉ_ROZDIELY=0
+ROLLBACK_1.1.9_DOSTUPNÝ_A_ZDROJOVO_ZHODNÝ=true
+```
+
+Druhý porovnávací pohľad bol jednorazovo uzavretý iba ako historická
+klasifikácia ZIP-u `1.1.15` voči budúcemu manifestu validovaného stromu:
+
+```text
+OČAKÁVANÉ_SÚBORY=813
+HISTORICKÝ_ZIP_SÚBORY=812
+CHÝBAJÚCE_V_HISTORICKOM_ZIP=6
+NEOČAKÁVANÉ_V_HISTORICKOM_ZIP=5
+OBSAHOVÉ_ROZDIELY=17
+ĎALŠIE_POUŽITIE_AKO_AKTÍVNY_ZÁKLAD=false
+HISTORICKÝ_ZIP_ZMENENÝ=false
+```
+
+Nezistený zdrojový commit produkčnej verzie `1.1.15` nebol nahradený odhadom.
+Historický ZIP `1.1.15` sa ďalej nepoužije na odvodenie nového release ani
+ako rollback.
+
+```text
+FÁZA_12_A=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+NOVÝ_RELEASE=false
+NOVÝ_ZIP=false
+PRODUKCIA_BEZ_ZÁSAHU=true
+NEXT_ALLOWED_ACTION=FÁZA_12_B_PO_VZDIALENOM_READ_BACKU_TOHTO_CHECKPOINTU
+```
+
 ## Fáza 12.B — Príprava izolovaného release prostredia
 
 1. Použiť projektový GitHub Actions runner `ubuntu-24.04`.
@@ -326,11 +394,11 @@ riadeným STOP. Krok 13 sa neotvorí.
 
 # 3. Povolený nasledujúci úkon
 
-Po publikovaní a vzdialenom read-backu tohto plánu:
+Po publikovaní a vzdialenom read-backu checkpointu Fázy 12.A:
 
 ```text
-Vykonať iba Fázu 12.A.
-Pred vytvorením ZIP-u znovu potvrdiť stabilitu main a stromu /codei.
+Vykonať iba Fázu 12.B — prípravu izolovaného release prostredia.
+Ešte nevytvárať release ani ZIP.
 Nenasadzovať.
 Neotvárať Krok 13.
 ```

@@ -656,10 +656,25 @@ Jeho podrobný záväzný vykonávací plán je:
 ```text
 KROK_12=AKTÍVNY
 GATE_KROKU_12=OPEN
-NEXT_ALLOWED_ACTION=FÁZA_12_A_ZMRAZENIE_AUDITNEJ_ZÁKLADNE
+FÁZA_12_A=SPLNENÁ
+MAIN_CHECKPOINTU_12_A=771b0c2b69e3f1e1d7b74604b672275823bc9f95
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+RELEASE_VERSION=1.1.15_BEZ_ZMENY
+NOVÝ_ZIP=false
+NEXT_ALLOWED_ACTION=FÁZA_12_B_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_A
 PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
 KROK_13=ZATVORENÝ
 ```
+
+Fáza 12.A zmrazila auditnú základňu, potvrdila zhodu aktuálneho `/codei`
+s validovaným stromom Kroku 11 a znovu overila rollbackový ZIP `1.1.9`
+voči jeho zdrojovému commitu bez jedinej manifestovej alebo obsahovej
+odchýlky. Historický ZIP `1.1.15` bol jednorazovo klasifikovaný, zostal
+nedotknutý a ďalej sa nepoužíva ako aktívna release ani rollbacková základňa.
+
+Fáza 12.B smie začať až po publikovaní a vzdialenom read-backu checkpointu
+Fázy 12.A. V nej sa ešte nesmie zmeniť `RELEASE_VERSION`, vytvoriť ZIP,
+nasadiť release ani otvoriť Krok 13.
 
 # Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
 

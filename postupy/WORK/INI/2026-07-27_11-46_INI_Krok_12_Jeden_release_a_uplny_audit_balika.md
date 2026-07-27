@@ -77,7 +77,7 @@ Dátum: 2026-07-27 11:46 Europe/Bratislava
 9=ÁNO
 GATE=OPEN
 BLOKUJÚCI_BOD=ŽIADNY
-POVOLENÝ_ĎALŠÍ_ÚKON=PUBLIKÁCIA_A_VZDIALENÝ_READ_BACK_PLÁNU_POTOM_FÁZA_12_A
+POVOLENÝ_ĎALŠÍ_ÚKON=PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_FÁZA_12_B
 ```
 
 ## Povinné východiská analýzy
@@ -86,8 +86,8 @@ POVOLENÝ_ĎALŠÍ_ÚKON=PUBLIKÁCIA_A_VZDIALENÝ_READ_BACK_PLÁNU_POTOM_FÁZA_1
 KROK_11=SPLNENÉ
 VALIDOVANÝ_TECHNICKÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
 VALIDOVANÝ_CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
-AKTUÁLNY_MAIN=11a62f688e6d3d641e8aad7e4f0b04bbb4c988e3
-AKTUÁLNY_CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+MAIN_PRI_INICIALIZÁCII=11a62f688e6d3d641e8aad7e4f0b04bbb4c988e3
+CODEI_TREE_PRI_INICIALIZÁCII=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
 VALIDAČNÝ_RUN=30252640028
 RELEASE_VERSION=1.1.15
 PRODUKČNE_POZOROVANÁ_VERZIA=1.1.15
@@ -114,7 +114,7 @@ Až z týchto dôkazov sa vytvorí presná auditná základňa. Existujúci ZIP
 |---|:---:|:---:|
 | ID-01 až ID-14 | 1 | 1 |
 
-## Checkpoint po analýze a vytvorení plánu
+## Historický checkpoint po analýze a vytvorení plánu
 
 ```text
 INICIALIZÁCIA=SPLNENÁ
@@ -122,7 +122,7 @@ ANALÝZA=SPLNENÁ
 PLÁN_KROKU_12=postupy/PLAN/2026-07-27_11-51_Plan_Kroku_12_release_a_audit_balika.md
 WORK_ZÁZNAM=postupy/WORK/2026-07-27_11-53_Inicializacia_analyza_a_plan_Kroku_12.md
 GATE=OPEN
-AKTÍVNA_FÁZA=12.A_ZMRAZENIE_AUDITNEJ_ZÁKLADNE
+AKTÍVNA_FÁZA_V_TOMTO_CHECKPOINTE=12.A_ZMRAZENIE_AUDITNEJ_ZÁKLADNE
 RELEASE_VERSION=1.1.15_BEZ_ZMENY
 NOVÝ_ZIP=false
 PRODUKCIA_BEZ_ZÁSAHU=true
@@ -132,3 +132,64 @@ KROK_13=ZATVORENÝ
 Zistený rozpor historického ZIP-u `1.1.15` nie je blokáciou vytvorenia nového
 release z úplne validovaného stromu. Je však dôvodom, prečo sa tento historický
 ZIP nesmie označiť za overený rollback balík a nesmie sa potichu prepísať.
+
+## Checkpoint Fázy 12.A — zmrazenie auditnej základne
+
+Dátum vykonania: 2026-07-27 12:18 Europe/Bratislava
+
+### Výsledok šiestich povinných úkonov
+
+1. Vzdialený `main` znovu načítaný: ÁNO
+   Dôkaz: pred kontrolou aj po kontrole
+   `771b0c2b69e3f1e1d7b74604b672275823bc9f95`.
+
+2. Strom `/codei` potvrdený: ÁNO
+   Dôkaz: aktuálny aj validovaný strom
+   `4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c`.
+
+3. `RELEASE_VERSION` potvrdený: ÁNO
+   Dôkaz: vzdialený `main` obsahuje `1.1.15`.
+
+4. Blob `release.sh` potvrdený: ÁNO
+   Dôkaz: `e365e7ec087ed81c350a7998ab5ac79450aed1c1`.
+
+5. Dva porovnávacie pohľady zaznamenané: ÁNO
+   Dôkaz:
+   - `1.1.9 / 3b91c4e... → bc85d18...`: 42 zmenených ciest v `/codei`,
+     z toho 28 pridaných a 14 zmenených;
+   - historický ZIP `1.1.15 →` očakávaný manifest validovaného stromu:
+     812 verzus 813 súborov, 6 chýbajúcich, 5 neočakávaných a 17 obsahových
+     rozdielov.
+
+6. Rollbackový ZIP `1.1.9` potvrdený: ÁNO
+   Dôkaz:
+
+   ```text
+   ZIP_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+   SHA256=5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72
+   OČAKÁVANÉ_SÚBORY=790
+   SKUTOČNÉ_SÚBORY=790
+   CHÝBAJÚCE=0
+   NEOČAKÁVANÉ=0
+   OBSAHOVÉ_ROZDIELY=0
+   ```
+
+Historický ZIP `1.1.15` bol týmto jednorazovo klasifikovaný a ďalej nie je
+aktívnou auditnou ani rollbackovou základňou. Zostal bez zmeny.
+
+### Záver Fázy 12.A
+
+```text
+FÁZA_12_A=SPLNENÁ
+MAIN_STABILNÝ=true
+CODEI_ZHODA=true
+ROLLBACK_1.1.9_DOSTUPNÝ_A_ZDROJOVO_ZHODNÝ=true
+STOP_DÔVOD=ŽIADNY
+RELEASE_VERSION=1.1.15_BEZ_ZMENY
+NOVÝ_RELEASE=false
+NOVÝ_ZIP=false
+PRODUKCIA_BEZ_ZÁSAHU=true
+AKTÍVNA_FÁZA=12.B_PRÍPRAVA_IZOLOVANÉHO_RELEASE_PROSTREDIA
+NEXT_ALLOWED_ACTION=FÁZA_12_B_PO_VZDIALENOM_READ_BACKU_TOHTO_CHECKPOINTU
+KROK_13=ZATVORENÝ
+```
