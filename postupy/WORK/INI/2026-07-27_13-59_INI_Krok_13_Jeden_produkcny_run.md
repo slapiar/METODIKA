@@ -2,7 +2,7 @@
 
 Dátum: 2026-07-27 13:59 Europe/Bratislava
 
-## Kontrolná matica (Dôkaz je povinný, inak = NEOVERENÉ)
+## Historická kontrolná matica pri prvom pokuse (Dôkaz je povinný, inak = NEOVERENÉ)
 
 1. Metodika načítaná: ÁNO | Dôkaz: `postupy/Inicializácia práce.md`, blob `4b73ad567bbc78a30e7cc2066b3fcada73b0022d`
 2. Projekt a autoritatívny zdroj: ÁNO | Dôkaz: `slapiar/METODIKA`, vetva `main`; záväzný plán `postupy/PLAN/2026-07-25_05-18_Plan_prace.md`; podrobný stav Kroku 12 `postupy/PLAN/2026-07-27_11-51_Plan_Kroku_12_release_a_audit_balika.md`
@@ -40,7 +40,7 @@ PRÍČINA_ZASTAVENIA=NEDOKÁZANÝ_PRODUKČNÝ_ZÁPIS_LOG_CLEANUP_A_ROLLBACK
 NÁPRAVA=OVERIŤ_PRIAMY_SERVEROVÝ_PRÍSTUP_PRE_NASADENIE_LOG_CLEANUP_A_ROLLBACK
 ```
 
-## Stav Brány
+## Historický stav brány pri prvom pokuse
 
 ```text
 GATE=CLOSED
@@ -54,3 +54,82 @@ KROK_13=NEOTVORENÝ
 | ID pokynu | R (Prečítané) | W (Zapísané) |
 |---|---:|---:|
 | ID-01 až ID-14 | 1 | 1 |
+
+---
+
+## Pokračovanie po vykonaní nasadenia Autoritou — 2026-07-27
+
+Pôvodné zastavenie bolo spôsobené iba nedostupnosťou produkčného zápisu
+z pracovného prostredia asistenta. Nebolo prekážkou nasadenia Autoritou.
+Po výslovnom rozhodnutí Autority bol release `1.1.16` nasadený obvyklým
+spôsobom priamo na Hostinger.
+
+### Potvrdené produkčné skutočnosti
+
+1. Nasadenie release `1.1.16` bolo vykonané.
+2. Overenie diagnostickým tokenom prešlo.
+3. Volanie `diagnostics/database` fungovalo a databázová diagnostika bola
+   dostupná.
+4. Po nasadení sa prejavila vizuálna regresia: spoločný CSS súbor sa
+   nenačítal.
+5. Štyri GATE tlačidlá sa zobrazili po doplnení
+   `METODIKA_GATE_ENABLED=1`; hodnoty
+   `METODIKA_CONCURRENCY_WEB_ENABLED=1` a
+   `METODIKA_DIAGNOSTICS_ENABLED=1` už boli nastavené.
+6. Porovnanie vzdialeného `main` s release `1.1.15` určilo príčinu CSS
+   regresie v `codei/app/Views/layouts/app.php`: cesta
+   `asset_url('assets/css/app.css')` neobsahovala segment `public/`.
+7. Autorita overila priamo na Hostingeri opravu:
+
+   ```php
+   <link rel="stylesheet" href="<?= esc(asset_url('public/assets/css/app.css')) ?>">
+   ```
+
+   Po tejto oprave sa vzhľad načítal správne.
+8. Trvalá jednoriadková oprava je v repozitári od commitu
+   `bd94a535ef8b52e18f103a15bacc0eef0a28fe2a`; následne bol vytvorený
+   release `1.1.17`, ktorého release commit je
+   `cc9d48d95ff982b4ec7510e86e1d03f0734cf9de`.
+
+### Nepotvrdené výsledky
+
+Povinný produkčný súbežný scenár nebol doložený úplným výsledkom. Neboli
+zaznamenané hodnoty `runId`, `barrierOpened`, timeouty, dvojica výsledkov
+`CREATED+ALREADY_EXISTS`, databázová jedinečnosť, aplikačný replay ani
+záverečný stav `COMPLETED_SUCCESS`.
+
+Tieto hodnoty sa nesmú spätne domyslieť z úspešného prihlásenia,
+databázovej diagnostiky ani z opraveného vzhľadu.
+
+### Skutočný výsledok Kroku 13
+
+```text
+DEPLOYMENT_PERFORMED=true
+DEPLOYED_RELEASE=1.1.16
+TOKEN_VERIFICATION=PASS
+DATABASE_DIAGNOSTICS=PASS
+UI_REGRESSION=CONFIRMED
+UI_HOTFIX_ON_PRODUCTION=CONFIRMED
+PRODUCTION_CONCURRENCY_RUN=NEVYKONANÝ_ALEBO_NEDOLOŽENÝ
+REQUIRED_PRODUCTION_RESULT=NEPOTVRDENÝ
+STATE=CONTROLLED_STOP
+ROLLBACK_PERFORMED=false
+CORRECTIVE_RELEASE_IN_REPOSITORY=1.1.17
+CORRECTIVE_RELEASE_DEPLOYMENT=NEPOTVRDENÉ
+```
+
+Krok 13 sa preto neoznačuje `COMPLETED_SUCCESS`. Je uzavretý riadeným STOP
+po jedinom nasadení a po odstránení zistenej vizuálnej regresie na
+produkcii. Podľa predpokladu otvorenia Kroku 14 je riadený STOP platným
+prechodovým stavom.
+
+## Aktuálny stav brány
+
+```text
+GATE=OPEN
+GATE_STATUS=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_RIADENOM_STOP
+BLOKUJÚCI_BOD=ŽIADNY_PRE_UZAVRETIE_KROKU_13
+KROK_13=UZAVRETÝ_RIADENÝM_STOP
+NEXT_ALLOWED_STEP=KROK_14_S_VLASTNÝM_INI_A_GATEM
+KROK_14=NEOTVORENÝ
+```
