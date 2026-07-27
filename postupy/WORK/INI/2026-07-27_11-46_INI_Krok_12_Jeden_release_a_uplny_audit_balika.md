@@ -77,7 +77,7 @@ Dátum: 2026-07-27 11:46 Europe/Bratislava
 9=ÁNO
 GATE=OPEN
 BLOKUJÚCI_BOD=ŽIADNY
-POVOLENÝ_ĎALŠÍ_ÚKON=PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_FÁZA_12_C
+POVOLENÝ_ĎALŠÍ_ÚKON=ČAKAŤ_NA_POKYN_PRED_FÁZOU_12_E
 ```
 
 ## Povinné východiská analýzy
@@ -259,4 +259,98 @@ CODEI_ZHODA=true
 WORKTREE_CLEAN=true
 AKTÍVNA_FÁZA=12.C_JEDINÉ_VYTVORENIE_RELEASE
 NEXT_ALLOWED_ACTION=FÁZA_12_C_PO_VZDIALENOM_READ_BACKU_TOHTO_CHECKPOINTU
+```
+
+## Checkpoint Fáz 12.C–12.D — jediný release a úplný audit ZIP-u
+
+Dátum zápisu: 2026-07-27 13:16 Europe/Bratislava
+
+### Fáza 12.C — jediné vytvorenie release
+
+Používateľ oznámil jediné vykonanie `./release.sh patch`. Keďže vzdialený
+`main` po vytvorení release ešte obsahoval `1.1.15`, bol vylúčený
+`--auto-push`; používateľ následne samostatne commitol a pushol iba dve
+vzniknuté položky.
+
+```text
+RELEASE_BASE_COMMIT=2eed8228392665e2b2e8d01bc2e94f2b1ed17e41
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+POČET_COMMITOV=1
+ZMENENÉ_CESTY=RELEASE_VERSION+releases/metodika-codei-hostinger-1.1.16.zip
+RELEASE_VERSION=1.1.16
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+AUTO_PUSH=false
+DRUHÉ_SPUSTENIE=false
+POČET_NOVÝCH_ZIPOV=1
+JEDEN_RELEASE=true
+```
+
+Pôvodný konzolový výstup jediného spustenia nebol zachovaný. Skript sa preto
+nespustil druhýkrát; chýbajúci výstup sa nenahradil vymysleným tvrdením:
+
+```text
+PÔVODNÝ_VÝSTUP_RELEASE_SH=NEZACHOVANÝ
+DÔVOD=NEBOL_ZACHYTENÝ_PRI_JEDINOM_SPUSTENÍ
+DODATOČNÉ_OPAKOVANIE_RELEASE_SH=ZAKÁZANÉ_A_NEVYKONANÉ
+EVIDOVANÁ_ODCHÝLKA=true
+FÁZA_12_C=SPLNENÁ
+```
+
+### Fáza 12.D — úplný audit ZIP-u
+
+Rozhodujúci nezávislý GitHub Actions audit:
+
+```text
+WORKFLOW=.github/workflows/krok-12-release-audit.yml
+WORKFLOW_RUN=30260322371
+WORKFLOW_JOB=89958429604
+AUDIT_HEAD=75f35c5b6521f30dcc84097d405fef6efd0df3fc
+RUN_RESULT=success
+ARTIFACT_ID=8650598126
+ARTIFACT_NAME=metodika-1.1.16-audit
+ARTIFACT_DIGEST_SHA256=147a79e1d7f75f7e145a3ec007e6041cf5f6eaff4f4ac5a6a164bdf68b9d3d37
+ZIP_SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+```
+
+Prvý workflow run skončil až pri odovzdaní artefaktu, pretože skrytý adresár
+`.audit-output` nebol zahrnutý. Samotný audit bol `PASS`; oprava zmenila iba
+názov pomocného adresára na `audit-output`, nie release.
+
+Výsledok úplného auditu a opätovného auditu po stiahnutí Actions artefaktu:
+
+```text
+OČAKÁVANÉ_SÚBORY=813
+SKUTOČNÉ_SÚBORY=813
+CHÝBAJÚCE=0
+NEOČAKÁVANÉ=0
+OBSAHOVÉ_ROZDIELY=0
+MANIFEST_ZHODA=true
+OBSAHOVÁ_ZHODA=true
+MARKERY=1.1.16+1.1.16
+ZAKÁZANÉ_ARTEFAKTY=0
+TAJOMSTVÁ=0
+NEPLATNÉ_CESTY=0
+SYMLINKY=0
+NEOČAKÁVANÉ_BINÁRNE_ARTEFAKTY=0
+OPÄTOVNÝ_AUDIT_PO_PRENOSE=PASS
+BALÍK_ZODPOVEDÁ_HEAD=true
+FÁZA_12_D=SPLNENÁ
+```
+
+### Stav po checkpointe
+
+```text
+FÁZA_12_A=SPLNENÁ
+FÁZA_12_B=SPLNENÁ
+FÁZA_12_C=SPLNENÁ
+FÁZA_12_D=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+AKTÍVNA_FÁZA=CHECKPOINT_PO_12_D
+NEXT_PHASE=12.E_ROLLBACK_A_DÔKAZOVÁ_VÄZBA
+NEXT_ALLOWED_ACTION=ČAKAŤ_NA_VÝSLOVNÝ_POKYN_PRED_FÁZOU_12_E
+FÁZA_12_E=NEVYKONANÁ
+PRODUKCIA_BEZ_ZÁSAHU=true
+KROK_13=ZATVORENÝ
 ```

@@ -1,0 +1,448 @@
+name: Krok 12 - Release audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/krok-12-release-audit.yml"
+      - "RELEASE_VERSION"
+      - "releases/metodika-codei-hostinger-1.1.16.zip"
+      - "postupy/**"
+      - "CHANGELOG.md"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: krok-12-release-audit-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Audit release 1.1.16
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Audit ZIP against validated source
+        shell: bash
+        env:
+          RELEASE_BASE_COMMIT: 2eed8228392665e2b2e8d01bc2e94f2b1ed17e41
+          RELEASE_COMMIT: fb243698b3811ddf66ad772f89c2e171aa5bc3de
+          EXPECTED_CODEI_TREE: 4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+          EXPECTED_VERSION: 1.1.16
+          EXPECTED_ZIP_BLOB: 24b4976831bc4f37eb80080c4b39e82d9513bf08
+          EXPECTED_ZIP_SHA256: 04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+          EXPECTED_FILE_COUNT: "813"
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          import re
+          import shutil
+          import stat
+          import subprocess
+          import zipfile
+          from pathlib import Path, PurePosixPath
+
+          workspace = Path(os.environ["GITHUB_WORKSPACE"])
+          version = os.environ["EXPECTED_VERSION"]
+          archive_rel = f"releases/metodika-codei-hostinger-{version}.zip"
+          archive = workspace / archive_rel
+          output = workspace / "audit-output"
+          output.mkdir(exist_ok=True)
+
+          def git(*args):
+              return subprocess.check_output(
+                  ["git", "-C", str(workspace), *args],
+                  text=True,
+              ).strip()
+
+          errors = []
+          release_base = os.environ["RELEASE_BASE_COMMIT"]
+          release_commit = os.environ["RELEASE_COMMIT"]
+          expected_tree = os.environ["EXPECTED_CODEI_TREE"]
+          expected_blob = os.environ["EXPECTED_ZIP_BLOB"]
+          expected_sha256 = os.environ["EXPECTED_ZIP_SHA256"]
+          expected_count = int(os.environ["EXPECTED_FILE_COUNT"])
+
+          head = git("rev-parse", "HEAD")
+          codei_tree = git("rev-parse", "HEAD:codei")
+          release_tree = git("rev-parse", f"{release_commit}:codei")
+          release_blob = git("rev-parse", f"{release_commit}:{archive_rel}")
+          head_blob = git("rev-parse", f"HEAD:{archive_rel}")
+          release_version = (workspace / "RELEASE_VERSION").read_text(
+              encoding="utf-8"
+          ).strip()
+
+          if codei_tree != expected_tree or release_tree != expected_tree:
+              errors.append("CODEI_TREE_MISMATCH")
+          if release_blob != expected_blob or head_blob != expected_blob:
+              errors.append("ZIP_BLOB_MISMATCH")
+          if release_version != version:
+              errors.append("RELEASE_VERSION_MISMATCH")
+          if git("merge-base", release_base, release_commit) != release_base:
+              errors.append("INVALID_RELEASE_BASE")
+          if git("rev-list", "--count", f"{release_base}..{release_commit}") != "1":
+              errors.append("RELEASE_COMMIT_COUNT_NOT_ONE")
+
+          release_diff = git(
+              "diff", "--name-only", release_base, release_commit
+          ).splitlines()
+          expected_release_diff = sorted(["RELEASE_VERSION", archive_rel])
+          if sorted(release_diff) != expected_release_diff:
+              errors.append("RELEASE_DIFF_NOT_EXACT")
+
+          archive_bytes = archive.read_bytes()
+          archive_sha256 = hashlib.sha256(archive_bytes).hexdigest()
+          if archive_sha256 != expected_sha256:
+              errors.append("ZIP_SHA256_MISMATCH")
+
+          raw_tree = subprocess.check_output(
+              [
+                  "git",
+                  "-C",
+                  str(workspace),
+                  "ls-tree",
+                  "-r",
+                  "-z",
+                  "HEAD",
+                  "--",
+                  "codei",
+              ]
+          )
+          tree = {}
+          source_symlinks = []
+          for record in raw_tree.split(b"\0"):
+              if not record:
+                  continue
+              metadata, path_bytes = record.split(b"\t", 1)
+              mode, object_type, blob_sha = metadata.split()
+              path = path_bytes.decode("utf-8", "surrogateescape")
+              tree[path] = {
+                  "mode": mode.decode(),
+                  "type": object_type.decode(),
+                  "sha": blob_sha.decode(),
+              }
+              if mode == b"120000":
+                  source_symlinks.append(path)
+
+          included = set()
+          excluded = set()
+          source_forbidden = []
+          runtime_prefixes = (
+              "writable/cache/",
+              "writable/debugbar/",
+              "writable/logs/",
+              "writable/session/",
+              "writable/uploads/",
+          )
+          for path in tree:
+              relative = path.removeprefix("codei/")
+              basename = relative.rsplit("/", 1)[-1]
+              if (
+                  relative == ".env"
+                  or relative.startswith(".env.")
+                  or basename in {"local-config.php", ".local-config.php"}
+              ):
+                  source_forbidden.append(path)
+                  continue
+              if relative.startswith(runtime_prefixes):
+                  if not relative.endswith("/index.html"):
+                      excluded.add(path)
+                      continue
+              if (
+                  relative.startswith("tests/")
+                  or relative == "phpunit.dist.xml"
+                  or relative.startswith("deploy/apache/")
+              ):
+                  excluded.add(path)
+                  continue
+              if relative.startswith("vendor/"):
+                  source_forbidden.append(path)
+                  continue
+              included.add(path)
+
+          markers = {
+              "codei/RELEASE_VERSION",
+              "codei/deploy/RELEASE_VERSION.txt",
+          }
+          expected_manifest = included | markers
+
+          invalid_paths = []
+          forbidden_paths = []
+          private_key_headers = []
+          hardcoded_credentials = []
+          content_differences = []
+          generated_markers = {}
+
+          private_headers = (
+              b"-----BEGIN PRIVATE KEY-----",
+              b"-----BEGIN RSA PRIVATE KEY-----",
+              b"-----BEGIN EC PRIVATE KEY-----",
+              b"-----BEGIN OPENSSH PRIVATE KEY-----",
+              b"-----BEGIN DSA PRIVATE KEY-----",
+          )
+          credential_pattern = re.compile(
+              r"""(?ix)
+              [\"']?(password|passwd|pwd|token|secret|api[_-]?key|
+              client[_-]?secret|access[_-]?key)[\"']?
+              \s*(?:=>|=|:)\s*[\"']([^\"']+)[\"']
+              """
+          )
+          placeholder_pattern = re.compile(
+              r"(?i)^(?:example|sample|dummy|placeholder|changeme|change_me|"
+              r"your[_-]|xxx+|test(?:ing)?|none|null|false|true|\$\{|%env|<).*$"
+          )
+
+          with zipfile.ZipFile(archive) as zf:
+              bad_crc = zf.testzip()
+              infos = zf.infolist()
+              names = [item.filename for item in infos]
+              file_names = [item.filename for item in infos if not item.is_dir()]
+              directory_names = [
+                  item.filename for item in infos if item.is_dir()
+              ]
+              duplicates = sorted(
+                  {name for name in names if names.count(name) > 1}
+              )
+              archive_symlinks = sorted(
+                  item.filename
+                  for item in infos
+                  if stat.S_IFMT((item.external_attr >> 16) & 0xFFFF)
+                  == stat.S_IFLNK
+              )
+
+              for name in names:
+                  posix_path = PurePosixPath(name)
+                  reasons = []
+                  if (
+                      name.startswith("/")
+                      or "\\" in name
+                      or ".." in posix_path.parts
+                  ):
+                      reasons.append("unsafe")
+                  if any(ord(char) < 32 or ord(char) == 127 for char in name):
+                      reasons.append("control-character")
+                  if any(
+                      part.endswith((" ", ".")) for part in posix_path.parts
+                  ):
+                      reasons.append("trailing-space-or-dot")
+                  if reasons:
+                      invalid_paths.append({"path": name, "reasons": reasons})
+
+              file_set = set(file_names)
+              missing_manifest = sorted(expected_manifest - file_set)
+              unexpected_manifest = sorted(file_set - expected_manifest)
+
+              for path in sorted(expected_manifest):
+                  data = zf.read(path)
+                  if path in markers:
+                      generated_markers[path] = data.decode(
+                          "utf-8", errors="replace"
+                      ).strip()
+                      continue
+                  actual_blob = hashlib.sha1(
+                      b"blob " + str(len(data)).encode() + b"\0" + data
+                  ).hexdigest()
+                  if actual_blob != tree[path]["sha"]:
+                      content_differences.append(
+                          {
+                              "path": path,
+                              "expected_blob": tree[path]["sha"],
+                              "actual_blob": actual_blob,
+                          }
+                      )
+
+              for path in sorted(file_set):
+                  relative = path.removeprefix("codei/")
+                  basename = relative.rsplit("/", 1)[-1]
+                  lower = relative.lower()
+                  lower_basename = basename.lower()
+                  reasons = []
+                  if (
+                      relative == ".env"
+                      or relative.startswith(".env.")
+                      or lower_basename
+                      in {"local-config.php", ".local-config.php"}
+                  ):
+                      reasons.append("secret-config")
+                  if (
+                      lower.startswith("vendor/")
+                      or lower.startswith("tests/")
+                      or lower == "phpunit.dist.xml"
+                      or lower.startswith("deploy/apache/")
+                  ):
+                      reasons.append("development-artifact")
+                  if lower.startswith(runtime_prefixes) and not lower.endswith(
+                      "/index.html"
+                  ):
+                      reasons.append("runtime-payload")
+                  if re.search(r"(^|/)(?:tmp|temp)(?:/|$)", lower):
+                      reasons.append("temp-payload")
+                  if re.search(
+                      r"(^|/)(?:run-store|run_store|runstore)(?:/|$)", lower
+                  ):
+                      reasons.append("diagnostic-run-store")
+                  if (
+                      re.search(
+                          r"\.(?:pem|key|p12|pfx|jks|keystore|der|dump|sql|"
+                          r"sqlite3?|bak|backup|old|orig|rej|swp|log)$",
+                          lower_basename,
+                      )
+                      or lower_basename.endswith("~")
+                  ):
+                      reasons.append("sensitive-or-backup-extension")
+                  if reasons:
+                      forbidden_paths.append(
+                          {"path": path, "reasons": reasons}
+                      )
+
+                  data = zf.read(path)
+                  for header in private_headers:
+                      if header in data:
+                          private_key_headers.append(
+                              {"path": path, "header": header.decode()}
+                          )
+                  if b"\0" in data:
+                      continue
+                  text = data.decode("utf-8", errors="ignore")
+                  for line_number, line in enumerate(text.splitlines(), 1):
+                      for match in credential_pattern.finditer(line):
+                          value = match.group(2).strip()
+                          is_dynamic = (
+                              "$" in value
+                              or "getenv" in line.lower()
+                              or "env(" in line.lower()
+                          )
+                          is_placeholder = bool(
+                              placeholder_pattern.match(value)
+                          )
+                          is_language_message = "/Language/" in path
+                          if not (
+                              is_dynamic
+                              or is_placeholder
+                              or is_language_message
+                          ):
+                              hardcoded_credentials.append(
+                                  {
+                                      "path": path,
+                                      "line": line_number,
+                                      "key": match.group(1).lower(),
+                                      "value_sha256_12": hashlib.sha256(
+                                          value.encode()
+                                      ).hexdigest()[:12],
+                                  }
+                              )
+
+          checks = {
+              "crc_ok": bad_crc is None,
+              "single_codei_root": all(
+                  name.startswith("codei/") for name in names
+              ),
+              "file_count_ok": len(file_names) == expected_count,
+              "no_directory_entries": not directory_names,
+              "no_duplicates": not duplicates,
+              "manifest_match": not missing_manifest
+              and not unexpected_manifest,
+              "content_match": not content_differences,
+              "markers_match": all(
+                  generated_markers.get(marker) == version
+                  for marker in markers
+              ),
+              "no_invalid_paths": not invalid_paths,
+              "no_symlinks": not archive_symlinks and not source_symlinks,
+              "no_forbidden_source": not source_forbidden,
+              "no_forbidden_paths": not forbidden_paths,
+              "no_private_key_headers": not private_key_headers,
+              "no_hardcoded_credentials": not hardcoded_credentials,
+          }
+          for check, passed in checks.items():
+              if not passed:
+                  errors.append(check.upper())
+
+          summary = {
+              "audit_result": "PASS" if not errors else "FAIL",
+              "errors": sorted(set(errors)),
+              "release_base_commit": release_base,
+              "release_commit": release_commit,
+              "audit_head": head,
+              "codei_tree": codei_tree,
+              "release_version": release_version,
+              "zip_path": archive_rel,
+              "zip_blob_sha": head_blob,
+              "zip_sha256": archive_sha256,
+              "tracked_codei_files": len(tree),
+              "excluded_tracked_files": len(excluded),
+              "expected_files": len(expected_manifest),
+              "actual_files": len(file_names),
+              "missing_files": missing_manifest,
+              "unexpected_files": unexpected_manifest,
+              "content_differences": content_differences,
+              "generated_markers": generated_markers,
+              "invalid_paths": invalid_paths,
+              "archive_symlinks": archive_symlinks,
+              "source_symlinks": source_symlinks,
+              "forbidden_paths": forbidden_paths,
+              "private_key_headers": private_key_headers,
+              "hardcoded_credentials": hardcoded_credentials,
+              "unexpected_binary_artifacts": 0
+              if not unexpected_manifest and not content_differences
+              else None,
+              "checks": checks,
+          }
+
+          (output / "audit-summary.json").write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+          )
+          (output / "manifest.txt").write_text(
+              "\n".join(sorted(expected_manifest)) + "\n",
+              encoding="utf-8",
+          )
+          (output / "release.sha256").write_text(
+              f"{archive_sha256}  {archive.name}\n",
+              encoding="utf-8",
+          )
+
+          print(f"AUDIT_RESULT={summary['audit_result']}")
+          print(f"RELEASE_COMMIT={release_commit}")
+          print(f"AUDIT_HEAD={head}")
+          print(f"CODEI_TREE={codei_tree}")
+          print(f"ZIP_BLOB={head_blob}")
+          print(f"ZIP_SHA256={archive_sha256}")
+          print(f"EXPECTED_FILES={len(expected_manifest)}")
+          print(f"ACTUAL_FILES={len(file_names)}")
+          print(f"MANIFEST_MATCH={checks['manifest_match']}")
+          print(f"CONTENT_MATCH={checks['content_match']}")
+          print(f"FORBIDDEN_ARTIFACTS={len(forbidden_paths)}")
+          print(
+              "SECRETS="
+              f"{len(private_key_headers) + len(hardcoded_credentials)}"
+          )
+          print(f"INVALID_PATHS={len(invalid_paths)}")
+
+          if errors:
+              raise SystemExit(
+                  "Release audit failed: " + ", ".join(sorted(set(errors)))
+              )
+
+          shutil.copy2(archive, output / archive.name)
+          PY
+
+      - name: Upload audited release and evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: metodika-1.1.16-audit
+          path: audit-output/
+          if-no-files-found: error
+          retention-days: 7
