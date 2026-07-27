@@ -13,13 +13,14 @@ FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
 FÁZA_12_C=SPLNENÁ
 FÁZA_12_D=SPLNENÁ
-AKTÍVNA_FÁZA=CHECKPOINT_PO_12_D
+FÁZA_12_E=SPLNENÁ
+AKTÍVNA_FÁZA=12.F_UZAVRETIE_KROKU_12
 NOVÁ_VERZIA=1.1.16
 NOVÝ_RELEASE=true
 NOVÝ_ZIP=true
 PRODUKCIA_BEZ_ZÁSAHU=true
 KROK_13=ZATVORENÝ
-NEXT_ALLOWED_ACTION=ČAKAŤ_NA_POKYN_PRED_FÁZOU_12_E
+NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 ```
 
 ## Inicializačná brána
@@ -528,6 +529,80 @@ HISTORICKÝ_BALÍK_1.1.15=NEPOUŽITÝ_A_NEZMENENÝ
 ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ
 ```
 
+### Výsledok vykonania — 2026-07-27 13:34 Europe/Bratislava
+
+Vzdialený `main` bol načítaný na commite
+`13c66eae12011dc302b14ddb67f0bda9203545da`. Od release commitu
+`fb243698b3811ddf66ad772f89c2e171aa5bc3de` sa v `/codei`,
+`RELEASE_VERSION` ani v `releases/` nič nezmenilo.
+
+Rollbackový balík `1.1.9` zostáva dostupný a byte-identický s balíkom úplne
+auditovaným vo Fáze 12.A:
+
+```text
+ZIP=releases/metodika-codei-hostinger-1.1.9.zip
+ZIP_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+SHA256=5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72
+OČAKÁVANÉ_SÚBORY=790
+SKUTOČNÉ_SÚBORY=790
+CHÝBAJÚCE=0
+NEOČAKÁVANÉ=0
+OBSAHOVÉ_ROZDIELY=0
+ROLLBACK_BALÍK_1.1.9=DOSTUPNÝ_A_ZDROJOVO_ZHODNÝ
+```
+
+Historický balík `1.1.15` zostal nezmenený a nebol použitý ako rollback:
+
+```text
+ZIP=releases/metodika-codei-hostinger-1.1.15.zip
+ZIP_BLOB=aeaf80b31f299cbf824834590bd58435e216e99d
+SHA256=ea688fc678ec2c2fd80b2c624333fa3290b2894ab02363e0495b89cbc0851d5b
+KLASIFIKÁCIA=NEZHODNÝ_HISTORICKÝ_ARTEFAKT
+OVERENÝ_ROLLBACK_BALÍK=false
+HISTORICKÝ_BALÍK_1.1.15=NEPOUŽITÝ_A_NEZMENENÝ
+```
+
+Úplná dôkazová väzba release `1.1.16`:
+
+```text
+ZDROJOVÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+ZDROJOVÝ_CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+RELEASE_COMMIT_CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+RELEASE_VERSION=1.1.16
+ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+MANIFEST=813/813
+CHÝBAJÚCE=0
+NEOČAKÁVANÉ=0
+OBSAHOVÉ_ROZDIELY=0
+AUDITNÝ_VÝSLEDOK=PASS
+AUDIT_RUN=30260322371
+OPÄTOVNÝ_AUDIT_PO_PRENOSE=PASS
+```
+
+Pred nasadením je rollback release dávky doložený presne podľa plánu:
+
+```text
+ROLLBACK_RELEASE_VERSION=1.1.16_→_1.1.15
+ODSTRÁNIŤ=iba_releases/metodika-codei-hostinger-1.1.16.zip
+PONECHAŤ=/codei+ostatné_release_ZIPy
+ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ
+```
+
+Tento rollback nebol vykonaný, pretože release dávka je platná a ešte nebola
+nasadená. Produkčný rollback zostáva predmetom Kroku 13 a nesmie sa odvodiť
+iba z čísla verzie; musí znovu posúdiť skutočne nasadený stav, schému a
+bezpečnosť návratu.
+
+```text
+FÁZA_12_E=SPLNENÁ
+STOP_DÔVOD=ŽIADNY
+PRODUKCIA_BEZ_ZÁSAHU=true
+KROK_13=ZATVORENÝ
+NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
+```
+
 ## Fáza 12.F — Uzavretie Kroku 12
 
 1. Spätne načítať výsledný commit a všetky release artefakty.
@@ -556,14 +631,14 @@ riadeným STOP. Krok 13 sa neotvorí.
 
 # 3. Povolený nasledujúci úkon
 
-Po publikovaní a vzdialenom read-backu checkpointu Fáz 12.C–12.D:
+Po publikovaní a vzdialenom read-backu checkpointu Fázy 12.E:
 
 ```text
 FÁZA_12_C=SPLNENÁ
 FÁZA_12_D=SPLNENÁ
-NEXT_PHASE=12.E_ROLLBACK_A_DÔKAZOVÁ_VÄZBA
-NEXT_ALLOWED_ACTION=ČAKAŤ_NA_VÝSLOVNÝ_POKYN_PRED_FÁZOU_12_E
-FÁZA_12_E=NEVYKONANÁ
+FÁZA_12_E=SPLNENÁ
+NEXT_PHASE=12.F_UZAVRETIE_KROKU_12
+NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
 KROK_13=ZATVORENÝ
 ```
