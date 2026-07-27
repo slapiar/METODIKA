@@ -1,10 +1,30 @@
 # INICIALIZÁCIA — Krok 11: Úplná lokálna a integračná Validácia
 
-## Stav brány
+## Aktuálny konečný stav
 
 ```text
-GATE=CLOSED
-DÔVOD=FÁZA_11_A_ZASTAVENÁ_ROZHODOVACOU_BRÁNOU_AKTUÁLNY_PRODUKČNÝ_RUNTIME_A_STAV_MIGRÁCIÍ_NEOVERENÉ
+KROK_11=SPLNENÉ
+GATE=OPEN
+BRÁNA=NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+VALIDOVANÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+VALIDAČNÝ_RUN=30252640028
+MERGE_COMMIT=4cb2fe0a9dc1ff3a94c450dbe1dc33c38b574b0c
+CLEANUP=true
+PRODUKCIA=BEZ_ZÁSAHU
+RELEASE=1.1.15_BEZ_ZMENY
+NOVÝ_ZIP=false
+NEXT_ALLOWED_STEP=KROK_12_S_VLASTNÝM_INI_A_GATEM
+```
+
+## Historický stav pred obnovením Fázy 11.A
+
+Nasledujúci blok bol pravdivý iba v historickom medzistave pred získaním
+dôkazov, otvorením brány a vykonaním Fáz 11.B–11.F. Nie je aktuálnym stavom:
+
+```text
+HISTORICKÝ_GATE=CLOSED
+HISTORICKÝ_DÔVOD=FÁZA_11_A_ZASTAVENÁ_ROZHODOVACOU_BRÁNOU_AKTUÁLNY_PRODUKČNÝ_RUNTIME_A_STAV_MIGRÁCIÍ_NEOVERENÉ
+PREKONANÉ_OTVORENÍM_BRÁNY=cf7b2b097112d9da8c0341d5e2a31d0ffc6f1493
 ```
 
 ## Záväzný pokyn používateľa
@@ -132,7 +152,10 @@ Kontinuita všetkých deviatich blokov bola dokončená nad stabilným HEAD `6f5
 
 Všetkých deväť blokov má na aktuálnom HEAD čitateľné vykonateľné závislosti. Zistené testovacie medzery — najmä skutočne paralelný HTTP dôkaz a samostatná logout regresia — sú predmetom návrhu a Validácie Kroku 11, nie chýbajúcou dostupnosťou závislostí. Nový Gate/session/step/Evidence modul je dostupný, ale jeho zámer, bezpečnostné hranice, placeholdery a testové pokrytie zostávajú na klasifikáciu vo Fáze 11.B.
 
-## Inicializačná tabuľka
+## Historická inicializačná tabuľka pred otvorením brány
+
+Táto tabuľka zachytáva neúplný checkpoint Fázy 11.A. Bola neskôr prekonaná
+aktualizovanou maticou deviatich hodnôt `ÁNO` a otvorením brány.
 
 | Bod | Stav | Dôkaz | Zostáva neoverené |
 |---|---|---|---|
@@ -146,7 +169,7 @@ Všetkých deväť blokov má na aktuálnom HEAD čitateľné vykonateľné záv
 | 8. Kritérium úspechu | ÁNO | každý stav doložený alebo označený `NEZISTENÉ`; Gate sa otvorí až po deviatich hodnotách ÁNO | praktické splnenie Kroku 11 |
 | 9. Rollback | ÁNO | odstránenie iba vlastných metodických zápisov; žiadny zásah do kódu, dát ani produkcie | nič |
 
-## Vyhodnotenie brány
+## Historické vyhodnotenie brány pred jej otvorením
 
 ```text
 1=ÁNO
@@ -161,7 +184,7 @@ Všetkých deväť blokov má na aktuálnom HEAD čitateľné vykonateľné záv
 GATE=CLOSED
 ```
 
-## STOP
+## Historický STOP pre neúplný checkpoint
 
 ```text
 STOP
@@ -764,13 +787,16 @@ FÁZA_11_D=SPLNENÁ
 FÁZA_11_E=SPLNENÁ
 FÁZA_11_F=SPLNENÁ
 KROK_11=SPLNENÉ
-VALIDOVANÝ_TECHNICKÝ_HEAD=d55dcc2d7ff0d9eedb5327b94e757f42cce66bca
-VALIDAČNÝ_RUN=30252080061
+GATE=OPEN
+BRÁNA=NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+VALIDOVANÝ_TECHNICKÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+VALIDAČNÝ_RUN=30252640028
+MERGE_COMMIT=4cb2fe0a9dc1ff3a94c450dbe1dc33c38b574b0c
 CLEANUP=true
 PRODUKCIA=BEZ_ZÁSAHU
 RELEASE=1.1.15_BEZ_ZMENY
 NOVÝ_ZIP=false
-NEXT_ALLOWED_STEP=KROK_12
+NEXT_ALLOWED_STEP=KROK_12_S_VLASTNÝM_INI_A_GATEM
 ```
 
 Krok 12 zostáva zatvorený, kým nevznikne jeho vlastný nový INI, nebudú

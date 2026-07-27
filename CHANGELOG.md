@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Náprava evidenčného uzavretia Kroku 11
+
+- používateľ po synchronizácii správne zistil rozpor: pôvodný autoritatívny INI začínal starým `GATE=CLOSED`, hoci jeho koniec, plán a register tvrdili `KROK_11=SPLNENÉ`,
+- príčinou bolo pripísanie otvorenia a uzavretia iba na koniec súboru bez nahradenia jeho úvodného aktuálneho stavu; aktívny plán navyše uprostred zachoval starú vetu o zatvorenej bráne,
+- opravný INI [`postupy/WORK/INI/2026-07-27_11-28_INI_naprava_evidencneho_uzavretia_Kroku_11.md`](postupy/WORK/INI/2026-07-27_11-28_INI_naprava_evidencneho_uzavretia_Kroku_11.md) otvoril bránu iba pre dokumentačnú nápravu, nie pre opakovanie technického Kroku 11,
+- pôvodný INI teraz na začiatku aj na konci uvádza `KROK_11=SPLNENÉ`, `GATE=OPEN`, finálny validačný head `bc85d18...`, run `30252640028` a merge `4cb2fe0a...`; starý zatvorený stav zostal iba ako označený historický dôkaz,
+- neúplný INI z 08:47 je označený ako `PREKONANÝ` priamo vo svojom obsahu a plán, pracovný záznam, checklist a register boli zosúladené,
+- náprava nemení `/codei`, testy, workflow, databázu, release `1.1.15`, ZIP balíky ani produkciu.
+
 ### Dokončenie Kroku 11 — úplná lokálna a integračná Validácia
 
 - v jednej implementačnej dávke bola diagnostika GATE uzavretá za spoločnú autorizáciu, zápisy dostali CSRF, validáciu, idempotenciu a bezpečné chybové kódy a čítanie stavu zostalo bez mutácie,
