@@ -8,6 +8,16 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Inicializácia, analýza a záväzný plán Kroku 12
+
+- samostatný INI [`postupy/WORK/INI/2026-07-27_11-46_INI_Krok_12_Jeden_release_a_uplny_audit_balika.md`](postupy/WORK/INI/2026-07-27_11-46_INI_Krok_12_Jeden_release_a_uplny_audit_balika.md) doložil všetkých deväť bodov a otvoril `GATE=OPEN` pre jeden release a úplný audit balíka bez nasadenia,
+- aktuálny strom `/codei` `4ec1d840...` je zhodný s finálne validovaným technickým headom `bc85d18...`; od neho sa na `main` zmenila iba dokumentácia,
+- audit posledného zdrojovo preukázaného produkčného release `1.1.9` potvrdil úplnú manifestovú a obsahovú zhodu ZIP-u s commitom `3b91c4e...`; SHA-256 je `5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72`,
+- audit historického ZIP-u `1.1.15` potvrdil zhodný manifest, ale odhalil obsahový rozdiel v `codei/app/Views/diagnostics/database.php`; balík preto zostáva nedotknutým historickým artefaktom a nie je označený ako overený rollback,
+- vznikol záväzný plán [`postupy/PLAN/2026-07-27_11-51_Plan_Kroku_12_release_a_audit_balika.md`](postupy/PLAN/2026-07-27_11-51_Plan_Kroku_12_release_a_audit_balika.md) pre Fázy 12.A–12.F: zmrazenie základne, izolované release prostredie, jediný release `1.1.16`, úplný audit, rollback a uzavretie,
+- pracovná evidencia je v [`postupy/WORK/2026-07-27_11-53_Inicializacia_analyza_a_plan_Kroku_12.md`](postupy/WORK/2026-07-27_11-53_Inicializacia_analyza_a_plan_Kroku_12.md); všeobecný plán a register boli zosúladené na aktívny Krok 12,
+- `/codei`, testy, workflow, `RELEASE_VERSION=1.1.15`, existujúce ZIP-y, databáza a produkcia zostali bez zmeny; nový ZIP zatiaľ nevznikol a Krok 13 zostáva zatvorený.
+
 ### Náprava evidenčného uzavretia Kroku 11
 
 - používateľ po synchronizácii správne zistil rozpor: pôvodný autoritatívny INI začínal starým `GATE=CLOSED`, hoci jeho koniec, plán a register tvrdili `KROK_11=SPLNENÉ`,
