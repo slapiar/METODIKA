@@ -44,8 +44,9 @@ POVOLENÝ_ĎALŠÍ_ÚKON = [Iba overenie chýbajúceho bodu OR Pokračovanie na 
    - Všetky body 1–9 sú `ÁNO` s doloženým DÔKAZOM $\rightarrow$ `GATE=OPEN`.
    - Akýkoľvek bod `NIE` / `NEOVERENÉ` alebo chýbajúci dôkaz $\rightarrow$ `GATE=CLOSED`.
 2. **Pravidlo STOP pri `GATE=CLOSED`:**
-   - Sú zakázané: návrhy riešení, úpravy kódu, zápis iných súborov, commit, spúšťanie migrácií/nasadení.
+   - Ak je v aktuálnom kroku `GATE=CLOSED`, nasledujúceho po kroku `GATE=OPEN`, znamená to, že na tomto kroku sa pracuje a nie je dôvod k úplnému STOP zastaveniu činnosti.
    - Povolené je **výhradne**: vykonávanie overovacích úkonov pre získanie chýbajúcich dôkazov bodov 1–9.
+    - Sú zakázané: návrhy riešení, úpravy kódu, zápis iných súborov, commit, spúšťanie migrácií/nasadení.
 3. **Pravidlo čítania stavu (No-Memory Rule):**
    - Vždy sa číta **aktuálny vzdialený stav** (remote repository/HEAD).
    - Pamäť konverzácie, lokálne medzipamäte a interné registre sa považujú za **neoverené**.
