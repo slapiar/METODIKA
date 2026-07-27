@@ -6,7 +6,7 @@ Dátum vytvorenia: 2026-07-26 06:07 Europe/Bratislava
 
 ```text
 PRACOVNÝ — ZÁVÄZNÝ
-KROKY_1_AŽ_12=SPLNENÉ
+KROKY_1_AŽ_14=SPLNENÉ
 AKTÍVNY_KROK=ŽIADNY
 KROK_11=UZAVRETÝ
 GATE_KROKU_11=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
@@ -34,8 +34,17 @@ PRODUCTION_CONCURRENCY_RUN=NEVYKONANÝ_ALEBO_NEDOLOŽENÝ
 REQUIRED_PRODUCTION_RESULT=NEPOTVRDENÝ
 REPOSITORY_RELEASE=1.1.17
 RELEASE_1.1.17_COMMIT=cc9d48d95ff982b4ec7510e86e1d03f0734cf9de
-DEPLOYMENT_1.1.17=NEPOTVRDENÉ
-NEXT_ALLOWED_STEP=KROK_14_S_VLASTNÝM_INI_A_GATEM
+DEPLOYMENT_1.1.17=POTVRDENÉ
+KROK_14=SPLNENÝ
+GATE_KROKU_14=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+RUNSTORE_FILES=0
+TEMP_FILES=0
+DB_TEST_ROWS=0
+GATE_TEST_ROWS=0
+FEATURE_FLAGS=OFF
+DIAGNOSTIC_MODE=OFF
+PRODUCTION_CLEAN=true
+NEXT_ALLOWED_STEP=KROK_15_S_VLASTNÝM_INI_A_GATEM
 ```
 
 ## Inicializácia plánovacieho úkonu
@@ -596,6 +605,34 @@ PRODUCTION_CLEAN=true
 
 Krok 15 sa neotvorí, kým nie je každý bod pravdivo potvrdený.
 
+### Skutočný výsledok — 2026-07-27
+
+Autorita vykonala povinné produkčné poradie s release `1.1.17`. Po
+read-only kontrole nulového koncového stavu nastavila všetky tri
+diagnostické flagy v produkčnom `.env` na `0` a následne potvrdila, že
+`diagnostics/database` už diagnostický obsah nezobrazuje.
+
+Kontrakt tombstone a sweep je doložený znovupoužitým validačným dôkazom
+Kroku 11 nad byte-identickou implementáciou a testami. Produkčný odpis
+doložil nulové run-store, temp a testovacie databázové zvyšky.
+
+```text
+KROK_14=SPLNENÝ
+GATE_KROKU_14=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+DEPLOYED_RELEASE=1.1.17
+TOMBSTONE_CONTRACT=true
+SWEEP=true
+RUNSTORE_FILES=0
+TEMP_FILES=0
+DB_TEST_ROWS=0
+GATE_TEST_ROWS=0
+FEATURE_FLAGS=OFF
+DIAGNOSTIC_MODE=OFF
+PRODUCTION_CLEAN=true
+NEXT_ALLOWED_STEP=KROK_15_S_VLASTNÝM_INI_A_GATEM
+KROK_15=NEOTVORENÝ
+```
+
 ---
 
 # Krok 15 — ReValidácia, registre a záverečné uzavretie
@@ -760,8 +797,14 @@ platnou prechodovou podmienkou.
 ```text
 KROK_13=UZAVRETÝ_RIADENÝM_STOP
 GATE_KROKU_13=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_RIADENOM_STOP
-NEXT_ALLOWED_STEP=KROK_14_S_VLASTNÝM_INI_A_GATEM
-KROK_14=NEOTVORENÝ
+KROK_14=SPLNENÝ
+GATE_KROKU_14=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+DEPLOYMENT_1.1.17=POTVRDENÉ
+FEATURE_FLAGS=OFF
+DIAGNOSTIC_MODE=OFF
+PRODUCTION_CLEAN=true
+NEXT_ALLOWED_STEP=KROK_15_S_VLASTNÝM_INI_A_GATEM
+KROK_15=NEOTVORENÝ
 ```
 
 # Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
