@@ -11,10 +11,32 @@
 8. Kritérium úspechu: ÁNO | Dôkaz: kritériá Kroku 15 v `postupy/PLAN/2026-07-26_06-07_Plan_dokoncenia_testovacej_sustavy.md`
 9. Rollback plán: ÁNO | Dôkaz: návrat jednotlivých dokumentačných súborov na blob SHA pred zápisom; žiadna zmena kódu, release ani produkcie
 
+## Vykonaný checkpoint
+
+- checklist 1–14 a matica M01–M26 aktualizované commitom `c05eef1b08a8d2376b0369a3b04d2179a6f49495`,
+- záverečný WORK záznam vytvorený commitom `33d05814c353eab13db4e44b37abbb0e9719a489`,
+- produkčný release `1.1.17`, commit `cc9d48d95ff982b4ec7510e86e1d03f0734cf9de`, ZIP Git blob `486267e8d812d5dfee568c21c23663074e0e33d3`,
+- produkčný concurrency výsledok zostáva `NEPOTVRDENÝ`,
+- produkcia zostáva `PRODUCTION_CLEAN=true`, flagy `OFF`, diagnostický režim `OFF`.
+
 ## Stav Brány
 GATE = OPEN
-BLOKUJÚCI_BOD = Žiadny
-POVOLENÝ_ĎALŠÍ_ÚKON = Pokračovanie na krok 2 — načítanie stavu, reValidácia a povinné registračné zápisy Kroku 15
+BLOKUJÚCI_BOD = úplné evidenčné zápisy do `postupy/README.md`, `CHANGELOG.md` a rámcového plánu
+POVOLENÝ_ĎALŠÍ_ÚKON = Iba dokončenie zostávajúcich registrov z úplne načítaného obsahu a následný finálny read-back
+
+## Stav Kroku
+
+```text
+KROK_15=ČIASTOČNE_SPLNENÝ
+TECHNICKÁ_REVALIDÁCIA=SPLNENÁ
+CHECKLIST_1_AŽ_14=AKTUALIZOVANÝ
+M01_AŽ_M26=REVALIDOVANÉ
+WORK_KROKU_15=VYTVORENÝ
+README_REGISTER=ČAKÁ_NA_BEZPEČNÝ_CELOSÚBOROVÝ_ZÁPIS
+CHANGELOG=ČAKÁ_NA_BEZPEČNÝ_CELOSÚBOROVÝ_ZÁPIS
+RÁMCOVÝ_PLÁN=ČAKÁ_NA_BEZPEČNÝ_CELOSÚBOROVÝ_ZÁPIS
+PLÁN=SPLNENÝ=false
+```
 
 ## Matica plnenia pokynov
 | ID pokynu | R (Prečítané) | W (Zapísané) |
