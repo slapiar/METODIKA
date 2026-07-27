@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Krok 12 — Fáza 12.E: rollback a dôkazová väzba
+
+- rollbackový ZIP `1.1.9` zostáva dostupný pod blobom `1e407b914e9be81b500612b69dd20492fbb63fa5` a SHA-256 `5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72`; platí jeho úplný audit 790/790 súborov bez rozdielu,
+- historický ZIP `1.1.15` zostal nepoužitý a nezmenený pod blobom `aeaf80b...` a SHA-256 `ea688fc...`; naďalej nie je overeným rollback balíkom,
+- bola uzavretá dôkazová väzba `bc85d18... → 4ec1d840... → 1.1.16 → 24b49768... → 04742c8b... → 813/813 → PASS`, vrátane auditného runu `30260322371` a opätovného auditu po prenose,
+- prednasadzovací rollback release dávky je doložený návratom `RELEASE_VERSION` na `1.1.15` a odstránením iba ZIP-u `1.1.16`; rollback nebol vykonaný,
+- produkčný rollback nebol odvodený iba z čísla verzie a musí byť v Kroku 13 znovu posúdený podľa skutočne nasadeného stavu, schémy a bezpečnosti návratu,
+- `/codei`, release verzia, ZIP-y a produkcia zostali bez zmeny; po vzdialenom read-backu checkpointu bezprostredne nasleduje Fáza 12.F.
+
 ### Krok 12 — Fázy 12.C–12.D: jediný release 1.1.16 a úplný audit
 
 - jediný release commit `fb243698b3811ddf66ad772f89c2e171aa5bc3de` zmenil presne `RELEASE_VERSION` na `1.1.16` a pridal `releases/metodika-codei-hostinger-1.1.16.zip`; strom `/codei` zostal `4ec1d840...`,
@@ -17,7 +26,7 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 - stiahnutý Actions artefakt bol opätovne auditovaný a vnútorný ZIP si zachoval SHA-256 `04742c8b...`, manifestovú aj obsahovú zhodu a výsledok `PASS`,
 - pôvodný konzolový výstup jediného spustenia `release.sh` nebol zachovaný; táto odchýlka je zapísaná pravdivo a skript sa kvôli nej druhýkrát nespustil,
 - checkpoint Fáz 12.C–12.D je zapísaný v INI, podrobnom aj rámcovom pláne, WORK zázname a registri; produkcia zostala bez zásahu,
-- Fáza 12.E ešte nebola vykonaná; podľa výslovného pokynu Autority sa po publikovaní a vzdialenom read-backu checkpointu čaká pred jej začatím. Nasadenie a Krok 13 zostávajú zakázané.
+- tento checkpoint sa skončil pred Fázou 12.E; jej neskoršie samostatné vykonanie je zaznamenané v predchádzajúcom oddiele. Nasadenie a Krok 13 zostávajú zakázané.
 
 ### Krok 12 — Fáza 12.B: príprava izolovaného release prostredia
 

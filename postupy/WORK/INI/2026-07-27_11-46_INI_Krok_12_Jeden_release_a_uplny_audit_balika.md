@@ -77,7 +77,7 @@ Dátum: 2026-07-27 11:46 Europe/Bratislava
 9=ÁNO
 GATE=OPEN
 BLOKUJÚCI_BOD=ŽIADNY
-POVOLENÝ_ĎALŠÍ_ÚKON=ČAKAŤ_NA_POKYN_PRED_FÁZOU_12_E
+POVOLENÝ_ĎALŠÍ_ÚKON=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 ```
 
 ## Povinné východiská analýzy
@@ -351,6 +351,84 @@ AKTÍVNA_FÁZA=CHECKPOINT_PO_12_D
 NEXT_PHASE=12.E_ROLLBACK_A_DÔKAZOVÁ_VÄZBA
 NEXT_ALLOWED_ACTION=ČAKAŤ_NA_VÝSLOVNÝ_POKYN_PRED_FÁZOU_12_E
 FÁZA_12_E=NEVYKONANÁ
+PRODUKCIA_BEZ_ZÁSAHU=true
+KROK_13=ZATVORENÝ
+```
+
+## Checkpoint Fázy 12.E — rollback a dôkazová väzba
+
+Dátum zápisu: 2026-07-27 13:34 Europe/Bratislava
+
+### Výsledok piatich povinných úkonov
+
+1. Auditovaný rollbackový balík `1.1.9` dostupný a nezmenený: ÁNO
+
+   ```text
+   ZIP_BLOB=1e407b914e9be81b500612b69dd20492fbb63fa5
+   SHA256=5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72
+   OČAKÁVANÉ_SÚBORY=790
+   SKUTOČNÉ_SÚBORY=790
+   CHÝBAJÚCE=0
+   NEOČAKÁVANÉ=0
+   OBSAHOVÉ_ROZDIELY=0
+   ```
+
+2. Historický ZIP `1.1.15` nepoužitý a nezmenený: ÁNO
+
+   ```text
+   ZIP_BLOB=aeaf80b31f299cbf824834590bd58435e216e99d
+   SHA256=ea688fc678ec2c2fd80b2c624333fa3290b2894ab02363e0495b89cbc0851d5b
+   KLASIFIKÁCIA=NEZHODNÝ_HISTORICKÝ_ARTEFAKT
+   OVERENÝ_ROLLBACK_BALÍK=false
+   ```
+
+3. Úplná dôkazová väzba release `1.1.16` zaznamenaná: ÁNO
+
+   ```text
+   ZDROJOVÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+   CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
+   RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
+   RELEASE_VERSION=1.1.16
+   ZIP_BLOB=24b4976831bc4f37eb80080c4b39e82d9513bf08
+   SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
+   MANIFEST=813/813
+   CHÝBAJÚCE=0
+   NEOČAKÁVANÉ=0
+   OBSAHOVÉ_ROZDIELY=0
+   AUDITNÝ_VÝSLEDOK=PASS
+   AUDIT_RUN=30260322371
+   OPÄTOVNÝ_AUDIT_PO_PRENOSE=PASS
+   ```
+
+4. Rollback release dávky pred nasadením doložený: ÁNO
+
+   ```text
+   ROLLBACK_RELEASE_VERSION=1.1.16_→_1.1.15
+   ODSTRÁNIŤ=iba_releases/metodika-codei-hostinger-1.1.16.zip
+   PONECHAŤ=/codei+ostatné_release_ZIPy
+   ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ
+   ROLLBACK_VYKONANÝ=false
+   ```
+
+5. Produkčný rollback ponechaný na nové posúdenie v Kroku 13: ÁNO
+
+   Produkčný rollback nebol odvodený iba z čísla verzie. Musí znovu posúdiť
+   skutočne nasadený obsah, schému a bezpečnosť návratu.
+
+### Záver Fázy 12.E
+
+```text
+FÁZA_12_A=SPLNENÁ
+FÁZA_12_B=SPLNENÁ
+FÁZA_12_C=SPLNENÁ
+FÁZA_12_D=SPLNENÁ
+FÁZA_12_E=SPLNENÁ
+ROLLBACK_BALÍK_1.1.9=DOSTUPNÝ_A_ZDROJOVO_ZHODNÝ
+HISTORICKÝ_BALÍK_1.1.15=NEPOUŽITÝ_A_NEZMENENÝ
+ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ
+STOP_DÔVOD=ŽIADNY
+AKTÍVNA_FÁZA=12.F_UZAVRETIE_KROKU_12
+NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 PRODUKCIA_BEZ_ZÁSAHU=true
 KROK_13=ZATVORENÝ
 ```

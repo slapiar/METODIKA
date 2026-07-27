@@ -20,10 +20,11 @@ FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
 FÁZA_12_C=SPLNENÁ
 FÁZA_12_D=SPLNENÁ
+FÁZA_12_E=SPLNENÁ
 RELEASE=1.1.16
 RELEASE_COMMIT=fb243698b3811ddf66ad772f89c2e171aa5bc3de
 RELEASE_SHA256=04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668
-NEXT_ALLOWED_ACTION=ČAKAŤ_NA_POKYN_PRED_FÁZOU_12_E
+NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 ```
 
 ## Inicializácia plánovacieho úkonu
@@ -668,6 +669,7 @@ FÁZA_12_A=SPLNENÁ
 FÁZA_12_B=SPLNENÁ
 FÁZA_12_C=SPLNENÁ
 FÁZA_12_D=SPLNENÁ
+FÁZA_12_E=SPLNENÁ
 MAIN_CHECKPOINTU_12_A=771b0c2b69e3f1e1d7b74604b672275823bc9f95
 CODEI_TREE=4ec1d8408f84d9c21699aba9c2f2a70592f7ac6c
 RELEASE_VERSION=1.1.16
@@ -679,8 +681,11 @@ RELEASE_ENVIRONMENT_RUN=30258778406
 RELEASE_AUDIT_RUN=30260322371
 BALÍK_ZODPOVEDÁ_HEAD=true
 ZAKÁZANÉ_ARTEFAKTY=0
-NEXT_PHASE=12.E_ROLLBACK_A_DÔKAZOVÁ_VÄZBA
-NEXT_ALLOWED_ACTION=ČAKAŤ_NA_VÝSLOVNÝ_POKYN_PRED_FÁZOU_12_E
+ROLLBACK_BALÍK_1.1.9=DOSTUPNÝ_A_ZDROJOVO_ZHODNÝ
+HISTORICKÝ_BALÍK_1.1.15=NEPOUŽITÝ_A_NEZMENENÝ
+ROLLBACK_RELEASE_DÁVKY=DOLOŽENÝ
+NEXT_PHASE=12.F_UZAVRETIE_KROKU_12
+NEXT_ALLOWED_ACTION=FÁZA_12_F_PO_VZDIALENOM_READ_BACKU_CHECKPOINTU_12_E
 PRODUKČNÉ_NASADENIE=ZAKÁZANÉ
 KROK_13=ZATVORENÝ
 ```
@@ -705,9 +710,13 @@ SHA-256 `04742c8b...`, nulové zakázané artefakty, tajomstvá, neplatné cesty
 a symlinky. Nezávislý auditný run `30260322371` aj opätovný audit stiahnutého
 Actions artefaktu skončili `PASS`.
 
-Fáza 12.E ešte nebola vykonaná. Podľa výslovného pokynu Autority sa po
-publikovaní a vzdialenom read-backu checkpointu Fáz 12.C–12.D čaká pred jej
-začatím. Produkčné nasadenie a Krok 13 zostávajú zakázané.
+Fáza 12.E potvrdila nezmenený, zdrojovo zhodný rollbackový balík `1.1.9`,
+ponechala `1.1.15` výhradne ako nepoužitý historický artefakt a uzavrela
+dôkazovú väzbu validovaného stromu na release `1.1.16`, ZIP blob, SHA-256,
+manifest 813/813 a auditný výsledok `PASS`. Prednasadzovací rollback release
+dávky je doložený návratom verzie na `1.1.15` a odstránením iba ZIP-u
+`1.1.16`; nebol vykonaný. Produkčné nasadenie a Krok 13 zostávajú zakázané.
+Po vzdialenom read-backu checkpointu bezprostredne nasleduje Fáza 12.F.
 
 # Historická podmienka ukončenia plánovacieho zadania z 2026-07-26
 
