@@ -1,4 +1,0 @@
-## joyee-priority...origin/main
-?? METODIKA-main-HEAD.txt
-?? METODIKA-main.bundle
-?? METODIKA-working-tree.txt

@@ -61,6 +61,7 @@ final class DiagnosticsProductionStateInspector
             'flags' => [
                 'diagnosticsEnabled' => $this->environmentFlag('METODIKA_DIAGNOSTICS_ENABLED'),
                 'concurrencyWebEnabled' => $this->environmentFlag('METODIKA_CONCURRENCY_WEB_ENABLED'),
+                'gateEnabled' => $this->environmentFlag('METODIKA_GATE_ENABLED'),
             ],
             'database' => $this->inspectDatabase(),
             'runStore' => $this->inspectRunStore(),
@@ -218,7 +219,6 @@ final class DiagnosticsProductionStateInspector
             'lockCount' => null,
             'tempCount' => null,
             'otherCount' => null,
-            'files' => [],
             'errorCode' => null,
         ];
 
@@ -257,9 +257,6 @@ final class DiagnosticsProductionStateInspector
             if (! is_file($path)) {
                 continue;
             }
-
-            $state['files'][] = $entry;
-
             if (str_ends_with($entry, '.json')) {
                 $state['jsonCount']++;
             } elseif (str_ends_with($entry, '.lock')) {
@@ -270,8 +267,6 @@ final class DiagnosticsProductionStateInspector
                 $state['otherCount']++;
             }
         }
-
-        sort($state['files'], SORT_STRING);
 
         return $state;
     }

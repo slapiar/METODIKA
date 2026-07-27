@@ -11,95 +11,97 @@ use Throwable;
 
 final class DiagnosticsGateStepController extends BaseController
 {
-    private const AUTH_SESSION_KEY = 'metodika_diagnostics_auth';
-    private const AUTH_TIME_SESSION_KEY = 'metodika_diagnostics_auth_time';
-    private const AUTH_TTL_SECONDS = 900;
-    private const TEST_SESSION_ID = 1;
+    private const TEST_SESSION_SESSION_KEY = 'metodika_gate_test_session_id';
+    private const TEST_STEP_SESSION_KEY = 'metodika_gate_test_step_id';
     private const TEST_STEP_NUMBER = 1;
 
     public function create(): ResponseInterface
     {
-        if (! $this->isAuthorized()) {
-            return $this->response->setStatusCode(404);
-        }
-
         try {
-            $sessionModel = new IniSessionModel();
-            if ($sessionModel->find(self::TEST_SESSION_ID) === null) {
-                return $this->response
-                    ->setStatusCode(404)
-                    ->setJSON([
-                        'ok' => false,
-                        'message' => 'Testovacia session 1 neexistuje.',
-                    ]);
+            $session = session();
+            $testSessionId = $this->positiveSessionId($session->get(self::TEST_SESSION_SESSION_KEY));
+            if ($testSessionId === null || ! is_array((new IniSessionModel())->find($testSessionId))) {
+                return $this->json([
+                    'ok' => false,
+                    'errorCode' => 'GATE_TEST_SESSION_REQUIRED',
+                    'csrfHash' => csrf_hash(),
+                ], 409);
             }
 
             $stepModel = new IniStepModel();
             $existing = $stepModel
-                ->where('session_id', self::TEST_SESSION_ID)
+                ->where('session_id', $testSessionId)
                 ->where('step_number', self::TEST_STEP_NUMBER)
                 ->first();
 
-            $created = false;
+            $created = ! is_array($existing);
             $stepId = $existing['id'] ?? null;
-
-            if ($existing === null) {
+            if ($created) {
                 $stepId = $stepModel->insert([
-                    'session_id' => self::TEST_SESSION_ID,
+                    'session_id' => $testSessionId,
                     'step_number' => self::TEST_STEP_NUMBER,
                     'name' => 'Inicializácia',
                     'status' => 'valid',
-                    'validated_at' => date('Y-m-d H:i:s'),
+                    'validated_at' => gmdate('Y-m-d H:i:s'),
                 ]);
-                $created = true;
             }
 
-            $steps = $stepModel
-                ->where('session_id', self::TEST_SESSION_ID)
-                ->orderBy('step_number', 'ASC')
-                ->findAll();
+            if (! is_numeric($stepId) || (int) $stepId <= 0) {
+                $raceWinner = (new IniStepModel())
+                    ->where('session_id', $testSessionId)
+                    ->where('step_number', self::TEST_STEP_NUMBER)
+                    ->first();
 
-            return $this->response->setJSON([
+                if (is_array($raceWinner) && is_numeric($raceWinner['id'] ?? null)) {
+                    $stepId = (int) $raceWinner['id'];
+                    $created = false;
+                }
+            }
+
+            if (! is_numeric($stepId) || (int) $stepId <= 0) {
+                return $this->serverError('GATE_TEST_STEP_CREATE_FAILED');
+            }
+
+            $session->set(self::TEST_STEP_SESSION_KEY, (int) $stepId);
+
+            return $this->json([
                 'ok' => true,
                 'created' => $created,
-                'step_id' => $stepId,
-                'count' => count($steps),
-                'steps' => $steps,
-            ]);
-        } catch (Throwable $e) {
-            log_message('error', 'Create test step failed: {message}', [
-                'message' => $e->getMessage(),
+                'session_id' => $testSessionId,
+                'step_id' => (int) $stepId,
+                'csrfHash' => csrf_hash(),
+            ], $created ? 201 : 200);
+        } catch (Throwable $exception) {
+            log_message('error', 'Create diagnostic GATE step failed: {message}', [
+                'message' => $exception->getMessage(),
             ]);
 
-            return $this->response
-                ->setStatusCode(500)
-                ->setJSON([
-                    'ok' => false,
-                    'exception' => $e::class,
-                    'message' => $e->getMessage(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                ]);
+            return $this->serverError('GATE_TEST_STEP_CREATE_FAILED');
         }
     }
 
-    private function isAuthorized(): bool
+    private function positiveSessionId(mixed $value): ?int
     {
-        $enabled = getenv('METODIKA_DIAGNOSTICS_ENABLED');
-        if (! is_string($enabled) || trim($enabled) !== '1') {
-            return false;
-        }
+        return is_numeric($value) && (int) $value > 0 ? (int) $value : null;
+    }
 
-        $session = session();
-        if ($session->get(self::AUTH_SESSION_KEY) !== true) {
-            return false;
-        }
+    private function serverError(string $errorCode): ResponseInterface
+    {
+        return $this->json([
+            'ok' => false,
+            'errorCode' => $errorCode,
+            'csrfHash' => csrf_hash(),
+        ], 500);
+    }
 
-        $authenticatedAt = $session->get(self::AUTH_TIME_SESSION_KEY);
-        if (! is_int($authenticatedAt) && ! ctype_digit((string) $authenticatedAt)) {
-            return false;
-        }
-
-        return time() - (int) $authenticatedAt <= self::AUTH_TTL_SECONDS;
+    /** @param array<string, mixed> $payload */
+    private function json(array $payload, int $statusCode): ResponseInterface
+    {
+        return $this->response
+            ->setStatusCode($statusCode)
+            ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+            ->setHeader('X-Content-Type-Options', 'nosniff')
+            ->setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'")
+            ->setJSON($payload);
     }
 }

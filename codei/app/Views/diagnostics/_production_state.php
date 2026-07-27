@@ -51,7 +51,6 @@ $statusClass = static function (mixed $value): string {
         $runStore = is_array($productionState['runStore'] ?? null) ? $productionState['runStore'] : [];
         $latestMigration = is_array($migrations['latest'] ?? null) ? $migrations['latest'] : null;
         $pendingMigrations = is_array($migrations['pending'] ?? null) ? $migrations['pending'] : [];
-        $runStoreFiles = is_array($runStore['files'] ?? null) ? $runStore['files'] : [];
         ?>
 
         <h3>Nasadenie a runtime</h3>
@@ -66,6 +65,7 @@ $statusClass = static function (mixed $value): string {
             <tr><td>pcntl_fork</td><td class="<?= $statusClass($runtime['pcntlForkAvailable'] ?? null) ?>"><?= esc($displayValue($runtime['pcntlForkAvailable'] ?? null)) ?></td></tr>
             <tr><td>METODIKA_DIAGNOSTICS_ENABLED</td><td class="<?= $statusClass($flags['diagnosticsEnabled'] ?? null) ?>"><?= esc($displayValue($flags['diagnosticsEnabled'] ?? null)) ?></td></tr>
             <tr><td>METODIKA_CONCURRENCY_WEB_ENABLED</td><td class="<?= $statusClass($flags['concurrencyWebEnabled'] ?? null) ?>"><?= esc($displayValue($flags['concurrencyWebEnabled'] ?? null)) ?></td></tr>
+            <tr><td>METODIKA_GATE_ENABLED</td><td class="<?= $statusClass($flags['gateEnabled'] ?? null) ?>"><?= esc($displayValue($flags['gateEnabled'] ?? null)) ?></td></tr>
         </table>
 
         <h3>Stav migrácií</h3>
@@ -134,15 +134,6 @@ $statusClass = static function (mixed $value): string {
                 <tr><td>Chyba čítania run-store</td><td class="bad"><?= esc($displayValue($runStore['errorCode'])) ?></td></tr>
             <?php endif; ?>
         </table>
-        <?php if ($runStoreFiles !== []): ?>
-            <p><strong>Názvy súborov:</strong></p>
-            <ul>
-                <?php foreach ($runStoreFiles as $filename): ?>
-                    <li><code><?= esc($displayValue($filename)) ?></code></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php endif; ?>
-
         <p class="notice">Čas read-only výpisu: <?= esc($displayValue($productionState['inspectedAt'] ?? null)) ?></p>
     <?php endif; ?>
 </section>

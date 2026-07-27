@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Application\QuestionDerivation\Data\InitialDerivationRun;
+use App\Models\IniSessionModel;
 use App\Services\DiagnosticsConcurrencyAcceptanceRunner;
 use App\Services\DiagnosticsConcurrencyFailureReporter;
 use App\Services\DiagnosticsConcurrencyPersistenceService;
@@ -24,6 +25,8 @@ final class DiagnosticsController extends BaseController
     private const AUTH_SESSION_KEY = 'metodika_diagnostics_auth';
     private const AUTH_TIME_SESSION_KEY = 'metodika_diagnostics_auth_time';
     private const AUTH_TTL_SECONDS = 900;
+    private const GATE_TEST_SESSION_KEY = 'metodika_gate_test_session_id';
+    private const GATE_TEST_STEP_KEY = 'metodika_gate_test_step_id';
     private const CONCURRENCY_RUN_TTL_SECONDS = 180;
     private const CONCURRENCY_TOMBSTONE_TTL_SECONDS = 600;
     private const BARRIER_WAIT_TIMEOUT_MS = 2500;
@@ -49,6 +52,7 @@ final class DiagnosticsController extends BaseController
 
         $inspection = $this->inspector()->inspect();
         $concurrencyWebEnabled = $this->isConcurrencyWebEnabled();
+        $gateEnabled = $this->isGateEnabled();
         $scriptNonce = $concurrencyWebEnabled ? base64_encode(random_bytes(16)) : null;
 
         return $this->secureHtmlResponse(view('diagnostics/database', [
@@ -60,53 +64,37 @@ final class DiagnosticsController extends BaseController
                 && $inspection['utf8mb4Bin']
                 && $inspection['datetime6'],
             'concurrencyWebEnabled' => $concurrencyWebEnabled,
+            'gateEnabled' => $gateEnabled,
             'scriptNonce' => $scriptNonce,
         ]), 200, $scriptNonce);
     }
+
     public function testApi(): ResponseInterface
-{
-    try {
-        $sessionModel = new \App\Models\IniSessionModel();
+    {
+        try {
+            $sessions = (new IniSessionModel())
+                ->select('id, project_name, agent_name, gate_state, created_at')
+                ->orderBy('id', 'DESC')
+                ->findAll(100);
 
-        $sessions = $sessionModel
-            ->orderBy('id', 'DESC')
-            ->findAll();
-
-        return $this->response->setJSON([
-            'ok'       => true,
-            'count'    => count($sessions),
-            'sessions' => $sessions,
-        ]);
-    } catch (\Throwable $e) {
-        log_message('error', 'GATE sessions diagnostic failed: {message}', [
-            'message' => $e->getMessage(),
-        ]);
-
-        return $this->response
-            ->setStatusCode(500)
-            ->setJSON([
-                'ok'        => false,
-                'exception' => $e::class,
-                'message'   => $e->getMessage(),
-                'file'      => $e->getFile(),
-                'line'      => $e->getLine(),
+            return $this->secureJsonResponse([
+                'ok' => true,
+                'count' => count($sessions),
+                'sessions' => $sessions,
+                'csrfHash' => csrf_hash(),
             ]);
+        } catch (Throwable $exception) {
+            log_message('error', 'GATE sessions diagnostic failed: {message}', [
+                'message' => $exception->getMessage(),
+            ]);
+
+            return $this->secureJsonResponse([
+                'ok' => false,
+                'errorCode' => 'GATE_SESSIONS_READ_FAILED',
+                'csrfHash' => csrf_hash(),
+            ], 500);
+        }
     }
-}
-
-public function xtestApi()
-{
-    // Diagnostika má načítané prostredie, takže API sa spustí s DB pripojením
-    $client = \Config\Services::curlrequest();
-
-    $response = $client->get(base_url('api/gate/sessions'));
-
-    return $this->response->setJSON([
-        'status' => $response->getStatusCode(),
-        'body'   => $response->getBody(),
-    ]);
-}
-
 
     public function login(): ResponseInterface
     {
@@ -129,36 +117,55 @@ public function xtestApi()
         return redirect()->to(site_url('diagnostics/database'));
     }
     public function createTestSession(): ResponseInterface
-{
-    try {
-        $sessionModel = new \App\Models\IniSessionModel();
+    {
+        try {
+            $session = $this->session();
+            $sessionModel = new IniSessionModel();
+            $storedId = $session->get(self::GATE_TEST_SESSION_KEY);
+            $storedId = is_numeric($storedId) && (int) $storedId > 0 ? (int) $storedId : null;
+            $existing = $storedId !== null ? $sessionModel->find($storedId) : null;
 
-        $id = $sessionModel->insert([
-            'project_name' => 'METODIKA',
-            'agent_name'   => 'Joyee',
-            'gate_state'   => 'locked',
-        ]);
+            if (is_array($existing)) {
+                return $this->secureJsonResponse([
+                    'ok' => true,
+                    'created' => false,
+                    'session_id' => $storedId,
+                    'csrfHash' => csrf_hash(),
+                ]);
+            }
 
-        return $this->response->setJSON([
-            'ok'         => true,
-            'session_id' => $id,
-        ]);
-    } catch (\Throwable $e) {
-        log_message('error', 'Create test session failed: {message}', [
-            'message' => $e->getMessage(),
-        ]);
-
-        return $this->response
-            ->setStatusCode(500)
-            ->setJSON([
-                'ok'        => false,
-                'exception' => $e::class,
-                'message'   => $e->getMessage(),
-                'file'      => $e->getFile(),
-                'line'      => $e->getLine(),
+            $id = $sessionModel->insert([
+                'project_name' => 'METODIKA diagnostics',
+                'agent_name' => 'Joyee',
+                'gate_state' => 'locked',
             ]);
+
+            if (! is_numeric($id) || (int) $id <= 0) {
+                throw new RuntimeException('Diagnostic GATE session insert failed.');
+            }
+
+            $session->set(self::GATE_TEST_SESSION_KEY, (int) $id);
+            $session->remove(self::GATE_TEST_STEP_KEY);
+
+            return $this->secureJsonResponse([
+                'ok' => true,
+                'created' => true,
+                'session_id' => (int) $id,
+                'csrfHash' => csrf_hash(),
+            ], 201);
+        } catch (Throwable $exception) {
+            log_message('error', 'Create test session failed: {message}', [
+                'message' => $exception->getMessage(),
+            ]);
+
+            return $this->secureJsonResponse([
+                'ok' => false,
+                'errorCode' => 'GATE_TEST_SESSION_CREATE_FAILED',
+                'csrfHash' => csrf_hash(),
+            ], 500);
+        }
     }
-}
+
     public function loginForm(): ResponseInterface
     {
         if (! $this->isDiagnosticsEnabled() || $this->expectedToken() === null) {
@@ -376,6 +383,13 @@ public function xtestApi()
         return is_string($enabled) && trim($enabled) === '1';
     }
 
+    private function isGateEnabled(): bool
+    {
+        $enabled = getenv('METODIKA_GATE_ENABLED');
+
+        return is_string($enabled) && trim($enabled) === '1';
+    }
+
     private function expectedToken(): ?string
     {
         $token = getenv('METODIKA_DIAGNOSTICS_TOKEN');
@@ -506,7 +520,20 @@ public function xtestApi()
 
                 $expiresAt = $current['expiresAt'] ?? null;
                 if (! is_string($expiresAt) || strtotime($expiresAt) === false || strtotime($expiresAt) < time()) {
-                    throw new RuntimeException('Run expiroval.');
+                    $current['participants'][$participant]['consumedAt'] = $nowIso;
+                    $current['participants'][$participant]['finishedAt'] = $nowIso;
+                    $current['participants'][$participant]['outcome'] = 'EXPIRED';
+                    $current['participants'][$participant]['errorCode'] = 'RUN_EXPIRED';
+
+                    $claimedAt = $current['finalization']['claimedAt'] ?? null;
+                    if (! is_string($claimedAt) || $claimedAt === '') {
+                        $current['finalization']['claimedAt'] = $nowIso;
+                        $current['finalization']['claimedBy'] = $participant;
+                    }
+
+                    $current['state'] = DiagnosticsConcurrencyRunState::FINALIZATION_CLAIMED;
+
+                    return $current;
                 }
 
                 $current['participants'][$participant]['consumedAt'] = $nowIso;

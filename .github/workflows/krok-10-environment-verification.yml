@@ -1,24 +1,30 @@
-# Overovací trigger Kroku 10 — 2026-07-25
-name: Krok 10 - overenie prostredia
+# Validačný workflow Krokov 10–11.
+name: Krok 11 - uplna validacia
 
 on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'codei/**'
+      - '.github/workflows/krok-10-environment-verification.yml'
   push:
     branches: [main]
     paths:
+      - 'codei/**'
       - '.github/workflows/krok-10-environment-verification.yml'
 
 permissions:
   contents: read
 
 jobs:
-  verify-environment:
+  validate:
     runs-on: ubuntu-24.04
     services:
       mariadb:
         image: mariadb:11.4
         env:
           MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: metodika_krok10
+          MARIADB_DATABASE: metodika_krok11
           MARIADB_USER: metodika
           MARIADB_PASSWORD: metodika
         ports:
@@ -37,13 +43,29 @@ jobs:
       CI_ENVIRONMENT: development
       database_default_hostname: 127.0.0.1
       database_default_port: 3306
-      database_default_database: metodika_krok10
+      database_default_database: metodika_krok11
       database_default_username: metodika
       database_default_password: metodika
       database_default_DBDriver: MySQLi
       database_default_DBDebug: 'false'
       database_default_charset: utf8mb4
       database_default_DBCollat: utf8mb4_bin
+      database_tests_hostname: 127.0.0.1
+      database_tests_port: 3306
+      database_tests_database: metodika_krok11
+      database_tests_username: metodika
+      database_tests_password: metodika
+      database_tests_DBDriver: MySQLi
+      database_tests_DBPrefix: ''
+      database_tests_DBDebug: 'false'
+      database_tests_charset: utf8mb4
+      database_tests_DBCollat: utf8mb4_bin
+      app_baseURL: http://127.0.0.1:8080/
+      METODIKA_DIAGNOSTICS_ENABLED: '1'
+      METODIKA_DIAGNOSTICS_TOKEN: krok11-isolated-token
+      METODIKA_CONCURRENCY_WEB_ENABLED: '1'
+      METODIKA_GATE_ENABLED: '1'
+      METODIKA_DIAGNOSTICS_CLEANUP_ENABLED: '1'
 
     steps:
       - name: Checkout
@@ -53,7 +75,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: intl, mbstring, mysqli
+          extensions: curl, intl, mbstring, mysqli, pcntl, xml
           tools: composer:v2
           coverage: none
 
@@ -61,26 +83,137 @@ jobs:
         run: |
           php --version
           composer --version
-          php -m | grep -E '^(intl|mbstring|mysqli)$'
+          php -m | grep -E '^(curl|intl|mbstring|mysqli|pcntl|xml)$'
 
       - name: Install locked dependencies
         run: composer install --no-interaction --prefer-dist --no-progress
 
+      - name: Validate Composer and source syntax
+        run: |
+          composer validate --strict
+          find app tests -type f -name '*.php' -print0 | xargs -0 -n1 php -l
+          node --check public/js/gate-dashboard.js
+          node --check public/js/gate-session.js
+
       - name: Verify isolated MariaDB
         run: |
-          php -r '$db = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok10", 3306); if ($db->connect_errno) { fwrite(STDERR, $db->connect_error . PHP_EOL); exit(1); } $row = $db->query("SELECT DATABASE() db, VERSION() version, @@default_storage_engine engine")->fetch_assoc(); echo json_encode($row, JSON_PRETTY_PRINT) . PHP_EOL; if ($row["db"] !== "metodika_krok10" || strtoupper($row["engine"]) !== "INNODB") exit(2);'
+          php -r '$db = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok11", 3306); if ($db->connect_errno) { fwrite(STDERR, $db->connect_error . PHP_EOL); exit(1); } $row = $db->query("SELECT DATABASE() db, VERSION() version, @@default_storage_engine engine")->fetch_assoc(); echo json_encode($row, JSON_PRETTY_PRINT) . PHP_EOL; if ($row["db"] !== "metodika_krok11" || strtoupper($row["engine"]) !== "INNODB") exit(2);'
 
-      - name: Run migrations M1-M8
+      - name: Run migrations M1-M9
         run: php spark migrate --all
 
       - name: Verify schema and empty initial state
         run: |
-          php -r '$db = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok10", 3306); $tables = ["question_derivation_request_reservations", "question_derivation_runs", "question_derivation_run_results"]; foreach ($tables as $table) { $result = $db->query("SELECT COUNT(*) c FROM `{$table}`"); if (!$result) { fwrite(STDERR, $db->error . PHP_EOL); exit(1); } $count = (int) $result->fetch_assoc()["c"]; echo $table . "=" . $count . PHP_EOL; if ($count !== 0) exit(2); }'
+          php -r '$db = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok11", 3306); $tables = ["question_derivation_request_reservations", "question_derivation_runs", "question_derivation_run_results", "ini_sessions", "ini_steps", "ini_evidence", "ini_gate_state"]; foreach ($tables as $table) { $result = $db->query("SELECT COUNT(*) c FROM `{$table}`"); if (!$result) { fwrite(STDERR, $db->error . PHP_EOL); exit(1); } $count = (int) $result->fetch_assoc()["c"]; echo $table . "=" . $count . PHP_EOL; if ($count !== 0) exit(2); }'
+          php -r '$db = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok11", 3306); $expected = [["ini_steps", "uq_ini_steps_session_number"], ["ini_evidence", "uq_ini_evidence_step_hash"]]; foreach ($expected as [$table, $index]) { $stmt = $db->prepare("SELECT COUNT(*) c FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME=? AND INDEX_NAME=? AND NON_UNIQUE=0"); $stmt->bind_param("ss", $table, $index); $stmt->execute(); $count = (int) $stmt->get_result()->fetch_assoc()["c"]; echo $table . "." . $index . "=" . $count . PHP_EOL; if ($count === 0) exit(1); }'
 
-      - name: Verify two independent connections and rollback
+      - name: Verify transactional and concurrent database integration
         run: |
-          php -r '$a = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok10", 3306); $b = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok10", 3306); $idA = (int) $a->query("SELECT CONNECTION_ID() id")->fetch_assoc()["id"]; $idB = (int) $b->query("SELECT CONNECTION_ID() id")->fetch_assoc()["id"]; echo "connection_a={$idA}\nconnection_b={$idB}\n"; if ($idA === $idB) exit(1); $a->begin_transaction(); $a->query("INSERT INTO question_derivation_request_reservations (request_reference,payload_fingerprint,derivation_reference,reservation_state,reserved_at,updated_at) VALUES (\"krok10-env-check\", REPEAT(\"a\",64), \"krok10-env-derivation\", \"RESERVED\", NOW(6), NOW(6))"); if ($a->affected_rows !== 1) exit(2); $a->rollback(); $count = (int) $b->query("SELECT COUNT(*) c FROM question_derivation_request_reservations WHERE request_reference=\"krok10-env-check\"")->fetch_assoc()["c"]; echo "rollback_count={$count}\n"; if ($count !== 0) exit(3);'
+          php spark metodika:verify-first-acceptance-transaction
+          php spark metodika:verify-concurrent-first-acceptance
+
+      - name: Run unit tests
+        run: vendor/bin/phpunit --no-coverage tests/unit
+
+      - name: Run session tests
+        run: vendor/bin/phpunit --no-coverage tests/session
+
+      - name: Run integration tests
+        run: vendor/bin/phpunit --no-coverage tests/integration
+
+      - name: Run parallel HTTP START HIT RESULT
+        run: |
+          set -euo pipefail
+          PHP_CLI_SERVER_WORKERS=4 php -S 127.0.0.1:8080 -t public public/index.php >/tmp/metodika-krok11-http.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:8080/diagnostics/database/login -o /tmp/metodika-login.html; then
+              break
+            fi
+            sleep 0.2
+          done
+          printf 'HTTP_SERVER_READY=true\n'
+
+          curl --silent --show-error --fail \
+            -c /tmp/metodika-cookies.txt \
+            http://127.0.0.1:8080/diagnostics/database/login \
+            -o /tmp/metodika-login.html
+          LOGIN_CSRF=$(sed -n 's/.*name="csrf_test_name" value="\([^"]*\)".*/\1/p' /tmp/metodika-login.html | head -n 1)
+          test -n "$LOGIN_CSRF"
+          printf 'LOGIN_CSRF_PRESENT=true\n'
+
+          LOGIN_STATUS=$(curl --silent --show-error \
+            -b /tmp/metodika-cookies.txt \
+            -c /tmp/metodika-cookies.txt \
+            -o /dev/null \
+            -w '%{http_code}' \
+            --data-urlencode "csrf_test_name=$LOGIN_CSRF" \
+            --data-urlencode "diagnostics_token=$METODIKA_DIAGNOSTICS_TOKEN" \
+            http://127.0.0.1:8080/diagnostics/database/login)
+          printf 'DIAGNOSTICS_LOGIN_STATUS=%s\n' "$LOGIN_STATUS"
+          test "$LOGIN_STATUS" = "303"
+          printf 'DIAGNOSTICS_LOGIN_OK=true\n'
+
+          curl --silent --show-error --fail \
+            -b /tmp/metodika-cookies.txt \
+            -c /tmp/metodika-cookies.txt \
+            http://127.0.0.1:8080/diagnostics/database \
+            -o /tmp/metodika-diagnostics.html
+          START_CSRF=$(sed -n 's/.*name="csrf_test_name" value="\([^"]*\)".*/\1/p' /tmp/metodika-diagnostics.html | head -n 1)
+          test -n "$START_CSRF"
+          printf 'START_CSRF_PRESENT=true\n'
+
+          curl --silent --show-error --fail \
+            -b /tmp/metodika-cookies.txt \
+            -c /tmp/metodika-cookies.txt \
+            --data-urlencode "csrf_test_name=$START_CSRF" \
+            --data-urlencode "requestReference=krok11-http-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT" \
+            --data-urlencode 'derivationApplicationInput={"source":"github-actions","step":11}' \
+            http://127.0.0.1:8080/diagnostics/concurrency/start \
+            -o /tmp/metodika-start.json
+
+          RUN_ID=$(php -r '$d=json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR); if (($d["ok"] ?? null) !== true) exit(2); echo $d["runId"];' /tmp/metodika-start.json)
+          TOKEN_A=$(php -r '$d=json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR); echo $d["participantTokenA"];' /tmp/metodika-start.json)
+          TOKEN_B=$(php -r '$d=json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR); echo $d["participantTokenB"];' /tmp/metodika-start.json)
+          printf 'CONCURRENCY_START_OK=true\n'
+
+          curl --silent --show-error --fail \
+            -b /tmp/metodika-cookies.txt \
+            --data-urlencode "runId=$RUN_ID" \
+            --data-urlencode "participantToken=$TOKEN_A" \
+            http://127.0.0.1:8080/diagnostics/concurrency/hit/a \
+            -o /tmp/metodika-hit-a.json &
+          HIT_A_PID=$!
+          curl --silent --show-error --fail \
+            -b /tmp/metodika-cookies.txt \
+            --data-urlencode "runId=$RUN_ID" \
+            --data-urlencode "participantToken=$TOKEN_B" \
+            http://127.0.0.1:8080/diagnostics/concurrency/hit/b \
+            -o /tmp/metodika-hit-b.json &
+          HIT_B_PID=$!
+          wait "$HIT_A_PID"
+          wait "$HIT_B_PID"
+          printf 'PARALLEL_HITS_OK=true\n'
+
+          for attempt in $(seq 1 30); do
+            curl --silent --show-error --fail \
+              -b /tmp/metodika-cookies.txt \
+              "http://127.0.0.1:8080/diagnostics/concurrency/result/$RUN_ID" \
+              -o /tmp/metodika-result.json
+            if php -r '$d=json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR); exit(($d["state"] ?? "") === "COMPLETED_SUCCESS" ? 0 : 1);' /tmp/metodika-result.json; then
+              break
+            fi
+            sleep 0.2
+          done
+
+          php -r '$d=json_decode(file_get_contents($argv[1]), true, 512, JSON_THROW_ON_ERROR); $a=$d["assertions"] ?? []; if (($d["state"] ?? null) !== "COMPLETED_SUCCESS" || ($a["dbUniquenessConfirmed"] ?? null) !== true || ($a["appReplayConfirmed"] ?? null) !== true || ($a["cleanupConfirmed"] ?? null) !== true || ($a["overallSuccess"] ?? null) !== true) { fwrite(STDERR, json_encode($d, JSON_PRETTY_PRINT) . PHP_EOL); exit(1); }' /tmp/metodika-result.json
+          printf 'RESULT_ASSERTIONS_OK=true\n'
+          php spark metodika:cleanup-diagnostics-run "$RUN_ID"
+          printf 'TOMBSTONE_CLEANUP_OK=true\n'
 
       - name: Final cleanup verification
         run: |
-          php -r '$db = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok10", 3306); $count = (int) $db->query("SELECT COUNT(*) c FROM question_derivation_request_reservations WHERE request_reference LIKE \"krok10-env-%\"")->fetch_assoc()["c"]; echo "cleanup_count={$count}\n"; if ($count !== 0) exit(1);'
+          php -r '$db = new mysqli("127.0.0.1", "metodika", "metodika", "metodika_krok11", 3306); $tables = ["question_derivation_request_reservations", "question_derivation_runs", "question_derivation_run_domain_terms", "ini_sessions", "ini_steps", "ini_evidence", "ini_gate_state"]; foreach ($tables as $table) { $count = (int) $db->query("SELECT COUNT(*) c FROM `{$table}`")->fetch_assoc()["c"]; echo $table . "=" . $count . PHP_EOL; if ($count !== 0) exit(1); }'
+          test "$(find writable/diagnostics/concurrency -type f 2>/dev/null | wc -l)" -eq 0

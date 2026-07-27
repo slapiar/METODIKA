@@ -7,14 +7,16 @@
 - Autoritativny postup nacitany: `postupy/Inicializácia práce.md`
 - Ucel: pripravit implementacny podklad pre bezpecnu webovu koordinaciu dvoch samostatnych HTTP poziadaviek pre diagnosticky scenar subeznosti
 
-## Stav realizacie (2026-07-23)
+## Stav realizacie (aktualizované 2026-07-27 po Kroku 11)
 
-- Kroky 1 az 9: implementovane a overene v kode a testoch.
-- Krok 10 (Tombstone, result, sweep): implementovany, overeny feature testami.
-- Krok 11 (UI): implementovany na diagnostickej stranke, vratane paralelneho hit A/B toku a result pollingu.
-- Krok 12 (Unit testy): doplnene unit testy pre stavovy model a validator dokumentu.
-- Krok 13 (Integracny webovy test): doplneny end-to-end webovy test START -> HIT -> RESULT v session suite.
-- Krok 14 (Produkcne diagnosticke overenie): otvorene, caka na prakticke spustenie v produkcnom prostredi.
+- Checklist 1 az 13: implementovaný a overený v izolovanom validačnom prostredí.
+- Matica M01 az M26: `PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ`.
+- GitHub Actions run `30252080061`, job `89932151438`: `success`.
+- Reálny HTTP tok `START -> paralelný HIT A/B -> RESULT -> cleanup`: PASS.
+- Cleanup: testovacie DB riadky `0`, run-store/temp súbory `0`.
+- Produkčné diagnostické overenie sa v Kroku 11 nevykonalo; patrí až do neskoršej
+  fázy záväzného plánu po Kroku 12 a Kroku 13.
+- Produkcia zostala bez zásahu, release ostal `1.1.15` a nový ZIP nevznikol.
 
 ---
 
@@ -151,6 +153,34 @@
 | M24 | Integration HTTP | Pad participantu pocas `accept()` | vynutena chyba v jednej vetve | bezpecny `errorCode`, finalization claim a cleanup sa vykonaju |
 | M25 | Security | Autorizacia vsetkych novych endpointov | neautorizovane volania `start/hit/result/cleanup` | kazdy endpoint vracia fallback 404 |
 | M26 | Security | Feature flag `METODIKA_CONCURRENCY_WEB_ENABLED` | flag vypnuty/zapnuty | pri vypnutom flagu fallback 404, pri zapnutom normalny beh vetvy |
+
+---
+
+## Výsledok matice po Kroku 11
+
+| ID | Výsledok | Dôkaz |
+|---|---|---|
+| M01–M11 | PASS | unit a session suite |
+| M12–M18 | PASS | session/integration suite a reálny paralelný HTTP tok v run `30252080061` |
+| M19–M24 | PASS | run-store, cleaner, failure/cleanup a tombstone testy |
+| M25–M26 | PASS | auth/feature-flag negatívne scenáre bez mutácie |
+
+Súhrn:
+
+```text
+M01_AŽ_M26=PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ
+DB_UNIQUENESS=true
+OUTCOMES=CREATED+ALREADY_EXISTS
+STATE=COMPLETED_SUCCESS
+CLEANUP=true
+TEMP_FILES=0
+TEST_DB_ROWS=0
+PRODUCTION_UNTOUCHED=true
+```
+
+Presná aktualizovaná špecifikácia jednotlivých M01–M26, G01–G12 a P01–P06 a
+úplná validačná evidencia sú v
+`WORK/2026-07-27_10-20_Krok_11_Klasifikacia_a_testovacia_specifikacia.md`.
 
 ---
 

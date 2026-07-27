@@ -10,6 +10,7 @@ final class IniSessionModel extends Model
 {
     protected $table = 'ini_sessions';
     protected $primaryKey = 'id';
+    protected $returnType = 'array';
 
     protected $allowedFields = [
         'project_name',
@@ -18,4 +19,10 @@ final class IniSessionModel extends Model
     ];
 
     protected $useTimestamps = false;
+
+    protected $validationRules = [
+        'project_name' => 'required|max_length[120]',
+        'agent_name' => 'required|max_length[120]',
+        'gate_state' => 'required|in_list[locked,verifying,open]',
+    ];
 }

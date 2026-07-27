@@ -11,114 +11,95 @@ use Throwable;
 
 final class DiagnosticsGateEvidenceController extends BaseController
 {
-    private const AUTH_SESSION_KEY = 'metodika_diagnostics_auth';
-    private const AUTH_TIME_SESSION_KEY = 'metodika_diagnostics_auth_time';
-    private const AUTH_TTL_SECONDS = 900;
-    private const TEST_STEP_ID = 1;
+    private const TEST_STEP_SESSION_KEY = 'metodika_gate_test_step_id';
     private const TEST_TYPE = 'diagnostic';
-    private const TEST_CONTENT = 'Overenie Evidence kroku 1 cez diagnosticku stranku';
+    private const TEST_CONTENT = 'Overenie Evidence diagnostického kroku METODIKA';
 
     public function create(): ResponseInterface
     {
-        if (! $this->isAuthorized()) {
-            return $this->response->setStatusCode(404);
-        }
-
         try {
-            $stepModel = new IniStepModel();
-            if ($stepModel->find(self::TEST_STEP_ID) === null) {
-                return $this->response
-                    ->setStatusCode(404)
-                    ->setJSON([
-                        'ok' => false,
-                        'message' => 'Testovaci krok 1 neexistuje.',
-                    ]);
+            $testStepId = $this->positiveSessionId(session()->get(self::TEST_STEP_SESSION_KEY));
+            if ($testStepId === null || ! is_array((new IniStepModel())->find($testStepId))) {
+                return $this->json([
+                    'ok' => false,
+                    'errorCode' => 'GATE_TEST_STEP_REQUIRED',
+                    'csrfHash' => csrf_hash(),
+                ], 409);
             }
 
+            $contentHash = hash('sha256', self::TEST_TYPE . "\0" . self::TEST_CONTENT);
             $evidenceModel = new IniEvidenceModel();
             $existing = $evidenceModel
-                ->where('step_id', self::TEST_STEP_ID)
-                ->where('type', self::TEST_TYPE)
-                ->where('content', self::TEST_CONTENT)
+                ->where('step_id', $testStepId)
+                ->where('content_hash', $contentHash)
                 ->first();
 
-            $created = false;
+            $created = ! is_array($existing);
             $evidenceId = $existing['id'] ?? null;
-
-            if ($existing === null) {
+            if ($created) {
                 $evidenceId = $evidenceModel->insert([
-                    'step_id' => self::TEST_STEP_ID,
+                    'step_id' => $testStepId,
                     'type' => self::TEST_TYPE,
                     'content' => self::TEST_CONTENT,
-                    'created_at' => date('Y-m-d H:i:s'),
+                    'content_hash' => $contentHash,
+                    'created_at' => gmdate('Y-m-d H:i:s'),
                 ]);
-
-                if ($evidenceId === false) {
-                    $databaseError = $evidenceModel->db->error();
-
-                    return $this->response
-                        ->setStatusCode(500)
-                        ->setJSON([
-                            'ok' => false,
-                            'created' => false,
-                            'evidence_id' => false,
-                            'model_errors' => $evidenceModel->errors(),
-                            'database_error' => [
-                                'code' => $databaseError['code'] ?? null,
-                                'message' => $databaseError['message'] ?? null,
-                            ],
-                        ]);
-                }
-
-                $created = true;
             }
 
-            $evidence = $evidenceModel
-                ->where('step_id', self::TEST_STEP_ID)
-                ->orderBy('id', 'ASC')
-                ->findAll();
+            if (! is_numeric($evidenceId) || (int) $evidenceId <= 0) {
+                $raceWinner = (new IniEvidenceModel())
+                    ->where('step_id', $testStepId)
+                    ->where('content_hash', $contentHash)
+                    ->first();
 
-            return $this->response->setJSON([
+                if (is_array($raceWinner) && is_numeric($raceWinner['id'] ?? null)) {
+                    $evidenceId = (int) $raceWinner['id'];
+                    $created = false;
+                }
+            }
+
+            if (! is_numeric($evidenceId) || (int) $evidenceId <= 0) {
+                return $this->serverError('GATE_TEST_EVIDENCE_CREATE_FAILED');
+            }
+
+            return $this->json([
                 'ok' => true,
                 'created' => $created,
-                'evidence_id' => $evidenceId,
-                'count' => count($evidence),
-                'evidence' => $evidence,
-            ]);
-        } catch (Throwable $e) {
-            log_message('error', 'Create test evidence failed: {message}', [
-                'message' => $e->getMessage(),
+                'step_id' => $testStepId,
+                'evidence_id' => (int) $evidenceId,
+                'csrfHash' => csrf_hash(),
+            ], $created ? 201 : 200);
+        } catch (Throwable $exception) {
+            log_message('error', 'Create diagnostic GATE evidence failed: {message}', [
+                'message' => $exception->getMessage(),
             ]);
 
-            return $this->response
-                ->setStatusCode(500)
-                ->setJSON([
-                    'ok' => false,
-                    'exception' => $e::class,
-                    'message' => $e->getMessage(),
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                ]);
+            return $this->serverError('GATE_TEST_EVIDENCE_CREATE_FAILED');
         }
     }
 
-    private function isAuthorized(): bool
+    private function positiveSessionId(mixed $value): ?int
     {
-        $enabled = getenv('METODIKA_DIAGNOSTICS_ENABLED');
-        if (! is_string($enabled) || trim($enabled) !== '1') {
-            return false;
-        }
+        return is_numeric($value) && (int) $value > 0 ? (int) $value : null;
+    }
 
-        $session = session();
-        if ($session->get(self::AUTH_SESSION_KEY) !== true) {
-            return false;
-        }
+    private function serverError(string $errorCode): ResponseInterface
+    {
+        return $this->json([
+            'ok' => false,
+            'errorCode' => $errorCode,
+            'csrfHash' => csrf_hash(),
+        ], 500);
+    }
 
-        $authenticatedAt = $session->get(self::AUTH_TIME_SESSION_KEY);
-        if (! is_int($authenticatedAt) && ! ctype_digit((string) $authenticatedAt)) {
-            return false;
-        }
-
-        return time() - (int) $authenticatedAt <= self::AUTH_TTL_SECONDS;
+    /** @param array<string, mixed> $payload */
+    private function json(array $payload, int $statusCode): ResponseInterface
+    {
+        return $this->response
+            ->setStatusCode($statusCode)
+            ->setHeader('Cache-Control', 'no-store, no-cache, must-revalidate')
+            ->setHeader('X-Content-Type-Options', 'nosniff')
+            ->setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'")
+            ->setJSON($payload);
     }
 }
