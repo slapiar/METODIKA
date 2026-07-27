@@ -58,7 +58,7 @@ jobs:
           version = os.environ["EXPECTED_VERSION"]
           archive_rel = f"releases/metodika-codei-hostinger-{version}.zip"
           archive = workspace / archive_rel
-          output = workspace / ".audit-output"
+          output = workspace / "audit-output"
           output.mkdir(exist_ok=True)
 
           def git(*args):
@@ -443,6 +443,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: metodika-1.1.16-audit
-          path: .audit-output/
+          path: audit-output/
           if-no-files-found: error
           retention-days: 7
