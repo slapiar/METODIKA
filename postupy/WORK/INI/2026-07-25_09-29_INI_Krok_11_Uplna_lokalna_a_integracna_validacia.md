@@ -450,3 +450,65 @@ PRODUKCIA=BEZ_ZÁSAHU
 6. aktualizovať výhradne tento pôvodný INI,
 7. GATE otvoriť až po deviatich hodnotách ÁNO.
 ```
+
+---
+
+## Checkpoint Fázy 11.A — 2026-07-27 09:35 Europe/Bratislava
+
+### Nové načítanie autoritatívneho stavu
+
+```text
+REPOSITORY=slapiar/METODIKA
+BRANCH=main
+HEAD_PRED_ČÍTACÍM_POKUSOM=ba1061fd44d7426c928d3e824a69105101ce673a
+INI_BLOB_PRED_ZÁPISOM=d70e67322e0479a4abb9e963ae51fd45ab040854
+ROZSAH=IBA_EXISTUJÚCE_PRODUKČNÉ_GET_ROZHRANIA_A_ZÁPIS_DÔKAZU_DO_TOHTO_INI
+```
+
+### Vykonaný bezpečný čítací pokus
+
+Boli požiadané iba existujúce GET adresy:
+
+- `https://codei.dremont.in/`
+- `https://codei.dremont.in/diagnostics/database`
+- `https://codei.dremont.in/diagnostics/database/login`
+- `https://codei.dremont.in/gate`
+- `https://codei.dremont.in/api/gate/sessions`
+- `https://codei.dremont.in/api/gate/session/1/steps`
+- `https://codei.dremont.in/api/gate/step/1/evidence`
+
+Pracovné webové prostredie odmietlo všetky adresy pred vykonaním HTTP požiadavky s výsledkom `URL is not safe to open (non-retryable error)`.
+
+```text
+HTTP_POŽIADAVKA_ODOSLANÁ=false
+PRODUKČNÁ_ODPOVEĎ=NEZÍSKANÁ
+PRODUKCIA_NEDOSTUPNÁ_GLOBÁLNE=NEPOTVRDENÉ
+ZÁVER=OBMEDZENIE_PRACOVNÉHO_PROSTREDIA_NIE_JE_DÔKAZOM_VÝPADKU_PRODUKCIE
+```
+
+Nebol vykonaný POST, prihlásenie, vytvorenie session, kroku, Evidence, databázový zápis, migrácia, environmentálny test, release ani produkčný zásah.
+
+### Stav brány po pokuse
+
+```text
+BOD_5=NEOVERENÉ
+GATE_KROKU_11=CLOSED
+FÁZA_11_A=ZASTAVENÁ_NA_NEDOSTUPNEJ_AUTORIZOVANEJ_PRODUKČNEJ_ČÍTACEJ_CESTE
+FÁZA_11_B=NEOTVORENÁ
+KROK_11_TESTY=NESPUSTENÉ
+KÓD=BEZ_ZMENY
+DATABÁZA=BEZ_ZÁSAHU
+RELEASE=BEZ_ZMENY
+PRODUKCIA=BEZ_ZÁSAHU
+```
+
+### Jediný povolený nasledujúci úkon
+
+```text
+1. sprístupniť existujúci autorizovaný read-only produkčný výstup alebo jeho aktuálny export,
+2. nevytvárať nový endpoint, environmentálny test ani produkčný zápis,
+3. doložiť dostupné hodnoty nasadenej verzie, zdrojového commitu, runtime, migrácií, flagov, testovacích DB riadkov, session/step/Evidence a run-store JSON/lock/temp,
+4. nezistené hodnoty ponechať ako NEZISTENÉ,
+5. aktualizovať výhradne tento pôvodný INI,
+6. GATE otvoriť až po deviatich hodnotách ÁNO.
+```
