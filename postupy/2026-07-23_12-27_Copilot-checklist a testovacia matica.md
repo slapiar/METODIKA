@@ -11,7 +11,7 @@
 
 - Checklist 1 az 13: implementovaný a overený v izolovanom validačnom prostredí.
 - Matica M01 az M26: `PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ`.
-- GitHub Actions run `30252080061`, job `89932151438`: `success`.
+- Finálny GitHub Actions run `30252640028` na heade `bc85d18...`: `success`.
 - Reálny HTTP tok `START -> paralelný HIT A/B -> RESULT -> cleanup`: PASS.
 - Cleanup: testovacie DB riadky `0`, run-store/temp súbory `0`.
 - Produkčné diagnostické overenie sa v Kroku 11 nevykonalo; patrí až do neskoršej
@@ -161,7 +161,7 @@
 | ID | Výsledok | Dôkaz |
 |---|---|---|
 | M01–M11 | PASS | unit a session suite |
-| M12–M18 | PASS | session/integration suite a reálny paralelný HTTP tok v run `30252080061` |
+| M12–M18 | PASS | session/integration suite a reálny paralelný HTTP tok vo finálnom rune `30252640028` |
 | M19–M24 | PASS | run-store, cleaner, failure/cleanup a tombstone testy |
 | M25–M26 | PASS | auth/feature-flag negatívne scenáre bez mutácie |
 

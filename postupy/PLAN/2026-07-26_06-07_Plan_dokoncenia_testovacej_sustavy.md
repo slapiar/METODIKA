@@ -9,8 +9,10 @@ PRACOVNÝ — ZÁVÄZNÝ
 KROKY_1_AŽ_11=SPLNENÉ
 AKTÍVNY_KROK=KROK_12
 KROK_11=UZAVRETÝ
-VALIDOVANÝ_TECHNICKÝ_HEAD=d55dcc2d7ff0d9eedb5327b94e757f42cce66bca
-VALIDAČNÝ_RUN=30252080061
+GATE_KROKU_11=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+VALIDOVANÝ_TECHNICKÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+VALIDAČNÝ_RUN=30252640028
+MERGE_COMMIT=4cb2fe0a9dc1ff3a94c450dbe1dc33c38b574b0c
 RELEASE=1.1.15_BEZ_ZMENY
 PRODUKCIA=BEZ_ZÁSAHU
 NEXT_ALLOWED_ACTION=NOVÝ_INI_KROKU_12
@@ -43,7 +45,7 @@ najprv obnoviť a zmraziť skutočný stav
 
 Tento plán nemení výsledky Krokov 1 až 10. Nahrádza iba spôsob pokračovania od otvoreného Kroku 11 po včerajšom STOP.
 
-## Autoritatívne východisko
+## Autoritatívne východisko pri vytvorení plánu — historický stav
 
 - repozitár: `slapiar/METODIKA`,
 - vetva: `main`,
@@ -51,9 +53,10 @@ Tento plán nemení výsledky Krokov 1 až 10. Nahrádza iba spôsob pokračovan
 - posledný uzavretý funkčný krok: Krok 10,
 - funkčný commit Kroku 10: `c90ae562a859de9fe0b2174f39e924c7f7bc6a4e`,
 - posledný technický základ pôvodne použitý pri Kroku 11: `d418e72c162bde324af7546c937af979bd75182e`,
-- aktuálny Krok 11 pokračuje výhradne v:
+- Krok 11 sa vykonal a uzavrel výhradne v:
   `postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md`,
-- stav jeho brány: `GATE=CLOSED`,
+- historický stav brány pri vytvorení plánu bol `GATE=CLOSED`; brána bola neskôr
+  dôkazne otvorená, naplnená a Krok 11 bol uzavretý merge commitom `4cb2fe0a...`,
 - platí jeho uložený pokyn:
 
 ```text
@@ -61,7 +64,8 @@ NOVÝ_INI_KROKU_11=false
 NOVÝ_ENVIRONMENTÁLNY_TEST_PRI_OBNOVE_BRÁNY=false
 ```
 
-Nový INI záznam sa vytvorí až pre Krok 12 po úplnom uzavretí Kroku 11.
+Nový krokový INI sa vytvorí až pre Krok 12. Samostatný opravný INI z 2026-07-27
+11:28 iba napravuje evidenčný rozpor po uzavretí a Krok 11 znovu neotvára.
 
 ## Skutočnosti zistené pred vytvorením plánu
 
@@ -427,8 +431,9 @@ NEXT_ALLOWED_STEP=KROK_12
 
 ```text
 KROK_11=SPLNENÉ
-VALIDOVANÝ_TECHNICKÝ_HEAD=d55dcc2d7ff0d9eedb5327b94e757f42cce66bca
-VALIDAČNÝ_RUN=30252080061
+VALIDOVANÝ_TECHNICKÝ_HEAD=bc85d18fd0edc1a52fad81f8fac54c1ae66a7014
+VALIDAČNÝ_RUN=30252640028
+MERGE_COMMIT=4cb2fe0a9dc1ff3a94c450dbe1dc33c38b574b0c
 VŠETKY_POVINNÉ_TESTY=PASS
 M01_AŽ_M26=PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ
 G01_AŽ_G12=PASS

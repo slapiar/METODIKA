@@ -1,5 +1,13 @@
 # INICIALIZÁCIA KROKU: Načítanie aktuálneho stavu projektu a pokračovanie overenia
 
+> **PREKONANÝ NEÚPLNÝ INI — NIE JE AKTUÁLNOU BRÁNOU PROJEKTU.**
+>
+> Tento súbor vznikol bez načítania obsahu autoritatívneho plánu a pôvodného INI
+> Kroku 11. Jeho `GATE=CLOSED` opisuje iba vtedajší neúplný pokus. Aktuálny stav
+> je vedený v pôvodnom INI
+> `2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md`:
+> `KROK_11=SPLNENÉ`, validačný run `30252640028`, merge `4cb2fe0a...`.
+
 ## Kontrolná matica
 
 1. Metodika načítaná: ÁNO
@@ -113,3 +121,17 @@ Repozitár, autoritatívny remote, vetva, HEAD, prístupy, pracovný strom a run
 Nie je zatiaľ dôkazne overený obsah aktuálneho plánu, konkrétny rozsah zásahu, jeho závislosti, akceptačné kritériá ani rollback.
 
 Brána preto zostáva zatvorená, ale overovacia práca pokračuje.
+
+---
+
+## Konečný stav tohto dokumentu
+
+```text
+STAV_DOKUMENTU=PREKONANÝ
+TENTO_DOKUMENT_NIE_JE_AKTUÁLNA_BRÁNA=true
+GATE_CLOSED_V_TOMTO_SÚBORE=HISTORICKÝ_NEÚPLNÝ_POKUS
+AUTORITATÍVNY_INI=postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md
+AKTUÁLNY_STAV=KROK_11_SPLNENÉ
+VALIDAČNÝ_RUN=30252640028
+MERGE_COMMIT=4cb2fe0a9dc1ff3a94c450dbe1dc33c38b574b0c
+```
