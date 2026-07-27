@@ -8,6 +8,16 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Krok 12 — Fáza 12.A: zmrazenie auditnej základne
+
+- vzdialený `main` zostal počas kontroly stabilný na `771b0c2b69e3f1e1d7b74604b672275823bc9f95`; aktuálny strom `/codei` `4ec1d840...` je zhodný s finálne validovaným stromom Kroku 11,
+- potvrdené boli nezmenené `RELEASE_VERSION=1.1.15` a blob `release.sh` `e365e7e...`; nevznikol release ani nový ZIP,
+- medzi zdrojovým commitom release `1.1.9` `3b91c4e...` a validovaným technickým headom `bc85d18...` je 42 zmenených ciest v `/codei`, z toho 28 pridaných a 14 zmenených,
+- rollbackový ZIP `1.1.9` bol znovu úplne porovnaný so svojím zdrojovým commitom: 790 očakávaných aj skutočných súborov, 0 chýbajúcich, 0 neočakávaných a 0 obsahových rozdielov; SHA-256 zostáva `5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72`,
+- historický ZIP `1.1.15` bol jednorazovo klasifikovaný voči očakávanému balíku validovaného stromu, zostal nedotknutý a nebude sa ďalej používať ako aktívna release ani rollbacková základňa,
+- checkpoint Fázy 12.A je zapísaný v záväznom pláne, INI aj WORK zázname; `/codei`, `release.sh`, verzia, existujúce ZIP-y a produkcia zostali bez zmeny,
+- jediným ďalším povoleným úkonom po publikovaní a vzdialenom read-backu tohto checkpointu je Fáza 12.B — príprava izolovaného release prostredia; vytvorenie ZIP-u, nasadenie a Krok 13 zatiaľ nie sú povolené.
+
 ### Inicializácia, analýza a záväzný plán Kroku 12
 
 - samostatný INI [`postupy/WORK/INI/2026-07-27_11-46_INI_Krok_12_Jeden_release_a_uplny_audit_balika.md`](postupy/WORK/INI/2026-07-27_11-46_INI_Krok_12_Jeden_release_a_uplny_audit_balika.md) doložil všetkých deväť bodov a otvoril `GATE=OPEN` pre jeden release a úplný audit balíka bez nasadenia,
