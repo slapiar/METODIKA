@@ -8,6 +8,15 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Krok 14 — produkčný cleanup a vypnutie diagnostiky
+
+- Autorita vykonala povinné produkčné poradie s release `1.1.17` a po nulovom read-only odpise produkčného stavu pokračovala povolenou vetvou cleanupu,
+- znovupoužitý byte-identický dôkaz Kroku 11 potvrdzuje kontrakt tombstone a sweep; produkčný odpis potvrdil nulové run-store, temp a testovacie databázové zvyšky,
+- v produkčnom `.env` boli `METODIKA_DIAGNOSTICS_ENABLED`, `METODIKA_CONCURRENCY_WEB_ENABLED` a `METODIKA_GATE_ENABLED` nastavené na `0`,
+- následný prístup na `diagnostics/database` už diagnostický obsah nezobrazil; diagnostika je fail-closed a produkcia čistá,
+- Krok 14 je `SPLNENÝ`, jeho brána je `OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ`; Krok 15 zatiaľ otvorený nebol,
+- úplný výsledok je v [`postupy/WORK/2026-07-27_15-16_Krok_14_Produkčný_cleanup_a_vypnutie_diagnostiky.md`](postupy/WORK/2026-07-27_15-16_Krok_14_Produkčný_cleanup_a_vypnutie_diagnostiky.md) a v [`INI Kroku 14`](postupy/WORK/INI/2026-07-27_15-07_INI_Krok_14_Tombstone_sweep_a_produkcny_cleanup.md).
+
 ### Krok 13 — uzavretie riadeným STOP po produkčnom nasadení
 
 - Autorita nasadila release `1.1.16` priamo na Hostinger; overenie diagnostickým tokenom a volanie `diagnostics/database` prešli,

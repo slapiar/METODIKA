@@ -118,3 +118,47 @@ KROK_15=ZATVORENÝ
 | ID pokynu | R (Prečítané) | W (Zapísané) |
 |---|---:|---:|
 | ID-01 až ID-14 | 1 | 1 |
+
+---
+
+## Produkčný výsledok a uzavretie — 2026-07-27 15:16 Europe/Bratislava
+
+Autorita vykonala povinné produkčné poradie pre release `1.1.17`. Po
+read-only kontrole nulového koncového stavu pokračovala povolenou vetvou,
+odhlásila diagnostickú session a nastavila:
+
+```text
+METODIKA_DIAGNOSTICS_ENABLED=0
+METODIKA_CONCURRENCY_WEB_ENABLED=0
+METODIKA_GATE_ENABLED=0
+```
+
+Následný priamy prístup na `diagnostics/database` už diagnostický obsah
+nezobrazil. Tým je doložený požadovaný fail-closed stav. Technický dôkaz
+kontraktu tombstone a sweep zostáva znovupoužitý z Kroku 11, pretože
+príslušná implementácia a testy sú v release `1.1.17` byte-identické.
+
+```text
+DEPLOYED_RELEASE=1.1.17
+TOMBSTONE_CONTRACT=true
+SWEEP=true
+RUNSTORE_FILES=0
+TEMP_FILES=0
+DB_TEST_ROWS=0
+GATE_TEST_ROWS=0
+FEATURE_FLAGS=OFF
+DIAGNOSTIC_MODE=OFF
+DIAGNOSTICS_DATABASE_CONTENT=HIDDEN_FAIL_CLOSED
+PRODUCTION_CLEAN=true
+```
+
+## Konečný stav brány
+
+```text
+GATE=OPEN
+GATE_STATUS=OPEN_NAPLNENÁ_A_UZAVRETÁ_PO_VYKONANÍ
+BLOKUJÚCI_BOD=ŽIADNY
+KROK_14=SPLNENÝ
+KROK_15=NEOTVORENÝ
+NEXT_ALLOWED_STEP=KROK_15_S_VLASTNÝM_INI_A_GATEM
+```
