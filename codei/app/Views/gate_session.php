@@ -1,59 +1,58 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sk">
 <head>
-    <meta charset="UTF-8">
-    <title>INI Session Detail</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        h1 { margin-bottom: 10px; }
-        .info { margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 10px; border-bottom: 1px solid #ccc; text-align: left; }
-        th { background: #f5f5f5; }
-        .status-valid { color: #5cb85c; font-weight: bold; }
-        .status-invalid { color: #d9534f; font-weight: bold; }
-        .status-pending { color: #999; font-weight: bold; }
-    </style>
-    <link rel="stylesheet" href="/assets/css/gate-session.css">
-
-    <script src="/js/gate-session.js"></script>
-    <script src="/js/gate-dashboard.js"></script>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow,noarchive">
+    <title>INI Session #<?= esc((string) $session['id']) ?></title>
+    <link rel="stylesheet" href="<?= esc(asset_url('assets/css/gate-session.css')) ?>">
+    <script defer src="<?= esc(asset_url('js/gate-session.js')) ?>"></script>
 </head>
-<body>
+<body
+    data-session-id="<?= esc((string) $session['id']) ?>"
+    data-steps-url="<?= esc($stepsUrl) ?>"
+    data-state-url="<?= esc($stateUrl) ?>"
+    data-step-write-url="<?= esc($stepWriteUrl) ?>"
+    data-csrf-name="<?= esc($csrfName) ?>"
+    data-csrf-hash="<?= esc($csrfHash) ?>"
+>
+<main>
+    <h1>Session #<?= esc((string) $session['id']) ?></h1>
 
-<h1>Session #<?= esc($session['id']) ?></h1>
+    <div class="info">
+        <strong>Projekt:</strong> <?= esc((string) $session['project_name']) ?><br>
+        <strong>Agent:</strong> <?= esc((string) $session['agent_name']) ?><br>
+        <strong>Stav brány:</strong>
+        <span id="gate-state" class="state-<?= esc((string) $session['gate_state']) ?>">
+            <?= esc((string) $session['gate_state']) ?>
+        </span>
+    </div>
 
-<div class="info">
-    <strong>Projekt:</strong> <?= esc($session['project_name']) ?><br>
-    <strong>Agent:</strong> <?= esc($session['agent_name']) ?><br>
-    <strong>Stav brány:</strong> <?= esc($session['gate_state']) ?><br>
-</div>
+    <p id="gate-session-status" role="status" aria-live="polite">Pripravené.</p>
 
-<h2>Kroky</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Krok</th>
-            <th>Názov</th>
-            <th>Status</th>
-            <th>Validované</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($steps as $step): ?>
+    <h2>Kroky</h2>
+    <table>
+        <thead>
             <tr>
-                <td><?= esc($step['step_number']) ?></td>
-                <td><?= esc($step['name']) ?></td>
-                <td class="status-<?= esc($step['status']) ?>">
-                    <?= esc($step['status']) ?>
-                </td>
-                <td><?= esc($step['validated_at'] ?? '-') ?></td>
+                <th>Krok</th>
+                <th>Názov</th>
+                <th>Status</th>
+                <th>Validované</th>
+                <th>Akcia</th>
+            </tr>
+        </thead>
+        <tbody id="steps-table">
+        <?php foreach ($steps as $step): ?>
+            <tr data-step="<?= esc((string) $step['step_number']) ?>">
+                <td><?= esc((string) $step['step_number']) ?></td>
+                <td><?= esc((string) $step['name']) ?></td>
+                <td class="status-<?= esc((string) $step['status']) ?>"><?= esc((string) $step['status']) ?></td>
+                <td><?= esc((string) ($step['validated_at'] ?? '-')) ?></td>
+                <td></td>
             </tr>
         <?php endforeach; ?>
-    </tbody>
-</table>
-
+        </tbody>
+    </table>
+</main>
 </body>
 </html>

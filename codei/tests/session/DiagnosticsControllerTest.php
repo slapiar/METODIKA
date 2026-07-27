@@ -22,8 +22,9 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         putenv('METODIKA_DIAGNOSTICS_ENABLED');
         putenv('METODIKA_DIAGNOSTICS_TOKEN');
         putenv('METODIKA_CONCURRENCY_WEB_ENABLED');
-        unset($_ENV['METODIKA_DIAGNOSTICS_ENABLED'], $_ENV['METODIKA_DIAGNOSTICS_TOKEN'], $_ENV['METODIKA_CONCURRENCY_WEB_ENABLED']);
-        unset($_SERVER['METODIKA_DIAGNOSTICS_ENABLED'], $_SERVER['METODIKA_DIAGNOSTICS_TOKEN'], $_SERVER['METODIKA_CONCURRENCY_WEB_ENABLED']);
+        putenv('METODIKA_GATE_ENABLED');
+        unset($_ENV['METODIKA_DIAGNOSTICS_ENABLED'], $_ENV['METODIKA_DIAGNOSTICS_TOKEN'], $_ENV['METODIKA_CONCURRENCY_WEB_ENABLED'], $_ENV['METODIKA_GATE_ENABLED']);
+        unset($_SERVER['METODIKA_DIAGNOSTICS_ENABLED'], $_SERVER['METODIKA_DIAGNOSTICS_TOKEN'], $_SERVER['METODIKA_CONCURRENCY_WEB_ENABLED'], $_SERVER['METODIKA_GATE_ENABLED']);
 
         Services::reset();
 
@@ -139,7 +140,7 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $response->assertSee('Webove subezne overenie');
         $response->assertSee('id="diag-concurrency-start"');
         $response->assertSee('/diagnostics/concurrency/start');
-        $response->assertSee('/diagnostics/concurrency/result/');
+        $response->assertSee('/diagnostics/concurrency/result');
     }
 
     public function testDiagnosticsOutputDoesNotContainSensitiveNamesOrDsn(): void
@@ -280,7 +281,7 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
 
         $afterA = $store->load($runId);
         $this->assertIsArray($afterA);
-        $this->assertSame('EXECUTING', $afterA['state']);
+        $this->assertSame('BARRIER_OPEN', $afterA['state']);
         $this->assertNotNull($afterA['participants']['a']['consumedAt']);
         $this->assertNotNull($afterA['participants']['a']['readyAt']);
         $this->assertNotNull($afterA['participants']['a']['startedAt']);
@@ -383,6 +384,111 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
         $this->deleteTree($storeDirectory);
     }
 
+    public function testConcurrencyHitRejectsConsumedTokenWithoutRunChange(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-reuse-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyAcceptanceRunner',
+            new DiagnosticsConcurrencyAcceptanceRunner(static fn (): string => 'CREATED'),
+        );
+
+        $runId = 'run-reuse-aaaaaaaaaaaaaaaa';
+        $tokenA = 'token-a-reuse';
+        $tokenB = 'token-b-reuse';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $document['participants']['b']['readyAt'] = gmdate('c', time() - 1);
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => $tokenA,
+        ])->assertStatus(200);
+
+        $beforeReuse = $store->load($runId);
+        $this->assertIsArray($beforeReuse);
+
+        $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => $tokenA,
+        ])->assertStatus(404);
+
+        $this->assertSame($beforeReuse, $store->load($runId));
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testExpiredRunIsFinalizedAndCleanedAfterValidParticipantHit(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $this->setConcurrencyFlag('1');
+
+        $storeDirectory = WRITEPATH . 'tests/concurrency-hit-expired-' . bin2hex(random_bytes(4));
+        $store = new DiagnosticsConcurrencyRunStore($storeDirectory);
+        Services::injectMock('diagnosticsConcurrencyRunStore', $store);
+        Services::injectMock(
+            'diagnosticsConcurrencyPersistenceService',
+            $this->makePersistenceMock([
+                ['reservations' => 1, 'runs' => 1, 'domainTerms' => 2],
+                ['reservations' => 0, 'runs' => 0, 'domainTerms' => 0],
+            ]),
+        );
+
+        $runId = 'run-expired-aaaaaaaaaaaaaa';
+        $tokenA = 'token-a-expired';
+        $tokenB = 'token-b-expired';
+        $document = $this->makeRunDocument($runId, hash('sha256', $tokenA), hash('sha256', $tokenB), 'CREATED');
+        $document['expiresAt'] = gmdate('c', time() - 1);
+        $store->save($runId, $document);
+
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $response = $this->withSession($session)->post('/diagnostics/concurrency/hit/a', [
+            'runId' => $runId,
+            'participantToken' => $tokenA,
+        ]);
+        $response->assertStatus(200);
+
+        $stored = $store->load($runId);
+        $this->assertIsArray($stored);
+        $this->assertSame('COMPLETED_FAILED', $stored['state']);
+        $this->assertSame('EXPIRED', $stored['participants']['a']['outcome']);
+        $this->assertSame('RUN_EXPIRED', $stored['participants']['a']['errorCode']);
+        $this->assertTrue((bool) $stored['cleanup']['cleanupConfirmed']);
+        $this->assertFalse((bool) $stored['assertions']['overallSuccess']);
+        $this->assertArrayNotHasKey('input', $stored);
+
+        $this->deleteTree($storeDirectory);
+    }
+
+    public function testLogoutClearsDiagnosticsAuthorization(): void
+    {
+        $this->setDiagnosticsEnv('1', 'secret-token');
+        $security = service('security');
+        $session = [
+            'metodika_diagnostics_auth' => true,
+            'metodika_diagnostics_auth_time' => time(),
+        ];
+
+        $this->withSession($session)->post('/diagnostics/database/logout', [
+            $security->getTokenName() => $security->getHash(),
+        ])->assertStatus(302);
+
+        $this->assertNotTrue(session()->get('metodika_diagnostics_auth'));
+        $this->assertNull(session()->get('metodika_diagnostics_auth_time'));
+    }
+
     public function testConcurrencyHitAcceptFailureStoresSafeErrorCode(): void
     {
         $this->setDiagnosticsEnv('1', 'secret-token');
@@ -423,11 +529,11 @@ final class DiagnosticsControllerTest extends CIUnitTestCase
 
         $stored = $store->load($runId);
         $this->assertIsArray($stored);
-        $this->assertSame('EXECUTING', $stored['state']);
+        $this->assertSame('BARRIER_OPEN', $stored['state']);
         $this->assertNotNull($stored['participants']['b']['startedAt']);
         $this->assertNotNull($stored['participants']['b']['finishedAt']);
         $this->assertSame('FAILED', $stored['participants']['b']['outcome']);
-        $this->assertSame('ACCEPT_RUNTIME_ERROR', $stored['participants']['b']['errorCode']);
+        $this->assertSame('APPLICATION_ACCEPT_RUNTIME_ERROR', $stored['participants']['b']['errorCode']);
 
         $this->deleteTree($storeDirectory);
     }

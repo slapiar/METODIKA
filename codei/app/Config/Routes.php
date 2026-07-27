@@ -17,44 +17,44 @@ $routes->post('diagnostics/concurrency/hit/a', 'DiagnosticsController::hitConcur
 $routes->post('diagnostics/concurrency/hit/b', 'DiagnosticsController::hitConcurrencyB', ['filter' => 'diagnosticsSessionRelease']);
 $routes->get('diagnostics/concurrency/result/(:segment)', 'DiagnosticsController::concurrencyResult/$1');
 
-// GATE SUPERVISOR
-$routes->get('gate', 'GateDashboard::index');
-$routes->get('api/gate/sessions', 'GateSupervisor::getAllSessions');
-$routes->post('diagnostics/database/test-api', 'DiagnosticsController::testApi');
+// Autorizovaná diagnostika GATE. Všetky cesty sú fail-closed za diagnostics session a feature flagom.
+$routes->get('gate', 'GateDashboard::index', ['filter' => 'diagnosticsGate']);
+$routes->get('gate/session/(:num)', 'GateDashboard::session/$1', ['filter' => 'diagnosticsGate']);
+$routes->get('api/gate/sessions', 'GateSupervisor::getAllSessions', ['filter' => 'diagnosticsGate']);
+$routes->post(
+    'diagnostics/database/test-api',
+    'DiagnosticsController::testApi',
+    ['filter' => 'diagnosticsGateWrite']
+);
 $routes->post(
     'diagnostics/database/create-test-session',
     'DiagnosticsController::createTestSession',
-    ['filter' => 'csrf']
+    ['filter' => 'diagnosticsGateWrite']
 );
 $routes->post(
     'diagnostics/database/create-test-step',
     'DiagnosticsGateStepController::create',
-    ['filter' => 'csrf']
+    ['filter' => 'diagnosticsGateWrite']
 );
 $routes->post(
     'diagnostics/database/create-test-evidence',
     'DiagnosticsGateEvidenceController::create',
-    ['filter' => 'csrf']
+    ['filter' => 'diagnosticsGateWrite']
 );
 
-$routes->group('api/gate', function($routes) {
-
-    // EXISTUJÚCE:
-    $routes->post('purge-cache/(:num)', 'GateSupervisor::purgeCache/$1');
-    $routes->post('submit-step', 'GateSupervisor::submitStep');
-
+$routes->group('api/gate', static function (RouteCollection $routes): void {
     // SESSION
-    $routes->post('session', 'GateSupervisor::createSession');
-    $routes->get('session/(:num)', 'GateSupervisor::getSession/$1');
+    $routes->post('session', 'GateSupervisor::createSession', ['filter' => 'diagnosticsGateWrite']);
+    $routes->get('session/(:num)', 'GateSupervisor::getSession/$1', ['filter' => 'diagnosticsGate']);
 
     // STEPS
-    $routes->post('session/(:num)/step', 'GateSupervisor::updateStep/$1');
-    $routes->get('session/(:num)/steps', 'GateSupervisor::getSteps/$1');
+    $routes->post('session/(:num)/step', 'GateSupervisor::updateStep/$1', ['filter' => 'diagnosticsGateWrite']);
+    $routes->get('session/(:num)/steps', 'GateSupervisor::getSteps/$1', ['filter' => 'diagnosticsGate']);
 
     // EVIDENCE
-    $routes->post('step/(:num)/evidence', 'GateSupervisor::addEvidence/$1');
-    $routes->get('step/(:num)/evidence', 'GateSupervisor::getEvidence/$1');
+    $routes->post('step/(:num)/evidence', 'GateSupervisor::addEvidence/$1', ['filter' => 'diagnosticsGateWrite']);
+    $routes->get('step/(:num)/evidence', 'GateSupervisor::getEvidence/$1', ['filter' => 'diagnosticsGate']);
 
-    // GATE STATE
-    $routes->get('session/(:num)/state', 'GateSupervisor::getGateState/$1');
+    // GATE STATE — čisto čítacia cesta.
+    $routes->get('session/(:num)/state', 'GateSupervisor::getGateState/$1', ['filter' => 'diagnosticsGate']);
 });

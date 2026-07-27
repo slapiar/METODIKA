@@ -3,7 +3,7 @@
 Dátum: 2026-07-27
 Projekt: METODIKA
 Repozitár: slapiar/METODIKA
-Vetva: main
+Vetva: agent/krok-11-validacia
 Klasifikačný snapshot HEAD: cf7b2b097112d9da8c0341d5e2a31d0ffc6f1493
 Pôvodný technický základ: d418e72c162bde324af7546c937af979bd75182e
 Rozdiel: 117 commitov, 67 zmenených ciest
@@ -16,11 +16,17 @@ GATE: OPEN
 ~~~text
 FÁZA_11_B=SPLNENÁ
 FÁZA_11_C=SPLNENÁ
-KÓD=BEZ_ZMENY
-TESTY=NESPUSTENÉ
+FÁZA_11_D=SPLNENÁ
+FÁZA_11_E=SPLNENÁ
+FÁZA_11_F=SPLNENÁ
+KROK_11=SPLNENÉ
+VALIDOVANÝ_TECHNICKÝ_HEAD=d55dcc2d7ff0d9eedb5327b94e757f42cce66bca
+VALIDAČNÝ_RUN=30252080061
+TESTY=PASS
+CLEANUP=true
 RELEASE=BEZ_ZMENY
 PRODUKCIA=BEZ_ZÁSAHU
-NEXT_ALLOWED_ACTION=FÁZA_11_D_JEDNA_SÚVISIACA_IMPLEMENTAČNÁ_DÁVKA
+NEXT_ALLOWED_ACTION=KROK_12_S_VLASTNÝM_INI_A_GATEM
 ~~~
 
 ## 1. Autoritatívny zámer
@@ -363,3 +369,138 @@ NOVÝ_ZIP=false
 - Nemazať existujúce produkčné dáta.
 - Ak vznikne migrácia, použiť jej down() iba v izolovanom validačnom prostredí; produkčný rollback patrí až do samostatného nasadzovacieho plánu.
 - Obnoviť iba súbory dotknuté dávkou; release 1.1.15 a historické ZIP-y v Kroku 11 nemeníť.
+
+## 10. Fáza 11.D — vykonaná implementačná dávka
+
+Jedna súvisiaca dávka bola pripravená na vetve `agent/krok-11-validacia` voči základu
+`dcc817c6d6627ec2c76629a4ca59c2a4f8903c02`. Technický snapshot potvrdený validačným
+behom je `d55dcc2d7ff0d9eedb5327b94e757f42cce66bca`.
+
+Vykonané zmeny:
+
+- všetky GATE routes používajú spoločnú diagnostickú autorizáciu; zápisové routes navyše CSRF,
+- čítanie stavu GATE je čisté GET bez zápisu a verejné chyby obsahujú iba stabilné bezpečné kódy,
+- session, krok a Evidence majú validované vstupy, idempotentný výsledok a databázovú jedinečnosť,
+- dashboard a detail session používajú existujúce session ID, bezpečné DOM operácie a platné asset routes,
+- placeholder routes, neobsluhované kópie JavaScriptu, nulové zvuky s koncovou medzerou a pracovné snapshoty boli odstránené,
+- migrácia M9 vytvára GATE tabuľky, cudzie kľúče a unikátne indexy v izolovanom validačnom prostredí; `down()` zámerne nemaže potenciálne dáta,
+- expirovaný concurrency run a manuálny cleanup používajú spoločnú bezpečnú cleanup službu a interný CLI príkaz,
+- produkčný read-only inspector nezverejňuje obsah run-store záznamov,
+- doplnené boli GATE integračné testy, cleanup unit testy, session regresie a úplný Actions validačný workflow.
+
+Nevznikla nová produktová funkcia, release, ZIP ani produkčný zásah.
+
+### Predčasné artefakty
+
+| Skupina | Rozhodnutie |
+|---|---|
+| duplicitný `codei/app/app` a `codei/app/public/js` runtime | odstránené neobsluhované kópie |
+| pracovné bundle/snapshot/writable výstupy | odstránené z repozitára |
+| nulové zvukové súbory s koncovou medzerou | odstránené |
+| GATE diagnostika | ponechaná po autorizácii, validácii, CSRF a doplnení testov |
+| produkčné session/step/Evidence dáta | bez zásahu; Krok 11 produkciu nemenil |
+| `WORK/INI/2026-07-27_08-47_INI_nacitanie-aktualneho-stavu-a-pokracovanie-overenia.md` | `PREKONANÝ`; nenahrádza pôvodný INI Kroku 11 |
+
+### Rollback
+
+Rollbackom je vrátenie celej dávky Kroku 11 voči základu
+`dcc817c6d6627ec2c76629a4ca59c2a4f8903c02`. Migráciu M9 možno vrátiť iba
+v izolovanom prázdnom validačnom prostredí; na produkciu sa v Kroku 11 neaplikovala.
+
+## 11. Fáza 11.E — úplná validačná evidencia
+
+Autoritatívny dôkaz:
+
+- GitHub Actions run `30252080061`,
+- job `89932151438`,
+- záver `success`,
+- technický HEAD `d55dcc2d7ff0d9eedb5327b94e757f42cce66bca`.
+
+### Prostredie
+
+| Dôkaz | Výsledok |
+|---|---|
+| PHP CLI | `8.4.23` |
+| Composer | `2.10.2` |
+| MariaDB | `11.4.12-MariaDB-ubu2404` |
+| Migrácie | M1–M9, `Migrations complete.` |
+| unikátny index session/krok | `uq_ini_steps_session_number`, prítomný |
+| unikátny index krok/Evidence | `uq_ini_evidence_step_hash`, prítomný |
+
+### Testy
+
+| Vrstva | Výsledok |
+|---|---|
+| syntax PHP a JavaScript | PASS |
+| unit | 37 testov, 123 asercií, PASS; 1 neblokujúca PHPUnit deprecation |
+| session | 26 testov, 190 asercií, PASS |
+| integration | 6 testov, 67 asercií, PASS |
+| spolu | 69 testov, 380 asercií |
+| reálny HTTP tok | login `303`, START, paralelný HIT A/B, RESULT, PASS |
+| výsledné invarianty | `COMPLETED_SUCCESS`, DB uniqueness, replay a cleanup `true` |
+
+Workflow potvrdil:
+
+```text
+HTTP_SERVER_READY=true
+LOGIN_CSRF_PRESENT=true
+DIAGNOSTICS_LOGIN_STATUS=303
+DIAGNOSTICS_LOGIN_OK=true
+START_CSRF_PRESENT=true
+CONCURRENCY_START_OK=true
+RESULT_ASSERTIONS_OK=true
+DATABASE_CLEANUP_CONFIRMED=true
+RUN_STORE_CLEANUP_CONFIRMED=true
+TOMBSTONE_CLEANUP_OK=true
+```
+
+Po poslednom cleanupe:
+
+```text
+question_derivation_request_reservations=0
+question_derivation_runs=0
+question_derivation_run_domain_terms=0
+ini_sessions=0
+ini_steps=0
+ini_evidence=0
+ini_gate_state=0
+TEMP_FILES=0
+```
+
+### Matice a hranice
+
+- `M01–M26`: PASS alebo dôkazne vyriešené v unit/session/integration a reálnom paralelnom HTTP toku.
+- `G01–G12`: PASS v `GateDiagnosticsTest` a statickom audite routes, views a JavaScriptu.
+- `P01–P06`: PASS v unit/session testoch produkčného read-only inspectora a v read-only invariantoch.
+- Produkcia nebola použitá ako testovacie prostredie a nebola zmenená.
+- Release zostáva `1.1.15`; nový ZIP nevznikol.
+
+Neblokujúce technické upozornenia: unit suite hlási jednu PHPUnit deprecation a
+GitHub runner upozorňuje na Node 20 deklarovaný v `actions/checkout@v4`.
+Nemenia úspešný záver validačného jobu a nepredstavujú zásah do produkcie.
+
+## 12. Fáza 11.F — záver
+
+Read-after-write diffu, testových dôkazov, pôvodného INI, registra, záväzného plánu,
+aktívneho checklistu a tejto matice bol vykonaný. Krok 11 je uzavretý s týmto výsledkom:
+
+```text
+M01_AŽ_M26=PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ
+G01_AŽ_G12=PASS
+P01_AŽ_P06=PASS
+DB_UNIQUENESS=true
+OUTCOMES=CREATED+ALREADY_EXISTS
+TEMP_FILES=0
+TEST_DB_ROWS=0
+CLEANUP=true
+STATE=COMPLETED_SUCCESS
+PRODUCTION_UNTOUCHED=true
+RELEASE_VERSION=1.1.15
+NOVÝ_ZIP=false
+KROK_11=SPLNENÉ
+VALIDOVANÝ_TECHNICKÝ_HEAD=d55dcc2d7ff0d9eedb5327b94e757f42cce66bca
+NEXT_ALLOWED_STEP=KROK_12
+```
+
+Krok 12 sa smie začať iba vlastným novým INI, novou deväťbodovou maticou a
+`GATE=OPEN`. Tento záznam neoprávňuje vytvoriť release ani zasiahnuť produkciu.

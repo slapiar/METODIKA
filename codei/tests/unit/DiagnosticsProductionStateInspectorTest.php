@@ -14,6 +14,7 @@ final class DiagnosticsProductionStateInspectorTest extends CIUnitTestCase
     {
         putenv('METODIKA_DIAGNOSTICS_ENABLED');
         putenv('METODIKA_CONCURRENCY_WEB_ENABLED');
+        putenv('METODIKA_GATE_ENABLED');
 
         if ($this->tempRoot !== '') {
             $this->deleteTree($this->tempRoot);
@@ -43,6 +44,7 @@ final class DiagnosticsProductionStateInspectorTest extends CIUnitTestCase
 
         putenv('METODIKA_DIAGNOSTICS_ENABLED=1');
         putenv('METODIKA_CONCURRENCY_WEB_ENABLED=0');
+        putenv('METODIKA_GATE_ENABLED=1');
 
         $database = new DiagnosticsProductionStateFakeDatabase([
             'migrations' => [
@@ -77,6 +79,7 @@ final class DiagnosticsProductionStateInspectorTest extends CIUnitTestCase
         $this->assertSame('0123456789abcdef0123456789abcdef01234567', $state['deployment']['sourceCommit']);
         $this->assertSame('ANO', $state['flags']['diagnosticsEnabled']);
         $this->assertSame('NIE', $state['flags']['concurrencyWebEnabled']);
+        $this->assertSame('ANO', $state['flags']['gateEnabled']);
         $this->assertTrue($state['database']['connection']);
         $this->assertSame(2, $state['database']['migrations']['availableCount']);
         $this->assertSame(1, $state['database']['migrations']['appliedCount']);
@@ -89,6 +92,7 @@ final class DiagnosticsProductionStateInspectorTest extends CIUnitTestCase
         $this->assertSame(1, $state['runStore']['lockCount']);
         $this->assertSame(1, $state['runStore']['tempCount']);
         $this->assertSame(0, $state['runStore']['otherCount']);
+        $this->assertArrayNotHasKey('files', $state['runStore']);
     }
 
     public function testInspectUsesGenericErrorCodeWhenDatabaseConnectionFails(): void

@@ -705,3 +705,73 @@ NEXT_ALLOWED_ACTION=FÁZA_11_D_JEDNA_SÚVISIACA_IMPLEMENTAČNÁ_DÁVKA
 ```
 
 Rozsah Fázy 11.D je záväzne obmedzený pracovným záznamom: najmenšia bezpečnostná oprava diagnostického GATE, odstránenie chybných pracovných artefaktov, doplnenie chýbajúcich testov a žiadny release ani produkčný zásah.
+
+---
+
+## Checkpoint Fáz 11.D a 11.E — 2026-07-27 11:04 Europe/Bratislava
+
+Jedna implementačná dávka bola vytvorená na vetve `agent/krok-11-validacia`
+voči základu `dcc817c6d6627ec2c76629a4ca59c2a4f8903c02`. Obsahuje iba potvrdené
+bezpečnostné opravy diagnostického GATE, cleanup concurrency runov, migráciu M9,
+odstránenie klasifikovaných chybných artefaktov a povinné testy.
+
+Úplná izolovaná Validácia pre technický snapshot
+`d55dcc2d7ff0d9eedb5327b94e757f42cce66bca`:
+
+| Dôkaz | Výsledok |
+|---|---|
+| GitHub Actions | run `30252080061`, job `89932151438`, `success` |
+| Runtime | PHP `8.4.23`, Composer `2.10.2`, MariaDB `11.4.12` |
+| Migrácie | M1–M9 úspešne |
+| Unit | 37 testov, 123 asercií, PASS |
+| Session | 26 testov, 190 asercií, PASS |
+| Integration | 6 testov, 67 asercií, PASS |
+| Paralelný HTTP | login, START, HIT A/B, RESULT, tombstone cleanup, PASS |
+| DB invarianty | uniqueness `true`, outcomes `CREATED+ALREADY_EXISTS` |
+| Cleanup | databázové testovacie riadky `0`, run-store/temp `0` |
+
+```text
+FÁZA_11_D=SPLNENÁ
+FÁZA_11_E=SPLNENÁ
+M01_AŽ_M26=PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ
+G01_AŽ_G12=PASS
+P01_AŽ_P06=PASS
+STATE=COMPLETED_SUCCESS
+CLEANUP=true
+PRODUCTION_UNTOUCHED=true
+RELEASE_VERSION=1.1.15
+NOVÝ_ZIP=false
+NEXT_ALLOWED_ACTION=FÁZA_11_F_UZAVRETIE
+```
+
+Jedna PHPUnit deprecation a upozornenie runnera na Node deklaráciu
+`actions/checkout@v4` sú neblokujúce; validačný job skončil `success`.
+
+---
+
+## Uzavretie Kroku 11 — Fáza 11.F — 2026-07-27 11:04 Europe/Bratislava
+
+Výsledný diff a všetky validačné dôkazy boli spätne načítané. Úplný záznam
+implementácie, testov, cleanupu, predčasných artefaktov a rollbacku je:
+
+`postupy/WORK/2026-07-27_10-20_Krok_11_Klasifikacia_a_testovacia_specifikacia.md`
+
+```text
+FÁZA_11_A=SPLNENÁ
+FÁZA_11_B=SPLNENÁ
+FÁZA_11_C=SPLNENÁ
+FÁZA_11_D=SPLNENÁ
+FÁZA_11_E=SPLNENÁ
+FÁZA_11_F=SPLNENÁ
+KROK_11=SPLNENÉ
+VALIDOVANÝ_TECHNICKÝ_HEAD=d55dcc2d7ff0d9eedb5327b94e757f42cce66bca
+VALIDAČNÝ_RUN=30252080061
+CLEANUP=true
+PRODUKCIA=BEZ_ZÁSAHU
+RELEASE=1.1.15_BEZ_ZMENY
+NOVÝ_ZIP=false
+NEXT_ALLOWED_STEP=KROK_12
+```
+
+Krok 12 zostáva zatvorený, kým nevznikne jeho vlastný nový INI, nebudú
+doložené všetky body a jeho samostatná brána nebude `GATE=OPEN`.

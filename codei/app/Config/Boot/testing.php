@@ -1,4 +1,6 @@
 <?php
+require_once APPPATH . 'Config/ExternalEnvironment.php';
+
 \Config\ExternalEnvironment::load();
 
 /*

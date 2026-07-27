@@ -6,7 +6,7 @@
     <meta name="description" content="<?= esc($metaDescription ?? 'METODIKA') ?>">
     <?= $this->renderSection('meta') ?>
     <title><?= esc($title ?? 'METODIKA') ?></title>
-    <link rel="stylesheet" href="<?= esc(asset_url('public/assets/css/app.css')) ?>">
+    <link rel="stylesheet" href="<?= esc(asset_url('assets/css/app.css')) ?>">
     <?= $this->renderSection('styles') ?>
 </head>
 <body class="<?= esc($pageClass ?? '') ?>">
@@ -23,9 +23,6 @@
             <?= $this->renderSection('content') ?>
             <?php if (($activeNav ?? '') === 'diagnostics' && isset($inspection)): ?>
                 <?= view('diagnostics/_production_state') ?>
-            <?php endif; ?>
-            <?php if (($activeNav ?? '') === 'diagnostics'): ?>
-                <?= view('diagnostics/_gate_step_action') ?>
             <?php endif; ?>
         </div>
     </main>

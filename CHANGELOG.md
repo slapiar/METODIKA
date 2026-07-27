@@ -6,6 +6,22 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ---
 
+## 2026-07-27
+
+### Dokončenie Kroku 11 — úplná lokálna a integračná Validácia
+
+- v jednej implementačnej dávke bola diagnostika GATE uzavretá za spoločnú autorizáciu, zápisy dostali CSRF, validáciu, idempotenciu a bezpečné chybové kódy a čítanie stavu zostalo bez mutácie,
+- doplnená bola migrácia M9 s GATE tabuľkami, väzbami a unikátnymi indexmi, interný cleanup expirovaných concurrency runov, detail session a bezpečné dashboard routes,
+- odstránené boli klasifikované pracovné snapshoty, bundle, writable výstupy, neobsluhované kópie JavaScriptu, placeholder a nulové zvuky s koncovou medzerou,
+- GitHub Actions run `30252080061`, job `89932151438`, na technickom HEAD `d55dcc2d7ff0d9eedb5327b94e757f42cce66bca` skončil `success` s PHP `8.4.23`, Composerom `2.10.2`, MariaDB `11.4.12` a migráciami M1–M9,
+- unit, session a integration suite spolu vykonali 69 testov a 380 asercií; reálny HTTP tok potvrdil login, CSRF, START, paralelný HIT A/B, RESULT, databázovú jedinečnosť, `CREATED+ALREADY_EXISTS`, tombstone a úplný cleanup,
+- po Validácii boli testovacie DB riadky aj run-store/temp súbory nulové; M01–M26 sú `PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ`, G01–G12 a P01–P06 sú `PASS`,
+- úplný výsledok je v [`postupy/WORK/2026-07-27_10-20_Krok_11_Klasifikacia_a_testovacia_specifikacia.md`](postupy/WORK/2026-07-27_10-20_Krok_11_Klasifikacia_a_testovacia_specifikacia.md) a v pôvodnom INI [`postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md`](postupy/WORK/INI/2026-07-25_09-29_INI_Krok_11_Uplna_lokalna_a_integracna_validacia.md),
+- neúplný INI z 2026-07-27 08:47 je v registri označený `PREKONANÝ`; aktívny plán a checklist boli zosúladené na `KROK_11=SPLNENÉ`,
+- produkcia zostala bez zásahu, release zostáva `1.1.15`, nový ZIP nevznikol a Krok 12 sa môže začať iba vlastným novým INI a bránou.
+
+---
+
 ## 2026-07-26
 
 ### Obnova inicializačnej metodiky v2.0 po chybnom merge
