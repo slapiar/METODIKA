@@ -8,6 +8,14 @@ CHANGELOG nie je samostatným autoritatívnym zdrojom definícií. Pri rozpore r
 
 ## 2026-07-27
 
+### Krok 12 — Fáza 12.F: konečné uzavretie
+
+- po zlúčení checkpointu 12.E bol spätne načítaný vzdialený `main` `cc0e562775bf6b5b88a92da25b10648fad0ec28d`, `/codei=4ec1d840...`, `RELEASE_VERSION=1.1.16` a všetky relevantné release artefakty,
+- SHA-256 ZIP-u `1.1.16` bol znovu vypočítaný po vzdialenom zápise a zostal `04742c8b9075acc1fc280326e653ca6b7be57f514a0dc756c141560d5d062668`; Git blob zostal `24b4976831bc4f37eb80080c4b39e82d9513bf08`,
+- konečný checkpoint potvrdzuje jeden release, manifest 813/813, nulové obsahové rozdiely a zakázané artefakty, audit `PASS` a dostupný zdrojovo zhodný rollback `1.1.9`,
+- Fáza 12.F nevykonala nasadenie, migráciu, produkčný diagnostický run, cleanup ani zmenu feature flagov; produkcia zostala bez zásahu,
+- Fázy 12.A–12.F aj celý Krok 12 sú `SPLNENÉ`; jediným nasledujúcim povoleným úkonom je Krok 13 s vlastným INI a GATE.
+
 ### Krok 12 — Fáza 12.E: rollback a dôkazová väzba
 
 - rollbackový ZIP `1.1.9` zostáva dostupný pod blobom `1e407b914e9be81b500612b69dd20492fbb63fa5` a SHA-256 `5aa4d4bd458c9ae4a1a003594de101aba6a2d4e010d24c5bcc94e9b26a0b5e72`; platí jeho úplný audit 790/790 súborov bez rozdielu,
