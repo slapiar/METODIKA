@@ -7,16 +7,15 @@
 - Autoritativny postup nacitany: `postupy/Inicializácia práce.md`
 - Ucel: pripravit implementacny podklad pre bezpecnu webovu koordinaciu dvoch samostatnych HTTP poziadaviek pre diagnosticky scenar subeznosti
 
-## Stav realizacie (aktualizované 2026-07-27 po Kroku 11)
+## Stav realizacie (záverečná reValidácia 2026-07-27, Krok 15)
 
-- Checklist 1 az 13: implementovaný a overený v izolovanom validačnom prostredí.
-- Matica M01 az M26: `PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ`.
+- Checklist 1 až 13: implementovaný a overený v izolovanom validačnom prostredí.
+- Checklist 14: produkčné nasadenie a základná diagnostika prebehli, ale úplný súbežný produkčný scenár nemá doložený `runId`, odpovede ani výsledok `COMPLETED_SUCCESS`; Krok 13 je preto pravdivo uzavretý riadeným STOP.
+- Matica M01 až M26: `PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ` v izolovanom validačnom prostredí.
 - Finálny GitHub Actions run `30252640028` na heade `bc85d18...`: `success`.
-- Reálny HTTP tok `START -> paralelný HIT A/B -> RESULT -> cleanup`: PASS.
-- Cleanup: testovacie DB riadky `0`, run-store/temp súbory `0`.
-- Produkčné diagnostické overenie sa v Kroku 11 nevykonalo; patrí až do neskoršej
-  fázy záväzného plánu po Kroku 12 a Kroku 13.
-- Produkcia zostala bez zásahu, release ostal `1.1.15` a nový ZIP nevznikol.
+- Reálny neprodukčný HTTP tok `START -> paralelný HIT A/B -> RESULT -> cleanup`: PASS.
+- Produkčný cleanup Kroku 14: run-store `0`, temp `0`, testovacie DB riadky `0`, GATE testovacie riadky `0`, feature flagy `OFF`, diagnostický režim `OFF`, `PRODUCTION_CLEAN=true`.
+- Nasadený release: `1.1.17`, release commit `cc9d48d95ff982b4ec7510e86e1d03f0734cf9de`, ZIP Git blob `486267e8d812d5dfee568c21c23663074e0e33d3`.
 
 ---
 
@@ -117,9 +116,11 @@
 - End-to-end scenar `START -> HIT A/B -> bariera -> accept -> finalization -> cleanup -> tombstone`.
 
 14. Produkcne diagnosticke overenie
-- Kratkodobe zapnutie diagnostickej vetvy.
-- Overit tri osi vysledku.
-- Overit sweep a odstranenie run suboru po TTL.
+- Kratkodobe zapnutie diagnostickej vetvy: vykonané.
+- Overenie tokenu a databázovej diagnostiky: PASS.
+- Úplné overenie troch osí súbežného výsledku: NEDOLOŽENÉ; Krok 13 uzavretý riadeným STOP.
+- Sweep a odstránenie produkčných testovacích zvyškov: potvrdené v Kroku 14.
+- Diagnostické flagy: OFF; produkcia čistá.
 
 ---
 
@@ -156,7 +157,7 @@
 
 ---
 
-## Výsledok matice po Kroku 11
+## Výsledok matice po záverečnej reValidácii
 
 | ID | Výsledok | Dôkaz |
 |---|---|---|
@@ -169,17 +170,20 @@ Súhrn:
 
 ```text
 M01_AŽ_M26=PASS_ALEBO_DÔKAZNE_VYRIEŠENÉ
-DB_UNIQUENESS=true
-OUTCOMES=CREATED+ALREADY_EXISTS
-STATE=COMPLETED_SUCCESS
-CLEANUP=true
+IZOLOVANÁ_VALIDÁCIA=PASS
+PRODUCTION_CONCURRENCY_RESULT=NEPOTVRDENÝ
+KROK_13=UZAVRETÝ_RIADENÝM_STOP
+KROK_14=SPLNENÝ
+RUNSTORE_FILES=0
 TEMP_FILES=0
 TEST_DB_ROWS=0
-PRODUCTION_UNTOUCHED=true
+GATE_TEST_ROWS=0
+FEATURE_FLAGS=OFF
+DIAGNOSTIC_MODE=OFF
+PRODUCTION_CLEAN=true
 ```
 
-Presná aktualizovaná špecifikácia jednotlivých M01–M26, G01–G12 a P01–P06 a
-úplná validačná evidencia sú v
+Presná aktualizovaná špecifikácia jednotlivých M01–M26, G01–G12 a P01–P06 a úplná validačná evidencia sú v
 `WORK/2026-07-27_10-20_Krok_11_Klasifikacia_a_testovacia_specifikacia.md`.
 
 ---
@@ -192,4 +196,4 @@ Presná aktualizovaná špecifikácia jednotlivých M01–M26, G01–G12 a P01�
 - aplikacny vysledok `CREATED + ALREADY_EXISTS`,
 - uspesny cleanup.
 
-Ak chýba ktora kolvek z osí, run nie je uspesny.
+Ak chýba ktora kolvek z osí, run nie je uspesny. Produkčný run Kroku 13 preto nie je spätne označený ako úspešný; úspešné je bezpečné uzavretie, cleanup a fail-closed produkčný stav.
