@@ -121,7 +121,7 @@ METODIKA/
 │   ├── 2026-07-22_IMPLEMENTACIA-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md
 │   └── 2026-07-22_VALIDACIA-IMPLEMENTACIE-EXTERNEHO-ENV-DIAGNOSTIKY-A-MIGRACII.md
 │
-├── poznámky/
+├── poznamky/
 │   ├── README.md
 │   └── 2026-07-21_08-06_DB-OTAZKY-ALG.md
 │
@@ -160,10 +160,10 @@ METODIKA/
 - [HODNOTENIA/README.md](HODNOTENIA/README.md) — pravidlá hodnotiacich záznamov.
 - [postupy/README.md](postupy/README.md) — záväzný register stavu pracovných postupov.
 - [TECHNICKE-NAVRHY/README.md](TECHNICKE-NAVRHY/README.md) — záväzný register technických návrhov oddelených od metodických dokumentov.
-- [poznámky/README.md](poznámky/README.md) — záväzný register stavu pracovných poznámok.
+- [poznamky/README.md](poznamky/README.md) — záväzný register stavu pracovných poznámok.
 - [CHANGELOG.md](CHANGELOG.md) — stručný záznam zmien a odkazy na miesta platných definícií.
 
-Dokumenty v `poznámky/`, `postupy/` a `TECHNICKE-NAVRHY/` nemajú vyššiu Autoritu než platné definície. Ich aktuálny stav sa neurčuje dojmom ani názvom súboru, ale registrami v príslušných adresároch.
+Dokumenty v `poznamky/`, `postupy/` a `TECHNICKE-NAVRHY/` nemajú vyššiu Autoritu než platné definície. Ich aktuálny stav sa neurčuje dojmom ani názvom súboru, ale registrami v príslušných adresároch.
 
 Základné oddelenie:
 
