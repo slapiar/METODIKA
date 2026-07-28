@@ -38,16 +38,16 @@ Každý projekt musí mať vlastnú samostatnú vývojovú štruktúru zložiek.
 Ukončená práca na metodike sa evidenčne a organizačne oddeľuje do projektového koreňa:
 
 ```text
-/VÝVOJ METODIKY1
+/VYVOJ METODIKY1
 ```
 
 Ďalší vývoj webovej stránky sa otvára v samostatnom projektovom koreni:
 
 ```text
-/VÝVOJ WEB
+/VYVOJ WEB
 ```
 
-`VÝVOJ WEB` preberá štruktúru pracovných zložiek, nie obsah ukončenej metodickej práce. Obsah sa do nej bude zapisovať až vtedy, keď vznikne v rámci vývoja webovej stránky.
+`VYVOJ WEB` preberá štruktúru pracovných zložiek, nie obsah ukončenej metodickej práce. Obsah sa do nej bude zapisovať až vtedy, keď vznikne v rámci vývoja webovej stránky.
 
 Z plánovacieho poriadku je výslovne vyňatý tento plán:
 
