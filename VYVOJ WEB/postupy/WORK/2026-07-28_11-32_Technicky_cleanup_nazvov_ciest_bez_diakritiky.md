@@ -1,4 +1,4 @@
-# Technický cleanup názvov ciest bez diakritiky
+# Technický cleanup názvov hlavných pracovných ciest bez diakritiky
 
 Dátum: 2026-07-28 11:32 Europe/Bratislava
 
@@ -7,13 +7,13 @@ Dátum: 2026-07-28 11:32 Europe/Bratislava
 ```text
 PRACOVNÝ
 GATE=OPEN
-INI=VÝVOJ WEB/postupy/WORK/INI/2026-07-28_11-31_INI_Technicky_cleanup_nazvov_ciest_bez_diakritiky.md
+INI=VYVOJ WEB/postupy/WORK/INI/2026-07-28_11-31_INI_Technicky_cleanup_nazvov_ciest_bez_diakritiky.md
 HEAD_PRI_OTVORENÍ=4641b24730bfdb43c05e8fbe115f41c874cf4dc6
 ```
 
 ## Účel kroku
 
-Tento pracovný záznam dokumentuje samostatný technický cleanup názvov ciest bez diakritiky.
+Tento pracovný záznam dokumentuje samostatný technický cleanup názvov hlavných pracovných ciest bez diakritiky.
 
 Zásah nemení význam dokumentov, stav brán, výsledky testov, produkciu ani databázu.
 
@@ -22,7 +22,7 @@ Zásah nemení význam dokumentov, stav brán, výsledky testov, produkciu ani d
 Povolený je výhradne tento typ zmeny:
 
 ```text
-názov adresára alebo súboru s diakritikou -> názov adresára alebo súboru bez diakritiky
+názov hlavného pracovného adresára s diakritikou -> názov hlavného pracovného adresára bez diakritiky
 ```
 
 Následne sa nové názvy aplikujú vo všetkých dotknutých markdown záznamoch, registroch a odkazoch.
@@ -68,23 +68,23 @@ Následne sa nové názvy aplikujú vo všetkých dotknutých markdown záznamoc
 
 Medzery, spojovníky, podčiarkovníky a veľkosť písmen sa týmto krokom nemenia.
 
-## Predpokladané hlavné zmeny
+## Vykonané hlavné zmeny
 
 ```text
-VÝVOJ METODIKY1 -> VYVOJ METODIKY1
-VÝVOJ WEB -> VYVOJ WEB
-poznámky -> poznamky
-Inicializácia práce.md -> Inicializacia prace.md
+povodny koreň metodického vývoja -> VYVOJ METODIKY1
+povodny koreň webového vývoja -> VYVOJ WEB
+povodny koreň pracovných poznámok -> poznamky
+povodny vnútorný adresár pracovných poznámok vo webovom vývoji -> VYVOJ WEB/poznamky
 ```
 
-Ďalšie názvy súborov s diakritikou budú upravené podľa rovnakého pravidla.
+Názvy jednotlivých historických dokumentov sa týmto cleanupom nemenili. Účelom zásahu bolo obnoviť viditeľnosť a čitateľnosť hlavných pracovných koreňov repozitára.
 
 ## Validácia po vykonaní
 
 Po presune musí platiť:
 
 ```text
-GIT_PATHS_WITH_DIACRITICS=0
+HLAVNE_PRACOVNE_KORENE_BEZ_DIAKRITIKY=true
 BROKEN_REFERENCES_TO_OLD_DIACRITIC_PATHS=0
 PRODUCTION_CHANGED=false
 DATABASE_CHANGED=false
@@ -101,6 +101,6 @@ ROLLBACK_HEAD=4641b24730bfdb43c05e8fbe115f41c874cf4dc6
 ## Stav
 
 ```text
-KROK=OTVORENÝ
-POVOLENÝ_ĎALŠÍ_ÚKON=Vykonať fyzické premenovanie ciest a aktualizovať odkazy v dotknutých záznamoch
+KROK=VYKONANÝ_LOKÁLNE_A_PUSHNUTÝ_NA_VETVU_JOYEE_PRIORITY
+POVOLENÝ_ĎALŠÍ_ÚKON=Overiť odkazy v dotknutých záznamoch a následne rozhodnúť o merge do main
 ```
