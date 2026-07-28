@@ -1,5 +1,5 @@
-# METODIKA: Inicializačný a vykonávací protokol (v2.0)
-
+# METODIKA: Inicializačný a vykonávací protokol (v2.1)
+Táto metodika riadi prácu v zložke /VÝVOJ WEB/postupy/
 Tento dokument definuje nepriechodnú vykonávaciu bránu (`GATE`) pred akýmkoľvek zásahom do projektu.
 
 ---
