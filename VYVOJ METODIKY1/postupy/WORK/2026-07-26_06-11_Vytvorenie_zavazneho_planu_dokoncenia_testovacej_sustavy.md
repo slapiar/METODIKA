@@ -35,7 +35,7 @@ Nanovo načítať autoritatívny repozitár, prečítať všetky záväzné inš
 - `HODNOTENIA/README.md`,
 - `PRINCIPY/HermetickePrincipy.md`,
 - `TECHNICKE-NAVRHY/README.md`,
-- `poznámky/README.md`,
+- `poznamky/README.md`,
 - `postupy/README.md`,
 - `CHANGELOG.md`,
 - `postupy/2026-07-23_12-27_Copilot-checklist a testovacia matica.md`,
